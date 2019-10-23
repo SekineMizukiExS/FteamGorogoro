@@ -8,10 +8,15 @@
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
+#include "ProjectDraw.h"
 #include "Scene.h"
 #include "GameStage.h"
 #include "Character.h"
 #include "Player.h"
+
+//TODOí«â¡ÉwÉbÉ_Å[
+#include "AreaBase.h"
+#include "Futon.h"
 
 
 
