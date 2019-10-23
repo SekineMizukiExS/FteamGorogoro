@@ -1,5 +1,12 @@
 #include "AreaShader.hlsli"
-float4 main(FutonPS Input):SV_TARGET
+
+Texture2D g_MainTex : register(t0);
+SamplerState s_MainSamp : register(s0);
+
+
+float4 main(FutonPS input):SV_TARGET
 {
-    return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 Mc = g_MainTex.Sample(s_MainSamp, input.tex);
+
+    return Mc;
 }

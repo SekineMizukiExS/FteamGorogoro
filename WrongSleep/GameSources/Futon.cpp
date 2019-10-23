@@ -9,8 +9,8 @@ namespace basecross
 {
 	void Futon::OnCreate()
 	{
-		auto DrawComp = AddComponent<PCTStaticDraw>();
+		auto DrawComp = AddComponent<AreaDraw>();
 		DrawComp->SetMeshResource(L"DEFAULT_SQUARE");
-		
+		DrawComp->SetTextureResource(L"Test_TX");
 	}
 }
