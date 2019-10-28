@@ -13,6 +13,12 @@ cbuffer AreaCB:register(b0)
     uint4 Activeflags : packoffset(c17); //フラグ
 };
 
+//各種パラメータ
+cbuffer ParamCB : register(b1)
+{
+    float4 Time : packoffset(c0);
+};
+
 struct FutonVS
 {
     float4 pos : SV_POSITION;

@@ -107,9 +107,9 @@ namespace basecross
 		pID3D11DeviceContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
 
 		//
-		//ID3D11Buffer* pParamBuffer = PARAMCB::GetPtr()->GetBuffer();
-		//pID3D11DeviceContext->VSSetConstantBuffers(1, 1, &pParamBuffer);
-		//pID3D11DeviceContext->PSSetConstantBuffers(1, 1, &pParamBuffer);
+		ID3D11Buffer* pParamBuffer = CBParam::GetPtr()->GetBuffer();
+		pID3D11DeviceContext->VSSetConstantBuffers(1, 1, &pParamBuffer);
+		pID3D11DeviceContext->PSSetConstantBuffers(1, 1, &pParamBuffer);
 		//
 		//レンダリングステート
 		pID3D11DeviceContext->RSSetState(RenderState->GetCullFront());
@@ -124,11 +124,16 @@ namespace basecross
 
 	}
 
-	//void AreaDraw::UpdateParam(ShaderParam &SetParam)
-	//{
-	//	auto pD3D11DeviceContext = App::GetApp()->GetDeviceResources()->GetD3DDeviceContext();
-	//	pD3D11DeviceContext->UpdateSubresource(PARAMCB::GetPtr()->GetBuffer(), 0, nullptr, &SetParam, 0, 0);
-	//}
+	void AreaDraw::CreateMesh(const int&count,const int&distance)
+	{
+
+	}
+
+	void AreaDraw::UpdateParam(ParamCB &SetParam)
+	{
+		auto pD3D11DeviceContext = App::GetApp()->GetDeviceResources()->GetD3DDeviceContext();
+		pD3D11DeviceContext->UpdateSubresource(CBParam::GetPtr()->GetBuffer(), 0, nullptr, &SetParam, 0, 0);
+	}
 
 	void AreaDraw::SetTextures(UINT StartSlot, UINT NumViews, const wstring&Key)
 	{

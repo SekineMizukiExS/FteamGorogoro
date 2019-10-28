@@ -15,5 +15,11 @@ namespace basecross
 		{}
 
 		void OnCreate()override;
+		void OnUpdate()override;
+
+	private:
+		float _timef;
+		int _cnt;
+		const float PALSE = 1.0f;
 	};
 }
