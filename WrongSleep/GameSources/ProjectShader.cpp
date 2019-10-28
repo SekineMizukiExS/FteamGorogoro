@@ -11,6 +11,8 @@ namespace basecross{
 	//エリアシェーダ
 	//コンスタントバッファ
 	IMPLEMENT_DX11_CONSTANT_BUFFER(CBArea)
+	//パラメータバッファ
+	IMPLEMENT_DX11_CONSTANT_BUFFER(CBParam)
 	//頂点シェーダー
 	IMPLEMENT_DX11_VERTEX_SHADER(VSFuton,App::GetApp()->GetShadersPath()+L"FutonVS.cso")
 	//ピクセルシェーダ

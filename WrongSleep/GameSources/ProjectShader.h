@@ -7,6 +7,7 @@
 #include "stdafx.h"
 
 namespace basecross{
+	//エリア用コンスタントバッファ
 	struct AreaCB
 	{
 		Mat4x4 World;
@@ -24,7 +25,20 @@ namespace basecross{
 
 	};
 
+	//シェーダーに渡すパラメータ
+	struct ParamCB
+	{
+		Vec4 param_f;
+
+		ParamCB()
+		{
+			memset(this, 0, sizeof(ParamCB));
+			param_f = Vec4();
+		}
+	};
+
 	DECLARE_DX11_CONSTANT_BUFFER(CBArea, AreaCB)
+	DECLARE_DX11_CONSTANT_BUFFER(CBParam,ParamCB)
 	DECLARE_DX11_VERTEX_SHADER(VSFuton,VertexPositionNormalTexture)
 	DECLARE_DX11_PIXEL_SHADER(PSFuton)
 }
