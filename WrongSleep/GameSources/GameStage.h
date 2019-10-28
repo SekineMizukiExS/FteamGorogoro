@@ -31,6 +31,8 @@ namespace basecross {
 	{
 		//ビューの作成
 		void CreateViewLight();
+		//プレイヤーの作成
+		void CreatePlayer();
 	public:
 		//構築と破棄
 		TestStage() :Stage() {}

@@ -66,13 +66,20 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting();
 	}
 
-
+	void TestStage::CreatePlayer() {
+		//プレーヤーの作成
+		auto ptrPlayer = AddGameObject<Player>();
+		//シェア配列にプレイヤーを追加
+		SetSharedGameObject(L"Player", ptrPlayer);
+		ptrPlayer->AddTag(L"Player");
+	}
 
 	void TestStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
 			AddGameObject<Futon>();
+			CreatePlayer();
 		}
 		catch (...) {
 			throw;
