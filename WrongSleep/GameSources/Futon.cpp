@@ -10,6 +10,7 @@ namespace basecross
 	void Futon::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
+		DrawComp->SetOriginalMeshUse(true);
 		DrawComp->SetMeshResource(L"MatTest_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
 

@@ -9,6 +9,20 @@
 
 namespace basecross {
 
+	class AreaBehavior :public Behavior
+	{
+	public:
+		//--------------------------------------------------------------------------------------
+		/*!
+		@briefコンストラクタ
+		@param[in] GameObject ゲームオブジェクト
+		!*/		
+		//--------------------------------------------------------------------------------------
+		AreaBehavior(const shared_ptr<GameObject>&GameObjectPtr)
+			:Behavior(GameObjectPtr)
+		{}
+		void SetInputCode();
+	};
 
 }
 
