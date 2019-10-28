@@ -7,7 +7,14 @@
 #include "Project.h"
 
 namespace basecross{
-
+	
+	//エリアシェーダ
+	//コンスタントバッファ
+	IMPLEMENT_DX11_CONSTANT_BUFFER(CBArea)
+	//頂点シェーダー
+	IMPLEMENT_DX11_VERTEX_SHADER(VSFuton,App::GetApp()->GetShadersPath()+L"FutonVS.cso")
+	//ピクセルシェーダ
+	IMPLEMENT_DX11_PIXEL_SHADER(PSFuton,App::GetApp()->GetShadersPath()+L"FutonPS.cso")
 
 }
 //end basecross
