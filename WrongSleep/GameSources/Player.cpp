@@ -42,6 +42,45 @@ namespace basecross{
 
 
 	}
+
+	void Player::OnUpdate() {
+		
+	}
+
+	//進行ベクトルへの加法関数
+	Vec3 Player::GetMoveVector() const {
+		Vec3 angle(0, 0, 0);
+		float moveLength = 0;	//動いた時のスピード
+		auto ptrTransform = GetComponent<Transform>();
+		auto ptrCamera = OnGetDrawCamera();
+		//進行方向の向きを計算
+		auto front = ptrTransform->GetWorldPosition() - ptrCamera->GetEye();
+		front.y = 0;
+		front.normalize();
+		//進行方向向きからの角度を算出
+		float frontAngle = atan2(front.z, front.x);
+		//コントローラの向き計算
+		float moveX = m_cntl.LX;
+		float moveY = m_cntl.LY;
+
+		Vec2 moveVec(moveX, moveY);
+		float moveSize = moveVec.length();
+		//コントローラの向きから角度を計算
+		float cntlAngle = atan2(-moveX, moveY);
+		//トータルの角度を算出
+		float totalAngle = frontAngle + cntlAngle;
+		//角度からベクトルを作成
+		angle = Vec3(cos(totalAngle), sin(totalAngle), 0);
+		//正規化する
+		angle.normalize();
+		//移動サイズを設定。
+		angle *= moveSize;
+		//Z軸は変化させない
+		angle.z = 0;
+		return angle;
+
+	}
+
 }
 //end basecross
 
