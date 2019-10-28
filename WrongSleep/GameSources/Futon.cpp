@@ -10,8 +10,11 @@ namespace basecross
 	void Futon::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
-		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
+		DrawComp->SetMeshResource(L"MatTest_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
+
+		auto TransComp = GetComponent<Transform>();
+		TransComp->SetPosition(0, 0, 0);
 	}
 
 	void Futon::OnUpdate()
