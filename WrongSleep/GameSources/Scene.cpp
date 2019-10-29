@@ -32,10 +32,13 @@ namespace basecross{
 	{
 		wstring mediaPath;
 		App::GetApp()->GetDataDirectory(mediaPath);
-		App::GetApp()->RegisterTexture(L"Test_TX", mediaPath +L"Textures/"+ L"KB.png");
+		App::GetApp()->RegisterTexture(L"Test_TX", mediaPath + L"Textures/" + L"KB.png");
+		App::GetApp()->RegisterTexture(L"Player_TX", mediaPath + L"Textures/" + L"Tx_Player.png");
 
-		auto modelMesh = MeshResource::CreateStaticModelMesh(mediaPath+L"Models/",L"MatTest.bmf");
+		auto modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"MatTest.bmf");
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Player.bmf");
+		App::GetApp()->RegisterResource(L"Player_MD", modelMesh);
 
 	}
 

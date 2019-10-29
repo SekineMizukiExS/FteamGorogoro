@@ -19,7 +19,7 @@ namespace basecross
 
 	void SelectAIState::Execute(const shared_ptr<AreaBase>&Obj)
 	{
-
+		Obj->GetBehavior<AreaBehavior>()->SetInputCode(INPUT_CODE_MOVE);
 	}
 
 	void SelectAIState::Exit(const shared_ptr<AreaBase>&Obj)
