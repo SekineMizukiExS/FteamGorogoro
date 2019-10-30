@@ -13,7 +13,7 @@ namespace basecross{
 //--------------------------------------------------------------------------------------
 //\’z‚Æ”jŠü
 	Player::Player(const shared_ptr<Stage>& StagePtr) :
-		GameObject(StagePtr)
+		GameObject(StagePtr), m_cntlNum(0)
 	{}
 
 	void Player::OnCreate() {
