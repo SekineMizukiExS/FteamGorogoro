@@ -27,6 +27,7 @@ namespace basecross {
 	void AreaBehavior::Move()
 	{
 		const float TotalTime = 2.0f;
+
 		float ElapsedTime = App::GetApp()->GetElapsedTime();
 		_ptime += ElapsedTime;
 		if (TotalTime < _ptime) {
@@ -47,24 +48,62 @@ namespace basecross {
 	//–¢ŽÀ‘•
 	void AreaBehavior::Rot()
 	{
-		const float TotalTime = 2.0f;
 		float ElapsedTime = App::GetApp()->GetElapsedTime();
-		_rtime += ElapsedTime;
-		if (TotalTime < _rtime) {
-			_rtime = 0;
-			_rotb = !_rotb;
-			return;
-		}
+
+		const float LerpFact = 1.0f;
+		const float TotalTime = 2.0f;
+
 		auto obj = GetGameObject();
 		auto TransComp = obj->GetComponent<Transform>();
-		const float Rad = XM_1DIV2PI;
-		Vec3 Rotation = TransComp->GetRotation();
+		const float Rad = XM_PI;
 
-		Rotation.z += _rotb ? Rad * ElapsedTime : -Rad * ElapsedTime;
+		switch (_rotsw)
+		{
+		case basecross::AreaBehavior::SwitchIO::Stop:
+			_rtime += ElapsedTime;
+			if (TotalTime > _rtime) {
+				return;
+			}
+			_rotb = !_rotb;
+			_rotsw = SwitchIO::Excute;
+			_rtime = 0;
+			break;
+		case basecross::AreaBehavior::SwitchIO::Excute:
 
-		TransComp->SetRotation(Rotation);
+			_rotval += _rotb ? +Rad * ElapsedTime : -Rad * ElapsedTime;
+			bsm::Quat Qt;
+			Qt.rotationRollPitchYawFromVector(bsm::Vec3(_rotval, 0, 0));
+			Qt.normalize();
+			//Œ»Ý‚Ì‰ñ“]‚ðŽæ“¾
+			bsm::Quat NowQt = TransComp->GetQuaternion();
+			//Œ»Ý‚Æ–Ú•W‚ð•âŠÔ
+			//Œ»Ý‚Æ–Ú•W‚ð•âŠÔ
+			if (LerpFact >= 1.0f) {
+				NowQt = Qt;
+			}
+			else {
+				NowQt = XMQuaternionSlerp(NowQt, Qt, LerpFact);
+			}
+			TransComp->SetQuaternion(NowQt);
+
+			CheckQuat(_rotval);
+
+			break;
+		}
 
 	}
+
+	void AreaBehavior::CheckQuat(const float CheckVal)
+	{
+		if (fabs(CheckVal)>_MaxQuat)
+		{
+			_rotsw = SwitchIO::Stop;
+		}
+	}
+
+	//float AreaBehavior::ExeTime(float nowtime)
+	//{
+	//}
 }
 
 //end basecross

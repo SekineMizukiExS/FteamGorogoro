@@ -34,11 +34,25 @@ namespace basecross {
 		void SetInputCode(const int& CODE);
 
 	private:
+		enum class SwitchIO
+		{
+			Stop,
+			Excute
+		};
+
 		void Move();
 		void Rot();
 
+		void CheckQuat(float CheckVal);
+		//float ExeTime(float nowtime);
+
 		bool _moveb = false, _rotb = false;
 		float _ptime = 0.0f,_rtime = 0.0f;
+		float _rotval = 0.0f;
+
+		const float _MaxQuat = XM_PIDIV4;
+		SwitchIO _rotsw = SwitchIO::Excute;
+
 	};
 
 }
