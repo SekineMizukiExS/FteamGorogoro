@@ -10,8 +10,17 @@ namespace basecross
 	void Futon::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
-		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
+		//DrawComp->SetOriginalMeshUse(true);
+		DrawComp->SetMeshResource(L"MatTest_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
+
+		auto TransComp = GetComponent<Transform>();
+		TransComp->SetPosition(0, 0, 0);
+
+		//最初のステート設定
+		m_State.reset(new StateMachine<AreaBase>(GetThis<AreaBase>()));
+
+		m_State->ChangeState(SelectAIState::Instance());
 	}
 
 	void Futon::OnUpdate()
@@ -23,6 +32,8 @@ namespace basecross
 
 		auto DrawComp = GetComponent<AreaDraw>();
 		DrawComp->UpdateParam(temp);
+
+		m_State->Update();
 		//vector<Vec3> vert;
 		//DrawComp->GetStaticMeshLocalPositions(vert);
 		//for (int i = 0; i < vert.size(); i++)

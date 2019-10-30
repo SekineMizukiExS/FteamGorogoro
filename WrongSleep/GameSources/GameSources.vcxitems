@@ -26,6 +26,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AreaBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Futon.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />

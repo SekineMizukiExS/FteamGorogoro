@@ -55,14 +55,14 @@ namespace basecross {
 		const Vec3 eye[5] = { Vec3(0.0f, 5.0f, -5.0f),//標準位置
 							  Vec3(0.0f, 0.0f, -5.0f),
 							  Vec3(0.0f, 5.0f, 0.1f),
-							  Vec3(5.0f, 5.0f, -5.0f),
-							  Vec3(5.0f, 5.0f, -5.0f), };
+							  Vec3(50.0f, 50.0f, -50.0f),
+							  Vec3(10.0f, 0.0f, -10.0f), };
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<Camera>();
 		PtrView->SetCamera(PtrCamera);
-		PtrCamera->SetEye(eye[3]);
+		PtrCamera->SetEye(eye[4]);
 		PtrCamera->SetAt(at);
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();

@@ -14,9 +14,9 @@ FutonPS main(FutonVS input)
 
     result.pos = pos;
 
-    float wave = sin(Time.x * 10 + pos.x * 25);
+    //float wave = 2.0f*sin(Time.x * 20 + pos.x * 25);
 
-    result.pos.xyz = float3(pos.x, pos.y + wave, pos.z);
+    //result.pos.xyz = float3(pos.x, pos.y + wave, pos.z);
 
     result.norm = mul(input.norm, (float3x3) World);
     result.norm = normalize(result.norm);

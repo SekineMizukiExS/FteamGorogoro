@@ -16,7 +16,7 @@ namespace basecross
 			throw BaseException(
 				L"ƒƒbƒVƒ…‚ªì¬‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ",
 				L"if (!MeshRes)",
-				L"WaterDraw::OnDraw()"
+				L"AreaDraw::OnDraw()"
 			);
 		}
 
