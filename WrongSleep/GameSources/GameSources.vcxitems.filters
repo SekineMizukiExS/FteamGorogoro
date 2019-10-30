@@ -36,6 +36,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)AreaBase.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Futon.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectDraw.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -59,5 +61,14 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Futon.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectDraw.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="$(MSBuildThisFileDirectory)FutonPS.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)FutonVS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)AreaShader.hlsli" />
   </ItemGroup>
 </Project>
