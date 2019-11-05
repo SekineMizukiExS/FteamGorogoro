@@ -82,6 +82,7 @@ namespace basecross {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
+			AddGameObject<GameManager>();
 			AddGameObject<Futon>();
 			CreatePlayer();
 		}
