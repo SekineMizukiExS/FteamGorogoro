@@ -8,9 +8,10 @@
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
-#include "ProjectDraw.h"
+#include "ProjectDraw.h"//
 #include "Scene.h"
 #include "GameStage.h"
+#include "GameManager.h"
 #include "Character.h"
 #include "Player.h"
 
