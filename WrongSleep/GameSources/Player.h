@@ -15,6 +15,7 @@ namespace basecross{
 
 		// コントローラから方向ベクトルを得る
 		Vec3 GetMoveVector() const;
+		void MovePlayer();
 		//文字列の表示
 		void DrawStrings();
 
@@ -25,6 +26,9 @@ namespace basecross{
 		//入力ハンドラー
 		InputHandler<Player> m_inputHandler;
 		wstring m_sharedName;
+
+		float m_PlayerSpeed = 0;
+		Vec3 m_ChargedVec = Vec3(0,0,0);
 
 		//ステートマシン
 		unique_ptr<StateMachine<Player>> m_stateMachine;
