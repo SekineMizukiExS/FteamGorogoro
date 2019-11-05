@@ -1,0 +1,9 @@
+diff a/WrongSleep/GameSources/ProjectBehavior.cpp b/WrongSleep/GameSources/ProjectBehavior.cpp	(rejected hunks)
+@@ -104,6 +104,7 @@
+ 	//float AreaBehavior::ExeTime(float nowtime)
+ 	//{
+ 	//}
++=======
+ 	//�i�s�x�N�g���ւ̉��@�֐�
+ 	Vec3 Player::GetMoveVector() const {
+ 		Vec3 angle(0, 0, 0);
