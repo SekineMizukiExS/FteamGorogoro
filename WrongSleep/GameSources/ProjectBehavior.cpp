@@ -1,6 +1,6 @@
 /*!
 @file ProjectBehavior.cpp
-@brief プロジェク定義の行動クラス実体
+@brief 行動クラス実体
 */
 
 #include "stdafx.h"
@@ -18,6 +18,9 @@ namespace basecross {
 			break;
 		case INPUT_CODE_MOVE:
 			Move();
+			break;
+		case INPUT_CODE_HUMAN:
+			InputController();
 			break;
 		default:
 			break;
@@ -45,7 +48,7 @@ namespace basecross {
 		TransComp->SetPosition(Pos);
 	}
 
-	//未実装
+
 	void AreaBehavior::Rot()
 	{
 		float ElapsedTime = App::GetApp()->GetElapsedTime();
@@ -74,10 +77,9 @@ namespace basecross {
 			bsm::Quat Qt;
 			Qt.rotationRollPitchYawFromVector(bsm::Vec3(_rotval, 0, 0));
 			Qt.normalize();
-			//現在の回転を取得
+
 			bsm::Quat NowQt = TransComp->GetQuaternion();
-			//現在と目標を補間
-			//現在と目標を補間
+
 			if (LerpFact >= 1.0f) {
 				NowQt = Qt;
 			}
@@ -99,6 +101,14 @@ namespace basecross {
 		{
 			_rotsw = SwitchIO::Stop;
 		}
+	}
+	
+	//------------------------------------
+	///2P入力用
+	//------------------------------------
+	void AreaBehavior::InputController()
+	{
+
 	}
 
 	//float AreaBehavior::ExeTime(float nowtime)
@@ -136,6 +146,8 @@ namespace basecross {
 		}
 		return ret;
 	}
+
+	//進行ベクトルへの加法関数
 	Vec3 Player::GetMoveVector() const {
 		Vec3 angle(0, 0, 0);
 		//入力の取得

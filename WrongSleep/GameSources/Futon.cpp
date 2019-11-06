@@ -10,7 +10,6 @@ namespace basecross
 	void Futon::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
-		//DrawComp->SetOriginalMeshUse(true);
 		DrawComp->SetMeshResource(L"MatTest_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
 
@@ -25,24 +24,25 @@ namespace basecross
 
 	void Futon::OnUpdate()
 	{
-		_timef += App::GetApp()->GetElapsedTime();
+		//_timef += App::GetApp()->GetElapsedTime();
 
-		ParamCB temp;
-		temp.param_f.x = _timef;
+		//ParamCB temp;
+		//temp.param_f.x = _timef;
 
 		auto DrawComp = GetComponent<AreaDraw>();
-		DrawComp->UpdateParam(temp);
+		//DrawComp->UpdateParam(temp);
 
 		m_State->Update();
-		//vector<Vec3> vert;
-		//DrawComp->GetStaticMeshLocalPositions(vert);
-		//for (int i = 0; i < vert.size(); i++)
-		//{
-		//	auto v = vert[i];
-		//	v.y = PALSE * sinf((i + _cnt) / 20.0f);
-		//	vert[i] = v;
-		//}
-		//_cnt++;
-		//DrawComp->UpdateVertices(vert);
+
+		auto mesh = DrawComp->GetMeshResource();
+		auto vert = mesh->GetBackupVerteces<VertexPositionNormalTexture>();
+		for (int i = 0; i < vert.size(); i++)
+		{
+			auto v = vert[i].position;
+			v.y = PALSE * sinf((i + _cnt) / 20.0f);
+			vert[i].position = v;
+		}
+		_cnt++;
+		DrawComp->UpdateVertices(vert);
 	}
 }

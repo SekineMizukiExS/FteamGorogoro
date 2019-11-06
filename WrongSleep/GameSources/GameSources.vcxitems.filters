@@ -72,6 +72,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)AreaBase.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)AreaBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)FutonVS.hlsl">

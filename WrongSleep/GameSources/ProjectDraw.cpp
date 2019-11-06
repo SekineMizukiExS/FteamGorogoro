@@ -124,11 +124,6 @@ namespace basecross
 
 	}
 
-	void AreaDraw::CreateMesh(const int&count,const int&distance)
-	{
-
-	}
-
 	void AreaDraw::UpdateParam(ParamCB &SetParam)
 	{
 		auto pD3D11DeviceContext = App::GetApp()->GetDeviceResources()->GetD3DDeviceContext();
