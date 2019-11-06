@@ -44,7 +44,8 @@ namespace basecross{
 	}
 
 	void Player::OnUpdate() {
-		GetMoveVector();
+		//GetMoveVector();
+		MovePlayer();
 	}
 
 

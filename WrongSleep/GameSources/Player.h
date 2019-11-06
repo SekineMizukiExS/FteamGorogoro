@@ -14,15 +14,20 @@ namespace basecross{
 //--------------------------------------//
 
 		// コントローラから方向ベクトルを得る
+		Vec2 GetInputState() const;
 		Vec3 GetMoveVector() const;
 		void MovePlayer();
 		//文字列の表示
 		void DrawStrings();
 
+
 		//コントローラの番号
 		const int m_cntlNum;
 		//操作系
 		Controller m_cntl;
+
+		//スピード
+		float m_Speed = 1;
 		//入力ハンドラー
 		InputHandler<Player> m_inputHandler;
 		wstring m_sharedName;

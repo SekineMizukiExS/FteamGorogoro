@@ -1,12 +1,12 @@
 /*!
-@file ProjectBehavior.h
-@brief ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½ï¿½`ï¿½Ìsï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½X
+@file ProjectBehavior.cpp
+@brief ƒvƒƒWƒFƒN’è‹`‚Ìs“®ƒNƒ‰ƒXÀ‘Ì
 */
 
 #pragma once
 #include "stdafx.h"
 
-//ï¿½è”ï¿½ï¿½`
+//????`
 #define INPUT_CODE_MOVE 0x10
 #define INPUT_CODE_ROT 0x20
 
@@ -18,12 +18,12 @@
 namespace basecross {
 	struct Controller
 	{
-		//ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½Xï¿½eï¿½Bï¿½bï¿½Nï¿½ï¿½ï¿½ï¿½
+		//?R???g???[???[?X?e?B?b?N????
 		float LX;
 		float LY;
 		float RX;
 		float RY;
-		//ï¿½{ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//?{?^??????
 		bool A;
 		bool B;
 		bool X;
@@ -49,15 +49,15 @@ namespace basecross {
 		{}
 	};
 	//-----------------------------------------------------------------------------------
-	///Areaï¿½pï¿½Ìsï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½X
+	///Area?p??s???N???X
 	//-----------------------------------------------------------------------------------
 	class AreaBehavior :public Behavior
 	{
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
-		@briefï¿½Rï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½Nï¿½^
-		@param[in] GameObject ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
+		@brief?R???X?g???N?^
+		@param[in] GameObject ?Q?[???I?u?W?F?N?g
 		!*/
 		//--------------------------------------------------------------------------------------
 		AreaBehavior(const shared_ptr<GameObject>&GameObjectPtr)
@@ -87,31 +87,31 @@ namespace basecross {
 
 	};
 	//--------------------------------------------------------------------------------------
-	///	ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½
+	///	?R???g???[????n???h??
 	//--------------------------------------------------------------------------------------
 	template<typename T>
 	struct InputHandler {
 		void PushHandle(int num, Controller& cntl) {
 
-			//ï¿½Lï¿½[ï¿½{ï¿½[ï¿½hï¿½Ìæ“¾
+			//?L?[?{?[?h??ï
 			auto keyState = App::GetApp()->GetInputDevice().GetKeyState();
 			if (keyState.m_bPushKeyTbl['W']) {
-				//ï¿½O
+				//?O
 				cntl.SetCntlLY(1.0f);
 				return;
 			}
 			else if (keyState.m_bPushKeyTbl['A']) {
-				//ï¿½ï¿½
+				//??
 				cntl.SetCntlLX(-1.0f);
 				return;
 			}
 			else if (keyState.m_bPushKeyTbl['S']) {
-				//ï¿½ï¿½ï¿½
+				//???
 				cntl.SetCntlLY(-1.0f);
 				return;
 			}
 			else if (keyState.m_bPushKeyTbl['D']) {
-			//	//ï¿½E
+			//	//?E
 				cntl.SetCntlLX(1.0f);
 				return;
 			}
@@ -119,13 +119,13 @@ namespace basecross {
 				cntl.SetCntlA();
 				return;
 			}
-			//ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ìæ“¾
+			//?R???g???[????ï
 			auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
 			if (cntlVec[num].bConnected) {
-				//Lï¿½Xï¿½eï¿½Bï¿½bï¿½N ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½
+				//L?X?e?B?b?N ???????v????
 				if (cntlVec[num].fThumbLX <= 0.5f || cntlVec[num].fThumbLX >= -0.5f ||
 					cntlVec[num].fThumbLY <= 0.5f || cntlVec[num].fThumbLY >= -0.5f) {
-					//ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ÌŒvï¿½Z
+					//?R???g???[?????????v?Z
 					cntl.LX = cntlVec[num].fThumbLX;
 					cntl.LY = cntlVec[num].fThumbLY;
 				}
@@ -133,7 +133,7 @@ namespace basecross {
 					cntl.LX = 0;
 					cntl.LY = 0;
 				}
-				//Rï¿½Xï¿½eï¿½bï¿½Nï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½
+				//R?X?e?b?N?@???????v????
 				if (cntlVec[num].fThumbRX <= 0.5f || cntlVec[num].fThumbRX >= -0.5f ||
 					cntlVec[num].fThumbRY <= 0.5f || cntlVec[num].fThumbRY >= -0.5f) {
 					cntl.RX = cntlVec[num].fThumbRX;
@@ -144,35 +144,35 @@ namespace basecross {
 					cntl.RY = 0;
 				}
 
-				//Aï¿½{ï¿½^ï¿½ï¿½
+				//A?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_A) {
 					cntl.A = true;
 				}
-				//Bï¿½{ï¿½^ï¿½ï¿½
+				//B?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_B) {
 					cntl.B = true;
 				}
-				//Xï¿½{ï¿½^ï¿½ï¿½
+				//X?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_X) {
 					cntl.X = true;
 				}
-				//Yï¿½{ï¿½^ï¿½ï¿½
+				//Y?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_Y) {
 					cntl.Y = true;
 				}
-				//LBï¿½{ï¿½^ï¿½ï¿½
+				//LB?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
 					cntl.LB = true;
 				}
-				//RBï¿½{ï¿½^ï¿½ï¿½
+				//RB?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 					cntl.RB = true;
 				}
-				//Startï¿½{ï¿½^ï¿½ï¿½
+				//Start?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_START) {
 					cntl.Start = true;
 				}
-				//Backï¿½{ï¿½^ï¿½ï¿½
+				//Back?{?^??
 				if (cntlVec[num].wPressedButtons & XINPUT_GAMEPAD_BACK) {
 					cntl.Back = true;
 				}
