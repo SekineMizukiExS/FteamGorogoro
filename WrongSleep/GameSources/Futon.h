@@ -16,7 +16,14 @@ namespace basecross
 
 		void OnCreate()override;
 		void OnUpdate()override;
-
+		//-----------------------------------------------------------
+		/*!
+		@brief メッシュ変形用関数
+		@return なし
+		@paramf[in]振幅、波長、周期
+		*/
+		//-----------------------------------------------------------
+		void MeshDeform(float amplitude, float period, float wavelength);;
 	private:
 		float _timef;
 		int _cnt;
