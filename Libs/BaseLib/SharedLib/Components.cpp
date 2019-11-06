@@ -177,6 +177,14 @@ namespace basecross {
 		SetScale(bsm::Vec3(x, y, z));
 	}
 
+	void Transform::RotateAround(const bsm::Vec3& point, bsm::Vec3& axis, float angle) {
+		Vec3 TempPivot = GetPivot();
+		SetPivot(point);
+		Quat q = Quat(axis, angle);
+		SetQuaternion(q);
+		SetPivot(TempPivot);
+	}
+
 	bsm::Vec3 Transform::GetPivot() const {
 		return pImpl->m_Pivot;
 	}
