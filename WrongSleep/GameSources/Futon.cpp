@@ -34,15 +34,40 @@ namespace basecross
 
 		m_State->Update();
 
-		auto mesh = DrawComp->GetMeshResource();
-		auto vert = mesh->GetBackupVerteces<VertexPositionNormalTexture>();
-		for (int i = 0; i < vert.size(); i++)
+		//auto mesh = DrawComp->GetMeshResource();
+		//auto vert = mesh->GetBackupVerteces<VertexPositionNormalTexture>();
+		//for (int i = 0; i < vert.size(); i++)
+		//{
+		//	auto v = vert[i].position;
+		//	v.y = PALSE * sinf((i + _cnt) / 20.0f);
+		//	vert[i].position = v;
+		//}
+		//_cnt++;
+		//DrawComp->UpdateVertices(vert);
+
+		MeshDeform(3.0f, 5.0f, 25.0f);
+	}
+
+	void Futon::MeshDeform(float amplitude, float period, float wavelength)
+	{
+		auto DrawComp = GetComponent<AreaDraw>();
+		auto TransComp = GetComponent<Transform>();
+		auto vertices = DrawComp->GetMeshResource()->GetBackupVerteces<VertexPositionNormalTexture>();
+		for (auto &v : vertices)
 		{
-			auto v = vert[i].position;
-			v.y = PALSE * sinf((i + _cnt) / 20.0f);
-			vert[i].position = v;
+			//”gŒ¹‚©‚ç‚ÌˆÊ’u
+			float x = v.position.x + TransComp->GetPosition().x;
+			float z = v.position.z + TransComp->GetPosition().z;
+			float r = sqrtf((x - 0)*(x - 0) + (z - 0)*(z - 0));
+
+			auto setv = v.position;
+			setv.x = x - TransComp->GetPosition().x;
+			setv.y = amplitude * sinf(2.0f*XM_PI*(_timef / period - r / wavelength));
+			setv.z = z - TransComp->GetPosition().z;
+			v.position = setv;
 		}
-		_cnt++;
-		DrawComp->UpdateVertices(vert);
+		_timef += App::GetApp()->GetElapsedTime();
+
+		DrawComp->UpdateVertices(vertices);
 	}
 }
