@@ -108,7 +108,48 @@ namespace basecross {
 	//------------------------------------
 	void AreaBehavior::InputController()
 	{
+		auto Device = App::GetApp()->GetInputDevice();
+		auto Controller = Device.GetControlerVec()[0];
 
+		float xAxis = 0.1f;
+		float zAxis = 0.1f;
+
+		if (Controller.bConnected)
+		{
+			xAxis = Controller.fThumbLX+0.1f;
+			zAxis = Controller.fThumbLY+0.1f;
+			Vec3 Axis(xAxis, 0, zAxis);
+			float angle = sqrtf(xAxis*xAxis + zAxis * zAxis);
+			auto TransComp = GetGameObject()->GetComponent<Transform>();
+			bsm::Quat Qt(Axis, angle);
+			TransComp->SetQuaternion(Qt);
+			return;
+		}
+
+		auto KeyState = Device.GetKeyState();
+		if (KeyState.m_bPushKeyTbl['W']) {
+			//‘O
+			xAxis = 1.0f;
+		}
+		else if (KeyState.m_bPushKeyTbl['S']) {
+			//¶
+			xAxis = -1.0f;
+		}
+		else if (KeyState.m_bPushKeyTbl['A']) {
+			//Œã‚ë
+			zAxis = 1.0f;
+		}
+		else if (KeyState.m_bPushKeyTbl['D']) {
+			//‰E
+			zAxis = -1.0f;
+		}
+
+		Vec3 Axis(xAxis, 0, zAxis);
+		float angle = sqrtf(xAxis*xAxis + zAxis * zAxis);
+		auto TransComp = GetGameObject()->GetComponent<Transform>();
+		bsm::Quat Qt(Axis, angle);
+		TransComp->SetQuaternion(Qt);
+		return;
 	}
 
 	//float AreaBehavior::ExeTime(float nowtime)

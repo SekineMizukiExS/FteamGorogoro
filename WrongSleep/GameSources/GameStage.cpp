@@ -54,22 +54,44 @@ namespace basecross {
 	void TestStage::CreateViewLight() {
 		const Vec3 eye[7] = { Vec3(0.0f, 5.0f, -5.0f),//標準位置
 							  Vec3(0.0f, 0.0f, -5.0f),
-							  Vec3(0.0f, 5.0f, 0.1f),
+							  Vec3(0.0f, 20.0f, 0.1f),
 							  Vec3(50.0f, 50.0f, -50.0f),
 							  Vec3(0.0f,15.0f,10.0f),
 							  Vec3(10.0f, 0.0f, -10.0f),
 							  Vec3(15.0f, 0.0f,-10.0f)};
 		const Vec3 at(0.0f);
-		auto PtrView = CreateView<SingleView>();
+		//viewポート設定
+		Viewport Main, Sub;
+		Main.TopLeftX = 0;
+		Main.TopLeftY = 0;
+		Main.Width = (float)App::GetApp()->GetGameWidth();
+		Main.Height = (float)App::GetApp()->GetGameHeight();
+		Main.MaxDepth = 1.0f;
+		Main.MinDepth = 0.0f;
+
+		Sub.TopLeftX = 1000;
+		Sub.TopLeftY = 700;
+		Sub.Width = 280;
+		Sub.Height = 100;
+		Sub.MaxDepth = 1.0f;
+		Sub.MinDepth = 0.0f;
+
+		_MView = CreateView <MultiView> ();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<Camera>();
-		PtrView->SetCamera(PtrCamera);
-		PtrCamera->SetEye(eye[5]);
+		_MView->AddView(Main,PtrCamera);
+		PtrCamera->SetEye(eye[3]);
 		PtrCamera->SetAt(at);
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
 		PtrMultiLight->SetDefaultLighting();
+
+		auto SubCamera = ObjectFactory::Create<Camera>();
+		_MView->AddView(Sub, SubCamera);
+		SubCamera->SetEye(eye[2]);
+		SubCamera->SetAt(at);
+
 	}
 
 	void TestStage::CreatePlayer() {

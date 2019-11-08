@@ -42,6 +42,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectDraw.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -71,8 +74,13 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectDraw.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)AreaBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)AreaBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)AreaBase.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

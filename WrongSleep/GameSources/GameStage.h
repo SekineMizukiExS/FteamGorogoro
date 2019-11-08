@@ -35,12 +35,19 @@ namespace basecross {
 		void CreatePlayer();
 
 		void DebugLine();
+
+		shared_ptr<MultiView>_MView;
 	public:
 		//\’z‚Æ”jŠü
 		TestStage() :Stage() {}
 		virtual ~TestStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+
+		shared_ptr<MultiView>GetMultiView()const
+		{
+			return _MView;
+		}
 	};
 }
 //end basecross
