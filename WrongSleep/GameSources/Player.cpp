@@ -79,7 +79,8 @@ namespace basecross{
 		Vec3 exam = Vec3(1, 0, 0);
 		Vec3 exPos(0, 0, 0);
 
-		transptr->RotateAroundQ(pivot, exam, m_time,tempQ,exPos);
+		//transptr->RotateAround(pivot, exam, m_time);
+		transptr->RotateAround(pivot, exam, m_time,tempQ,exPos);
 		//Tempbool = RotateAround(pivot, exam, m_time,transptr,Tempbool);
 
 		wstring tempQtx(L"tempQ: ");

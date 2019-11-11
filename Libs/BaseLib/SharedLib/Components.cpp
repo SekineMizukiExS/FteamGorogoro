@@ -219,72 +219,42 @@ namespace basecross {
 		SetRotation(bsm::Vec3(x, y, z));
 	}
 
+	//軸を変更して回転する関数
+	//引数少ないバージョン。うまくいかないので調整中
 	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle) {
-		Vec3 worldPos = GetPosition();
-		Quat q = q.rotation(axis,angle);
-		SetQuaternion(q);
+		Vec3 worldPos = GetWorldPosition();
+		Quat tempq = GetQuaternion();//取得しとかないと回転前の位置がわからない
+		Quat q = tempq.rotation(axis,angle);
+		//SetQuaternion(q);
+		//回転行列を算出します。
+		Mat3x3 rot = q.toRotMat();
+		//距離ベクトル
 		Vec3 dif = worldPos - point;
-		dif = q * dif;
-		//worldPos = point + dif;
-		//SetPosition(worldPos);
+		//ベクトルを指定方向に向ける
+		dif = rot * dif;
+		worldPos = point + dif;
+		SetWorldPosition(worldPos);
 
-
-		//Vec3 TempTPos = GetPosition();
-		//Vec3 PosDis = TempTPos - point;
-		//PosDis.normalize();
-
-		//double s;
-		//int deg;
-		//            Vector3 worldPos = position;
-  //          Quaternion q = Quaternion.AngleAxis(angle, axis);
-  //          Vector3 dif = worldPos - point;
-  //          dif = q * dif;
-  //          worldPos = point + dif;
-  //          position = worldPos;
-		//s = acos(PosDis.x / sqrt(PosDis.x*PosDis.x + PosDis.y * PosDis.y + PosDis.z * PosDis.z)); /*角度θを求める*/
-
-		//s = (s / 3.14)*180.0; /* ラジアンを度に変換 */
-
-		//if (PosDis.y < 0) /* θ＞πの時 */
-		//	s = 360 - s;
-
-		//deg = (int)floor(s);
-
-		//if ((s - deg) >= 0.5) /*小数点を四捨五入*/
-		//	deg++;
-
-		//return deg; /*角度θを返す*/
 	}
-
-	//Quat Quat::operator*(Vec3 v) {
-	//	Quat tempq = {};
-	//	tempq.x = ((0 * x) + ((-v.z) * x) + (v.y * x) + (v.x * x));
-	//	tempq.y = ((v.z * y) + (0 * y) + (-v.x * y) + (v.y * y));
-	//	tempq.z = ((-v.y * z)  + (v.x * z) + (0 * z) + (v.z * z));
-	//	tempq.w = ((-v.x * w) + (-v.y * w) + (-v.z * w) + (0 * w));
-	//	
-	//}
-
-
-
-	void Transform::RotateAroundQ(const bsm::Vec3& point, const bsm::Vec3& axis, float angle, bsm::Quat& quat, bsm::Vec3& pos) {
+	//引数多いバージョン。正確に動作するのでこちらを使ってください。
+	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle, bsm::Quat& quat, bsm::Vec3& pos) {
 		//Vec3 worldPos = GetWorldPosition();
 		Vec3 worldPos = pos;
 		Quat tempq = quat;
 		Quat q = tempq.rotation(axis, angle);
 		SetQuaternion(q);
+
 		//quat.rotation(axis, angle);
+
+		//回転行列を算出します。
 		Mat3x3 rot = q.toRotMat();
-		//マグニ(x *x + y * y + z * z)
+		//距離ベクトル
 		Vec3 dif = worldPos - point;
-		//float difLength = (dif.x * dif.x + dif.y * dif.y + dif.z * dif.z);
-		//Vec3 MGTQua(q.x * sin(q.w / 2), q.y * sin(q.w / 2), q.z * sin(q.w / 2));
-		//dif = MGTQua * dif;
-		
+		//ベクトルを指定方向に向ける
 		dif = rot * dif;
 		worldPos = point + dif;
 		SetWorldPosition(worldPos);
-	}
+	}	
 
 	bsm::Vec3 Transform::GetPosition() const {
 		return pImpl->m_Position;

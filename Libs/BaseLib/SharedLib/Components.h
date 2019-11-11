@@ -225,7 +225,7 @@ namespace basecross {
 		*/
 		//--------------------------------------------------------------------------------------
 		void RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle);
-		void RotateAroundQ(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,bsm::Quat& quat, bsm::Vec3& pos);
+		void RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,bsm::Quat& quat, bsm::Vec3& pos);
 		//--------------------------------------------------------------------------------------
 
 		/*!
