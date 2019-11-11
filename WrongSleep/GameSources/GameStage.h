@@ -25,6 +25,23 @@ namespace basecross {
 	};
 
 	//--------------------------------------------------------------------------------------
+	//StartStageクラス
+	//--------------------------------------------------------------------------------------
+	class StartStage :public Stage
+	{
+		//ビューの作成
+		void CreateViewLight();
+	public:
+		//構築と破棄
+		StartStage():Stage(){}
+		virtual ~StartStage(){}
+		//初期化
+		virtual void OnCreate()override;
+		//更新
+		virtual void OnUpdate()override;
+	};
+
+	//--------------------------------------------------------------------------------------
 	//	TestStageクラス
 	//--------------------------------------------------------------------------------------
 	class TestStage :public Stage
@@ -34,7 +51,7 @@ namespace basecross {
 		//プレイヤーの作成
 		void CreatePlayer();
 
-		void DebugLine();
+		void CreateStageObject();
 
 		shared_ptr<MultiView>_MView;
 	public:

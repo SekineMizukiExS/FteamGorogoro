@@ -39,6 +39,8 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Player.bmf");
 		App::GetApp()->RegisterResource(L"Player_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Mat.bmf",true);
+		App::GetApp()->RegisterResource(L"Mat_MD", modelMesh);
 
 	}
 
@@ -46,8 +48,12 @@ namespace basecross{
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
-		if (event->m_MsgStr == L"ToGameStage") {
+		if (event->m_MsgStr == L"ToStartStage") {
 			//最初のアクティブステージの設定
+			ResetActiveStage<StartStage>();
+		}
+		else if (event->m_MsgStr == L"ToGameStage")
+		{
 			ResetActiveStage<GameStage>();
 		}
 		else if (event->m_MsgStr == L"ToTestStage")

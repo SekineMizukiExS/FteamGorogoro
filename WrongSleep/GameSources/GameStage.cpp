@@ -47,6 +47,45 @@ namespace basecross {
 		}
 	}
 
+	//--------------------------------------------------------------------------------------
+	//	StartStageクラス実体
+	//--------------------------------------------------------------------------------------
+	void StartStage::CreateViewLight()
+	{
+		const Vec3 eye(0.0f, 5.0f, -5.0f);
+		const Vec3 at(0.0f);
+		auto PtrView = CreateView<SingleView>();
+		//ビューのカメラの設定
+		auto PtrCamera = ObjectFactory::Create<Camera>();
+		PtrView->SetCamera(PtrCamera);
+		PtrCamera->SetEye(eye);
+		PtrCamera->SetAt(at);
+		//マルチライトの作成
+		auto PtrMultiLight = CreateLight<MultiLight>();
+		//デフォルトのライティングを指定
+		PtrMultiLight->SetDefaultLighting();
+	}
+
+	void StartStage::OnCreate() {
+		try {
+			//ビューとライトの作成
+			CreateViewLight();
+		}
+		catch (...) {
+			throw;
+		}
+	}
+
+	void StartStage::OnUpdate()
+	{
+		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
+		if (Dev.m_bLastKeyTbl['S'])
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTestStage");
+		}
+	}
+
+	//!endStartStage
 
 	//--------------------------------------------------------------------------------------
 	//	TestStageクラス実体
@@ -100,6 +139,20 @@ namespace basecross {
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
+	}
+
+	void TestStage::CreateStageObject()
+	{
+		//ゲームオブジェクトビルダー
+		GameObjecttXMLBuilder Builder;
+		//ゲームオブジェクトの登録
+		Builder.Register<FixedObject>(L"FixedObject");
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		//XMLからゲームオブジェクトの構築
+		wstring XMLStr = DataDir+L"ObjectData/" + L"GameStageObject";
+		XMLStr += L".xml";
+		Builder.Build(GetThis<Stage>(), XMLStr, L"Stage1/GameObject");
 	}
 
 	void TestStage::OnCreate() {

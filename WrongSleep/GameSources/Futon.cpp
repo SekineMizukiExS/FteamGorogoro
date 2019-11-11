@@ -10,7 +10,7 @@ namespace basecross
 	void Futon::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
-		DrawComp->SetMeshResource(L"MatTest_MD");
+		DrawComp->SetMeshResource(L"Mat_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
 		DrawComp->SetDrawActive(true);
 		//auto TransComp = GetComponent<Transform>();
@@ -33,7 +33,7 @@ namespace basecross
 		//DrawComp->UpdateParam(temp);
 
 		m_State->Update();
-		auto TransComp = GetComponent<Transform>();
+		//auto TransComp = GetComponent<Transform>();
 		//auto mesh = DrawComp->GetMeshResource();
 		//auto vert = mesh->GetBackupVerteces<VertexPositionNormalTexture>();
 		//for (int i = 0; i < vert.size(); i++)
@@ -46,7 +46,7 @@ namespace basecross
 		//DrawComp->UpdateVertices(vert);
 
 		 MeshDeform(2.0f, 2.5f, 15.0f);
-		_timef += App::GetApp()->GetElapsedTime();
+		//_timef += App::GetApp()->GetElapsedTime();
 	}
 
 	void Futon::MeshDeform(float amplitude, float period, float wavelength)
@@ -68,7 +68,6 @@ namespace basecross
 			v.position = setv;
 		}
 		_timef += App::GetApp()->GetElapsedTime();
-
 		DrawComp->UpdateVertices(vertices);
 	}
 }
