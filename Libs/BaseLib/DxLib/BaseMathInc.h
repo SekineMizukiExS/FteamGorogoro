@@ -1269,6 +1269,14 @@ namespace bsm {
 	inline bool Quat::isInfinite() const {
 		return XMQuaternionIsInfinite(*this);
 	}
+	inline Mat3x3 Quat::toRotMat() const {
+		Mat3x3 xmv = {};
+		xmv.setMajor(0, Flt3((x*x)-(y*y)-(z*z)+(w*w),2*(x*y - z*w),2*(x*z + y*w)));
+		xmv.setMajor(1, Flt3(2 * (x*y + z * w), -(x*x) + (y*y) - (z*z) + (w*w), 2 * (y*z - x * w)));
+		xmv.setMajor(2, Flt3(2 * (x*z - y * w), 2 * (y*z + x * w), -(x*x) - (y*y) + (z*z) + (w*w)));
+
+		return xmv;
+	}
 
 
 

@@ -218,13 +218,16 @@ namespace basecross {
 		//--------------------------------------------------------------------------------------
 		void SetScale(float x, float y, float z);
 		//--------------------------------------------------------------------------------------
+
 		/*!
-		@brief	特定座標を中心に回転する
+@		brief	特定座標を中心に回転する
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
-		void RotateAround(const bsm::Vec3& point, bsm::Vec3& axis, float angle);
+		void RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle);
+		void RotateAroundQ(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,bsm::Quat& quat, bsm::Vec3& pos);
 		//--------------------------------------------------------------------------------------
+
 		/*!
 		@brief	重心を得る
 		@return	重心

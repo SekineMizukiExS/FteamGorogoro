@@ -25,7 +25,10 @@ namespace basecross{
 		const int m_cntlNum;
 		//操作系
 		Controller m_cntl;
-
+		bool Tempbool = false;
+		Vec3 TempPivot;
+		//時
+		float m_time = 0;
 		//スピード
 		float m_Speed = 1;
 		//入力ハンドラー
@@ -54,6 +57,16 @@ namespace basecross{
 		virtual void OnCreate() override;
 		//更新
 		virtual void OnUpdate() override;
+
+		void DebugLine();
+
+		/*!
+@brief	特定座標を中心に回転する
+@return	なし
+*/
+		//--------------------------------------------------------------------------------------
+		bool RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle, shared_ptr<Transform> tr,bool onoff);
+		//--------------------------------------------------------------------------------------
 	};
 
 }

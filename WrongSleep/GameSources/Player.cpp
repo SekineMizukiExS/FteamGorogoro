@@ -17,13 +17,18 @@ namespace basecross{
 	{}
 
 	void Player::OnCreate() {
+		auto ptrString = AddComponent<StringSprite>();
+		ptrString->SetText(L"");
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 50.0f, 320.0f, 360.0f));
+
 
 		auto ptr = AddComponent<Transform>();
 
 		ptr->SetScale(2.25f, 2.25f, 2.25f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(0, 0.125f, 0));
-		
+		//ptr->SetPivot(Vec3(0, 0, 0));
+		TempPivot = ptr->GetPivot();
 
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
@@ -43,9 +48,53 @@ namespace basecross{
 
 	}
 
+	void Player::DebugLine()
+	{
+
+
+	}
+
+	//bool Player::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,shared_ptr<Transform> tr,bool onoff) {
+	//	if (onoff) {
+	//		Vec3 TempPivot = tr->GetPivot();
+	//		tr->SetPivot(point);
+	//		Quat q = Quat(axis, angle);
+	//		tr->SetQuaternion(q);
+	//		//tr->SetRotation(axis);
+	//		return false;
+	//	}
+	//	else {
+	//		tr->SetPivot(TempPivot);
+	//		return true;
+	//	}
+	//}
+
 	void Player::OnUpdate() {
 		//GetMoveVector();
-		MovePlayer();
+		//MovePlayer();
+		m_time += 0.1;
+		auto transptr = GetComponent<Transform>();
+		Quat tempQ = transptr->GetQuaternion();
+		Vec3 pivot = Vec3(0, -2, 0);
+		Vec3 exam = Vec3(1, 0, 0);
+		Vec3 exPos(0, 0, 0);
+
+		transptr->RotateAroundQ(pivot, exam, m_time,tempQ,exPos);
+		//Tempbool = RotateAround(pivot, exam, m_time,transptr,Tempbool);
+
+		wstring tempQtx(L"tempQ: ");
+		tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
+		auto ptrString = GetComponent<StringSprite>();
+		ptrString->SetText(tempQtx);
+		
+		//Quat q = Quat(Vec3(0,0,1), m_time);
+
+		//transptr->SetQuaternion(q);
+
+		////transptr->(Vec3(0, 0, m_time));
+		//if (m_time >= 25) {
+		////	transptr->SetPivot(TempPivot);
+		//}
 	}
 
 
