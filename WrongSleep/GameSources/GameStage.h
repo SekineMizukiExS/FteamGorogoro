@@ -16,6 +16,7 @@ namespace basecross {
 		void CreateViewLight();
 		//プレイヤーの作成
 		void CreatePlayer();
+
 	public:
 		//構築と破棄
 		GameStage() :Stage() {}
@@ -35,6 +36,10 @@ namespace basecross {
 		void CreatePlayer();
 
 		void DebugLine();
+		//固定のボックスの作成
+		void CreateFixedBox();
+		//タイリングボックスの作成
+		void CreateTilingFixedBox();
 	public:
 		//構築と破棄
 		TestStage() :Stage() {}

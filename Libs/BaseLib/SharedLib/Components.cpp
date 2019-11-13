@@ -177,13 +177,7 @@ namespace basecross {
 		SetScale(bsm::Vec3(x, y, z));
 	}
 
-	void Transform::RotateAround(const bsm::Vec3& point, bsm::Vec3& axis, float angle) {
-		Vec3 TempPivot = GetPivot();
-		SetPivot(point);
-		Quat q = Quat(axis, angle);
-		SetQuaternion(q);
-		SetPivot(TempPivot);
-	}
+
 
 	bsm::Vec3 Transform::GetPivot() const {
 		return pImpl->m_Pivot;
@@ -224,6 +218,70 @@ namespace basecross {
 	void Transform::SetRotation(float x, float y, float z) {
 		SetRotation(bsm::Vec3(x, y, z));
 	}
+
+	//軸を変更して回転する関数
+	//引数少ないバージョン 現在の位置を取得してangle分回すので、angleを増やすと回転量がどんどん大きくなるので注意。
+	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle) {
+		Vec3 worldPos = GetWorldPosition();
+		//Vec3 worldPos = pos;
+		Quat tempq(axis, -angle);
+		//Quat q = tempq.rotation(axis, -angle);
+		//quat.rotation(axis, angle);
+		Quat q = tempq;
+
+		//回転行列を算出します。
+		Mat3x3 rot = tempq.toRotMat();
+		//距離ベクトル
+		Vec3 dif = worldPos - point;
+		//ベクトルを指定方向に向ける
+		dif = rot * dif;
+		worldPos = point + dif;
+		SetWorldPosition(worldPos);
+
+		q = tempq.rotation(axis, angle);
+		SetQuaternion(q);
+	}
+	//引数4つバージョン。正確に動作するのでこちらを使ってください。
+	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,bsm::Vec3& pos) {
+		//Vec3 worldPos = GetWorldPosition();
+		Vec3 worldPos = pos;
+		Quat tempq(axis, -angle);
+		Quat q = tempq.rotation(axis, -angle);
+		//quat.rotation(axis, angle);
+
+		//回転行列を算出します。
+		Mat3x3 rot = q.toRotMat();
+		//距離ベクトル
+		Vec3 dif = worldPos - point;
+		//ベクトルを指定方向に向ける
+		dif = rot * dif;
+		worldPos = point + dif;
+		SetWorldPosition(worldPos);
+
+		Quat nowQ = GetQuaternion();
+		q = nowQ.rotation(axis, angle);
+		SetQuaternion(q);
+	}
+	//引数多いバージョン。正確に動作するのでこちらを使ってください。
+	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle, bsm::Quat& quat, bsm::Vec3& pos) {
+		//Vec3 worldPos = GetWorldPosition();
+		Vec3 worldPos = pos;
+		Quat tempq(axis,-angle);
+		Quat q = tempq.rotation(axis, -angle);
+		//quat.rotation(axis, angle);
+
+		//回転行列を算出します。
+		Mat3x3 rot = q.toRotMat();
+		//距離ベクトル
+		Vec3 dif = worldPos - point;
+		//ベクトルを指定方向に向ける
+		dif = rot * dif;
+		worldPos = point + dif;
+		SetWorldPosition(worldPos);
+		
+		q = tempq.rotation(axis, angle);
+		SetQuaternion(q);
+	}	
 
 	bsm::Vec3 Transform::GetPosition() const {
 		return pImpl->m_Position;
