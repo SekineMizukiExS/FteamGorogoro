@@ -244,8 +244,12 @@ namespace basecross {
 	//引数4つバージョン。正確に動作するのでこちらを使ってください。
 	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,bsm::Vec3& pos) {
 		//Vec3 worldPos = GetWorldPosition();
+
+		//回転開始位置
 		Vec3 worldPos = pos;
+		//クォータニオン作成
 		Quat tempq(axis, -angle);
+		//回転角度を作成
 		Quat q = tempq.rotation(axis, -angle);
 		//quat.rotation(axis, angle);
 
@@ -255,7 +259,9 @@ namespace basecross {
 		Vec3 dif = worldPos - point;
 		//ベクトルを指定方向に向ける
 		dif = rot * dif;
+		//回転の中心とベクトルを足して位置を算出する。
 		worldPos = point + dif;
+		//算出した座標に移動
 		SetWorldPosition(worldPos);
 
 		Quat nowQ = GetQuaternion();
