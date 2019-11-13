@@ -41,7 +41,8 @@ namespace basecross{
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"Player_MD");
+		//ptrDraw->SetMeshResource(L"Player_MD");
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetFogEnabled(true);
 		//描画するテクスチャを設定
 		//ptrDraw->SetTextureResource(L"TRACE_TX");
@@ -121,16 +122,16 @@ namespace basecross{
 		auto inPut = GetInputState();
 		float moveX = inPut.x;
 		float moveZ = inPut.y;
-		//Vec3 nowPos = transptr->GetPosition();
+		Vec3 nowPos = transptr->GetPosition();
 		//==========================Unity移植文========================
 					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
 			//回転中は入力を受け付けない
 		if (isRotate) {
 			if (m_time <= 0.25f * XM_2PI) {
-				m_time += 0.1f;
+				m_time += 0.05f * XM_2PI;
 				pivot = rotatePoint;
 				exam = rotateAxis;
-				transptr->RotateAround(pivot, exam, m_time, nowPos);
+				transptr->RotateAround(pivot, exam, 0.05f * XM_2PI, nowPos);
 			}
 			else {
 
@@ -143,31 +144,33 @@ namespace basecross{
 		{
 			nowPos = transptr->GetWorldPosition();
 			rotatePoint = nowPos + Vec3(0.5f, -0.5f, 0.0f);
-			rotateAxis = Vec3(0, 0, -1);
+			rotateAxis = Vec3(0, 0, 1);
 			isRotate = true;
 		}
 		else if (moveX < 0)
 		{
 			nowPos = transptr->GetWorldPosition();
 			rotatePoint = nowPos + Vec3(-0.5f, -0.5f, 0.0f);
-			rotateAxis = Vec3(0, 0, 1);
+			rotateAxis = Vec3(0, 0, -1);
 			isRotate = true;
 		}
 		else if (moveZ > 0)
 		{
 			nowPos = transptr->GetWorldPosition();
 			rotatePoint = nowPos + Vec3(0.0f, -0.5f, 0.5f);
-			rotateAxis = Vec3(1, 0, 0);
+			rotateAxis = Vec3(-1, 0, 0);
 			isRotate = true;
 		}
 		else if (moveZ < 0)
 		{
 			nowPos = transptr->GetWorldPosition();
 			rotatePoint = nowPos + Vec3(0.0f, -0.5f, -0.5f);
-			rotateAxis = Vec3(-1, 0, 0);
+			rotateAxis = Vec3(1, 0, 0);
 			isRotate = true;
 		}
 		else {
+			nowPos = transptr->GetWorldPosition();
+			transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
 			isRotate = false;
 		}
 

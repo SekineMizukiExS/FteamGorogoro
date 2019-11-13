@@ -37,7 +37,7 @@ namespace basecross{
 
 		auto modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"MatTest.bmf",true);
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
-		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Player.bmf");
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"PlayerModel.bmf");
 		App::GetApp()->RegisterResource(L"Player_MD", modelMesh);
 
 	}

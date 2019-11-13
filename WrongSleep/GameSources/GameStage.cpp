@@ -141,7 +141,7 @@ namespace basecross {
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<Camera>();
 		PtrView->SetCamera(PtrCamera);
-		PtrCamera->SetEye(eye[0]);
+		PtrCamera->SetEye(eye[6]);
 		PtrCamera->SetAt(at);
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
@@ -163,7 +163,7 @@ namespace basecross {
 			CreateViewLight();
 			//AddGameObject<GameManager>();
 			//AddGameObject<Futon>();
-			CreateFixedBox();
+			//CreateFixedBox();
 			CreateTilingFixedBox();
 			CreatePlayer();
 		}

@@ -248,9 +248,9 @@ namespace basecross {
 		//回転開始位置
 		Vec3 worldPos = pos;
 		//クォータニオン作成
-		Quat tempq(axis, -angle);
+		Quat tempq(axis, angle);
 		//回転角度を作成
-		Quat q = tempq.rotation(axis, -angle);
+		Quat q = tempq;
 		//quat.rotation(axis, angle);
 
 		//回転行列を算出します。
@@ -264,16 +264,24 @@ namespace basecross {
 		//算出した座標に移動
 		SetWorldPosition(worldPos);
 
+		Quat bodyQ(axis, -angle);
 		Quat nowQ = GetQuaternion();
-		q = nowQ.rotation(axis, angle);
-		SetQuaternion(q);
+		nowQ *= bodyQ;
+		SetQuaternion(nowQ);
+
+		//q = nowQ.facing(dif.normalize());
+		//nowQ.rotation(axis, angle);
+		//q = nowQ.rotation(axis, angle);
+		//SetQuaternion(q);
 	}
+
+
 	//引数多いバージョン。正確に動作するのでこちらを使ってください。
 	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle, bsm::Quat& quat, bsm::Vec3& pos) {
 		//Vec3 worldPos = GetWorldPosition();
 		Vec3 worldPos = pos;
-		Quat tempq(axis,-angle);
-		Quat q = tempq.rotation(axis, -angle);
+		Quat tempq(axis,angle);
+		Quat q = tempq;
 		//quat.rotation(axis, angle);
 
 		//回転行列を算出します。
@@ -285,9 +293,12 @@ namespace basecross {
 		worldPos = point + dif;
 		SetWorldPosition(worldPos);
 		
-		q = tempq.rotation(axis, angle);
+		Quat nowQ = GetQuaternion();
+
+		q = nowQ.rotation(axis, angle);
 		SetQuaternion(q);
 	}	
+
 
 	bsm::Vec3 Transform::GetPosition() const {
 		return pImpl->m_Position;
