@@ -10,14 +10,18 @@ namespace basecross{
 	FixedObject::FixedObject(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
 		:GameObject(stage)
 	{
-		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"Mesh");
-		auto TexStr = XmlDocReader::GetAttribute(pNode, L"Tex");
-		auto PositionStr = XmlDocReader::GetAttribute(pNode, L"Pos");
-		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
-		auto RotetaStr = XmlDocReader::GetAttribute(pNode, L"Rot");
+		//auto MeshStr = XmlDocReader::GetAttribute(pNode, L"Mesh");
+		//auto TexStr = XmlDocReader::GetAttribute(pNode, L"Tex");
+		auto PositionNode = XmlDocReader::GetSelectSingleNode(pNode, L"Pos");
+		auto ScaleNode = XmlDocReader::GetSelectSingleNode(pNode, L"Scale");
+		auto RotetaNode = XmlDocReader::GetSelectSingleNode(pNode, L"Rot");
+
+		wstring PositionStr = XmlDocReader::GetText(PositionNode);
+		wstring ScaleStr = XmlDocReader::GetText(ScaleNode);
+		wstring RotetaStr = XmlDocReader::GetText(RotetaNode);
 
 		//メッシュ
-		_MeshKey = MeshStr;
+		//_MeshKey = MeshStr;
 
 		//トークン（カラム）の配列
 		vector<wstring> Tokens;
@@ -47,16 +51,16 @@ namespace basecross{
 		_Rot.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
 		_Rot.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
 
-		_TexKey = TexStr;
+		//_TexKey = TexStr;
 	}
 
 	void FixedObject::OnCreate()
 	{
-		auto DrawComp = AddComponent<PNTStaticDraw>();
+		auto DrawComp = AddComponent<AreaDraw>();
 		auto TransComp = AddComponent<Transform>();
 
-		DrawComp->SetMeshResource(_MeshKey);
-		DrawComp->SetTextureResource(_TexKey);
+		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
+		DrawComp->SetTextureResource(L"Test_TX");
 
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);

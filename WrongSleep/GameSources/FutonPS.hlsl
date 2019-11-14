@@ -6,7 +6,8 @@ SamplerState s_MainSamp : register(s0);
 
 float4 main(FutonPS input):SV_TARGET
 {
-    float4 Mc = g_MainTex.Sample(s_MainSamp, input.tex);
-
-    return Mc;
+    float4 result = float4(1, 1, 1, 1);
+    if(Activeflags.x==1)
+        result = g_MainTex.Sample(s_MainSamp, input.tex);
+    return result;
 }

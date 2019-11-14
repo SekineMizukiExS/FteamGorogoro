@@ -1,4 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<TestStage>
-  <GameObject Type="FixedObject" Mesh ="Test_MD" Tex="SKY_TX" Pos="0,-0.5,0" Scale="50,1,50" Rot="0,0,0"/>
-</TestStage>

@@ -92,9 +92,9 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void TestStage::CreateViewLight() {
 		const Vec3 eye[7] = { Vec3(0.0f, 5.0f, -5.0f),//標準位置
-							  Vec3(0.0f, 0.0f, -5.0f),
+							  Vec3(0.0f, 0.0f, -30.0f),
 							  Vec3(0.0f, 20.0f, 0.1f),
-							  Vec3(50.0f, 50.0f, -50.0f),
+							  Vec3(0.0f, 50.0f, -120.0f),
 							  Vec3(0.0f,15.0f,10.0f),
 							  Vec3(10.0f, 0.0f, -10.0f),
 							  Vec3(15.0f, 0.0f,-10.0f)};
@@ -128,7 +128,7 @@ namespace basecross {
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
 		_MView->AddView(Sub, SubCamera);
-		SubCamera->SetEye(eye[2]);
+		SubCamera->SetEye(eye[1]);
 		SubCamera->SetAt(at);
 
 	}
@@ -150,18 +150,20 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"GameStageObject";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"TestStage";
 		XMLStr += L".xml";
-		Builder.Build(GetThis<Stage>(), XMLStr, L"Stage1/GameObject");
+		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/st/objects/Object");
 	}
 
 	void TestStage::OnCreate() {
 		try {
 			//ビューとライトの作成
+			SetPhysicsActive(true);
 			CreateViewLight();
+			CreateStageObject();
 			AddGameObject<GameManager>();
-			AddGameObject<Futon>();
-			CreatePlayer();
+			//AddGameObject<Futon>();
+			//CreatePlayer();
 		}
 		catch (...) {
 			throw;

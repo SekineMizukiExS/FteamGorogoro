@@ -13,9 +13,18 @@ namespace basecross
 		DrawComp->SetMeshResource(L"Mat_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
 		DrawComp->SetDrawActive(true);
-		//auto TransComp = GetComponent<Transform>();
+		auto TransComp = GetComponent<Transform>();
 		//TransComp->SetPosition(0, 0, 0);
-
+		//TransComp->SetScale(20, 1, 20);
+		//物理判定
+		//auto ColComp = AddComponent<CollisionObb>();
+		//ColComp->SetFixed(true);
+		//auto meshmat = DrawComp->GetMeshResource()->GetMeshToTransformMatrix();
+		//auto now = TransComp->GetWorldMatrix()*meshmat;
+		//PsBoxParam st(now,1.0f, false, PsMotionType::MotionTypeFixed);
+		//auto RB = AddComponent<RigidbodyBox>(st);
+		//RB->SetAutoTransform(false);
+		//RB->SetDrawActive(true);
 		//最初のステート設定
 		m_State.reset(new StateMachine<AreaBase>(GetThis<AreaBase>()));
 
