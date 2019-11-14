@@ -19,7 +19,7 @@ namespace basecross
 
 	void SelectAIState::Execute(const shared_ptr<AreaBase>&Obj)
 	{
-		Obj->GetBehavior<AreaBehavior>()->SetInputCode(INPUT_CODE_ROT);
+		//Obj->GetBehavior<AreaBehavior>()->SetInputCode(INPUT_CODE_ROT);
 		//Obj->GetBehavior<AreaBehavior>()->SetInputCode(INPUT_CODE_MOVE);
 	}
 
@@ -40,7 +40,7 @@ namespace basecross
 
 	void Select2PState::Execute(const shared_ptr<AreaBase>&Obj)
 	{
-
+		Obj->GetBehavior<AreaBehavior>()->SetInputCode(INPUT_CODE_HUMAN);
 	}
 
 	void Select2PState::Exit(const shared_ptr<AreaBase>&Obj)

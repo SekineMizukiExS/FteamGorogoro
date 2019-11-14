@@ -16,6 +16,8 @@
 #include "Player.h"
 
 //TODO’Ç‰Áƒwƒbƒ_[
+#include "EnemyBase.h"
+
 #include "AreaBase.h"
 #include "Futon.h"
 

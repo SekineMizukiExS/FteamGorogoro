@@ -10,12 +10,21 @@ namespace basecross
 	void Futon::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
-		DrawComp->SetMeshResource(L"MatTest_MD");
+		DrawComp->SetMeshResource(L"Mat_MD");
 		DrawComp->SetTextureResource(L"Test_TX");
-
+		DrawComp->SetDrawActive(true);
 		auto TransComp = GetComponent<Transform>();
-		TransComp->SetPosition(0, 0, 0);
-
+		//TransComp->SetPosition(0, 0, 0);
+		//TransComp->SetScale(20, 1, 20);
+		//物理判定
+		//auto ColComp = AddComponent<CollisionObb>();
+		//ColComp->SetFixed(true);
+		//auto meshmat = DrawComp->GetMeshResource()->GetMeshToTransformMatrix();
+		//auto now = TransComp->GetWorldMatrix()*meshmat;
+		//PsBoxParam st(now,1.0f, false, PsMotionType::MotionTypeFixed);
+		//auto RB = AddComponent<RigidbodyBox>(st);
+		//RB->SetAutoTransform(false);
+		//RB->SetDrawActive(true);
 		//最初のステート設定
 		m_State.reset(new StateMachine<AreaBase>(GetThis<AreaBase>()));
 
@@ -33,7 +42,7 @@ namespace basecross
 		//DrawComp->UpdateParam(temp);
 
 		m_State->Update();
-
+		//auto TransComp = GetComponent<Transform>();
 		//auto mesh = DrawComp->GetMeshResource();
 		//auto vert = mesh->GetBackupVerteces<VertexPositionNormalTexture>();
 		//for (int i = 0; i < vert.size(); i++)
@@ -45,7 +54,8 @@ namespace basecross
 		//_cnt++;
 		//DrawComp->UpdateVertices(vert);
 
-		MeshDeform(3.0f, 5.0f, 25.0f);
+		 MeshDeform(2.0f, 2.5f, 15.0f);
+		//_timef += App::GetApp()->GetElapsedTime();
 	}
 
 	void Futon::MeshDeform(float amplitude, float period, float wavelength)
@@ -67,7 +77,6 @@ namespace basecross
 			v.position = setv;
 		}
 		_timef += App::GetApp()->GetElapsedTime();
-
 		DrawComp->UpdateVertices(vertices);
 	}
 }

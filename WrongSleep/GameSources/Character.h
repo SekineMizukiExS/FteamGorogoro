@@ -46,12 +46,24 @@ namespace basecross{
 			const Vec3& Rotation,
 			const Vec3& Position
 		);
+		
+		FixedObject(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
+
 		virtual ~FixedBox();
 		//‰Šú‰»
 		virtual void OnCreate() override;
 		//‘€ì
 	};
 
+		void OnCreate()override;
+
+	private:
+		wstring _MeshKey;
+		Vec3 _Pos;
+		Vec3 _Scal;
+		Vec3 _Rot;
+		wstring _TexKey;
+	};
 
 }
 //end basecross
