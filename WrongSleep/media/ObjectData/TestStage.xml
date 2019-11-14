@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <st>
+    <objects>
+      <Object Type="FixedObject">
+        <Pos>0.41,0,-40.26</Pos>
+        <Scale>99.99,1,18.48</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>18,0,-12.029</Pos>
+        <Scale>22.608,1,37.9724</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>-10.16,0,16.15</Pos>
+        <Scale>78.9921,1,19.41139</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>-37.36,0,37.44</Pos>
+        <Scale>24.41664,1,23.54289</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+    </objects>
+  </st>
+</root>

@@ -10,7 +10,7 @@ cbuffer AreaCB:register(b0)
     float4 Emissive : packoffset(c12);
     float4 Diffuse : packoffset(c13);
     float4 LightDir : packoffset(c14);
-    uint4 Activeflags : packoffset(c17); //フラグ
+    uint4 Activeflags : packoffset(c15); //フラグ
 };
 
 //各種パラメータ

@@ -27,6 +27,6 @@ namespace basecross
 	private:
 		float _timef;
 		int _cnt;
-		const float PALSE = 1.0f;
+		const float PALSE = 2.0f;
 	};
 }
