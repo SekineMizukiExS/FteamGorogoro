@@ -221,7 +221,7 @@ namespace basecross {
 		//ゲームオブジェクトビルダー
 		GameObjecttXMLBuilder Builder;
 		//ゲームオブジェクトの登録
-		Builder.Register<FixedObject>(L"FixedObject");
+		Builder.Register<StageObjects>(L"FixedObject");
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築

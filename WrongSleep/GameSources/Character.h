@@ -7,9 +7,27 @@
 #include "stdafx.h"
 
 namespace basecross{
+	//-------------------------------------------------------------------------------------
+	//ステージ作成用クラス
+	//-------------------------------------------------------------------------------------
+	class StageObjects :public GameObject
+	{
+	public:
+		StageObjects(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
+
+		virtual void OnCreate() override;
+
+	private:
+		wstring _MeshKey;
+		Vec3 _Pos;
+		Vec3 _Scal;
+		Vec3 _Rot;
+		wstring _TexKey;
+	};
+
 	//--------------------------------------------------------------------------------------
-//　タイリングする固定のボックス
-//--------------------------------------------------------------------------------------
+	//　タイリングする固定のボックス
+	//--------------------------------------------------------------------------------------
 	class TilingFixedBox : public GameObject {
 		Vec3 m_Scale;
 		Vec3 m_Rotation;
@@ -33,12 +51,13 @@ namespace basecross{
 
 
 	//--------------------------------------------------------------------------------------
-//	class FixedBox : public GameObject;
-//--------------------------------------------------------------------------------------
+	//	class FixedBox : public GameObject;
+	//--------------------------------------------------------------------------------------
 	class FixedBox : public GameObject {
 		Vec3 m_Scale;
 		Vec3 m_Rotation;
 		Vec3 m_Position;
+		wstring _TexKey;
 	public:
 		//構築と破棄
 		FixedBox(const shared_ptr<Stage>& StagePtr,
@@ -46,24 +65,11 @@ namespace basecross{
 			const Vec3& Rotation,
 			const Vec3& Position
 		);
-		
-		FixedObject(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
 
 		virtual ~FixedBox();
 		//初期化
 		virtual void OnCreate() override;
 		//操作
 	};
-
-		void OnCreate()override;
-
-	private:
-		wstring _MeshKey;
-		Vec3 _Pos;
-		Vec3 _Scal;
-		Vec3 _Rot;
-		wstring _TexKey;
-	};
-
 }
 //end basecross

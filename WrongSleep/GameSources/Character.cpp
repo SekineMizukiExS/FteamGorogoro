@@ -7,7 +7,9 @@
 #include "Project.h"
 
 namespace basecross{
-	FixedObject::FixedObject(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
+	//ステージ作成用クラス
+
+	StageObjects::StageObjects(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
 		:GameObject(stage)
 	{
 		//auto MeshStr = XmlDocReader::GetAttribute(pNode, L"Mesh");
@@ -54,7 +56,7 @@ namespace basecross{
 		//_TexKey = TexStr;
 	}
 
-	void FixedObject::OnCreate()
+	void StageObjects::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
 		auto TransComp = AddComponent<Transform>();
@@ -127,8 +129,8 @@ namespace basecross{
 
 
 	//--------------------------------------------------------------------------------------
-//	class FixedBox : public GameObject;
-//--------------------------------------------------------------------------------------
+	//	class FixedBox : public GameObject;
+	//--------------------------------------------------------------------------------------
 //構築と破棄
 	FixedBox::FixedBox(const shared_ptr<Stage>& StagePtr,
 		const Vec3& Scale,
