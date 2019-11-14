@@ -128,10 +128,11 @@ namespace basecross{
 			//‰ñ“]’†‚Í“ü—Í‚ðŽó‚¯•t‚¯‚È‚¢
 		if (isRotate) {
 			if (m_time <= 0.25f * XM_2PI) {
-				m_time += 0.05f * XM_2PI;
+				
 				pivot = rotatePoint;
 				exam = rotateAxis;
 				transptr->RotateAround(pivot, exam, 0.05f * XM_2PI, nowPos);
+				m_time += 0.05f * XM_2PI;
 			}
 			else {
 
