@@ -25,7 +25,7 @@ namespace basecross{
 
 		auto ptr = AddComponent<Transform>();
 
-		ptr->SetScale(1.0f, 1.0f, 1.0f);	//íºåa225ÉZÉìÉ`ÇÃãÖëÃ
+		ptr->SetScale(1.0f, 2.0f, 2.0f);	//íºåa225ÉZÉìÉ`ÇÃãÖëÃ
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(0.5f, 0.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
@@ -79,19 +79,19 @@ namespace basecross{
 
 		if (m_time <= 0.25f * XM_2PI && m_reverse == false) {
 			m_time += 0.01;
-				
+
 		}
 		else {
 			m_reverse = true;
 		}
-		
+
 		if (m_time >= 0 && m_reverse == true) {
 			m_time -= 0.01;
 		}
 		else {
 			m_reverse = false;
 		}
-		
+
 
 		auto transptr = GetComponent<Transform>();
 		Quat tempQ = transptr->GetQuaternion();
@@ -108,7 +108,7 @@ namespace basecross{
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
 		//auto ptrString = GetComponent<StringSprite>();
 		//ptrString->SetText(tempQtx);
-		
+
 		//Quat q = Quat(Vec3(0,0,1), m_time);
 
 		//transptr->SetQuaternion(q);
@@ -123,12 +123,14 @@ namespace basecross{
 		float moveX = inPut.x;
 		float moveZ = inPut.y;
 		Vec3 nowPos = transptr->GetPosition();
+
+
 		//==========================Unityà⁄êAï∂========================
 					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
 			//âÒì]íÜÇÕì¸óÕÇéÛÇØïtÇØÇ»Ç¢
 		if (isRotate) {
-			if (m_time <= 0.25f * XM_2PI) {
-				
+			if (m_time < 0.25f * XM_2PI) {
+
 				pivot = rotatePoint;
 				exam = rotateAxis;
 				transptr->RotateAround(pivot, exam, 0.05f * XM_2PI, nowPos);
@@ -141,31 +143,41 @@ namespace basecross{
 
 			}
 
-		}else if (moveX > 0)
+			//pivot = rotatePoint;
+			//exam = rotateAxis;
+			//transptr->RotateAround(pivot, exam, 0.25f * XM_2PI, nowPos);
+			//isRotate = false;
+
+		}
+		else if (moveX > 0)
 		{
+			GetQuadroEdge();
 			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(0.5f, -0.5f, 0.0f);
+			rotatePoint = nowPos + Vec3(xHalfSize, yHalfSize, 0.0f);
 			rotateAxis = Vec3(0, 0, 1);
 			isRotate = true;
 		}
 		else if (moveX < 0)
 		{
+			GetQuadroEdge();
 			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(-0.5f, -0.5f, 0.0f);
+			rotatePoint = nowPos + Vec3(-xHalfSize, yHalfSize, 0.0f);
 			rotateAxis = Vec3(0, 0, -1);
 			isRotate = true;
 		}
 		else if (moveZ > 0)
 		{
+			GetQuadroEdge();
 			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(0.0f, -0.5f, 0.5f);
+			rotatePoint = nowPos + Vec3(0.0f, yHalfSize, zHalfSize);
 			rotateAxis = Vec3(-1, 0, 0);
 			isRotate = true;
 		}
 		else if (moveZ < 0)
 		{
+			GetQuadroEdge();
 			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(0.0f, -0.5f, -0.5f);
+			rotatePoint = nowPos + Vec3(0.0f, yHalfSize, -zHalfSize);
 			rotateAxis = Vec3(1, 0, 0);
 			isRotate = true;
 		}
@@ -174,8 +186,40 @@ namespace basecross{
 			transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
 			isRotate = false;
 		}
+	}
 
-		
+
+	void Player::GetQuadroEdge() {
+		auto ptrDraw = GetComponent<BcPNTStaticDraw>();
+		auto ptrTrans = GetComponent<Transform>();
+		auto mesh = ptrDraw->GetMeshResource();
+		vector<VertexPosition> verteces = mesh->GetVerteces();
+		xHalfSize = 0;
+		yHalfSize = 0;
+		zHalfSize = 0;
+		for each (auto verPos in verteces)
+		{
+
+			float x = verPos.position.getX();
+			float y = verPos.position.getY();
+			float z = verPos.position.getZ();
+			if (x >= xHalfSize) {
+				xHalfSize = x;
+			}
+			if (z >= zHalfSize) {
+				zHalfSize = z;
+			}
+
+			//íÍñ Ç≈è„èëÇ´ÇµÇƒÇ¢Ç≠
+			if (y <= yHalfSize) {
+				yHalfSize = y;
+			}
+			
+		}
+		xHalfSize *= ptrTrans->GetScale().getX();
+		yHalfSize *= ptrTrans->GetScale().getY();
+		zHalfSize *= ptrTrans->GetScale().getZ();
+	}
 		//else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis("Horizontal") <= -0.1f)
 		//{
 		//	rotatePoint = transform.position + new Vector3(-cubeSizeHalf, -cubeSizeHalf, 0f);
@@ -195,7 +239,7 @@ namespace basecross{
 		//if (rotatePoint == Vec3(0, 0, 0))
 		//	return;
 		//MoveCube();
-	}
+}
 
 
 
@@ -250,7 +294,5 @@ namespace basecross{
 
 
 
-
-}
 //end basecross
 

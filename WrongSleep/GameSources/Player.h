@@ -56,6 +56,10 @@ namespace basecross{
 		Vec3 rotatePoint = Vec3(0, 0, 0);
 		Vec3 rotateAxis = Vec3(0, 0, 0);
 
+		//
+		float xHalfSize = 0;
+		float yHalfSize = 0;
+		float zHalfSize = 0;
 
 
 	public:
@@ -74,6 +78,8 @@ namespace basecross{
 		virtual void OnUpdate() override;
 
 		void DebugLine();
+
+		void GetQuadroEdge();
 
 		/*!
 @brief	“Á’èÀ•W‚ğ’†S‚É‰ñ“]‚·‚é
