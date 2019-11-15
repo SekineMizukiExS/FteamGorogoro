@@ -24,14 +24,12 @@ namespace basecross{
 
 
 		auto ptr = AddComponent<Transform>();
+		//auto rigidbody = AddComponent<Rigidbody>();
 
 		ptr->SetScale(5.0f, 5.0f, 5.0f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(0.5f, 2.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
-		TempPivot = ptr->GetPivot();
-
-		cubeSizeHalf = 2.25 / 2.0f;
 
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
@@ -48,8 +46,6 @@ namespace basecross{
 		//ptrDraw->SetTextureResource(L"TRACE_TX");
 		//SetAlphaActive(true);
 
-
-
 	}
 
 	void Player::DebugLine()
@@ -58,51 +54,11 @@ namespace basecross{
 
 	}
 
-	//bool Player::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle,shared_ptr<Transform> tr,bool onoff) {
-	//	if (onoff) {
-	//		Vec3 TempPivot = tr->GetPivot();
-	//		tr->SetPivot(point);
-	//		Quat q = Quat(axis, angle);
-	//		tr->SetQuaternion(q);
-	//		//tr->SetRotation(axis);
-	//		return false;
-	//	}
-	//	else {
-	//		tr->SetPivot(TempPivot);
-	//		return true;
-	//	}
-	//}
-
 	void Player::OnUpdate() {
 		//GetMoveVector();
 		//MovePlayer();
 
-		if (m_time <= 0.25f * XM_2PI && m_reverse == false) {
-			m_time += 0.01;
-
-		}
-		else {
-			m_reverse = true;
-		}
-
-		if (m_time >= 0 && m_reverse == true) {
-			m_time -= 0.01;
-		}
-		else {
-			m_reverse = false;
-		}
-
-
 		auto transptr = GetComponent<Transform>();
-		Quat tempQ = transptr->GetQuaternion();
-		Vec3 pivot = Vec3(0, 0.0f, 0.0f);
-		Vec3 exam = Vec3(0, 0, 1);
-		Vec3 exPos(0.5f, 0.5f, 0);
-
-		//exPos = transptr->GetPosition();
-		//transptr->RotateAround(pivot, exam, 0.1f);
-		//transptr->RotateAround(pivot, exam, m_time,tempQ,exPos);
-		//Tempbool = RotateAround(pivot, exam, m_time,transptr,Tempbool);
 
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
@@ -129,33 +85,30 @@ namespace basecross{
 		//==========================Unity移植文========================
 					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
 			//回転中は入力を受け付けない
-		if (isRotate == true) {
+		if (m_isRotate == true) {
 			if (m_count < 5) {
-
-				pivot = rotatePoint;
-				exam = rotateAxis;
-				transptr->RotateAround(pivot, exam, 0.1f * XM_PI, nowPos);
+				transptr->RotateAround(m_rotatePoint, m_rotateAxis, 0.1f * XM_PI, nowPos);
 				m_count += 1;
 			}
 			else {
 
 				m_count = 0;
-				isRotate = false;
+				m_isRotate = false;
 
 			}
 
-			//pivot = rotatePoint;
-			//exam = rotateAxis;
+			//pivot = m_rotatePoint;
+			//exam = m_rotateAxis;
 			//transptr->RotateAround(pivot, exam, 0.25f * XM_2PI, nowPos);
-			//isRotate = false;
+			//m_isRotate = false;
 
 		}else if (moveX > 0)
 		{
 			GetQuadroEdge();
 			nowPos = transptr->GetPosition();
-			rotatePoint = Vec3(xHalfSize, yHalfSizeMin, 0.0f);
-			rotateAxis = Vec3(0, 0, 1);
-			isRotate = true;
+			m_rotatePoint = Vec3(m_xHalfSize, m_yHalfSizeMin, 0.0f);
+			m_rotateAxis = Vec3(0, 0, 1);
+			m_isRotate = true;
 
 			
 			//beforePos = transptr->GetPosition();
@@ -166,30 +119,30 @@ namespace basecross{
 		{
 			GetQuadroEdge();
 			nowPos = transptr->GetPosition();
-			rotatePoint = Vec3(xHalfSizeMin, yHalfSizeMin, 0.0f);
-			rotateAxis = Vec3(0, 0, -1);
-			isRotate = true;
+			m_rotatePoint = Vec3(m_xHalfSizeMin, m_yHalfSizeMin, 0.0f);
+			m_rotateAxis = Vec3(0, 0, -1);
+			m_isRotate = true;
 		}
 		else if (moveZ > 0)
 		{
 			GetQuadroEdge();
 			nowPos = transptr->GetPosition();
-			rotatePoint = Vec3(0.0f, yHalfSizeMin, zHalfSize);
-			rotateAxis = Vec3(-1, 0, 0);
-			isRotate = true;
+			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSize);
+			m_rotateAxis = Vec3(-1, 0, 0);
+			m_isRotate = true;
 		}
 		else if (moveZ < 0)
 		{
 			GetQuadroEdge();
 			nowPos = transptr->GetPosition();
-			rotatePoint = Vec3(0.0f, yHalfSizeMin, zHalfSizeMin);
-			rotateAxis = Vec3(1, 0, 0);
-			isRotate = true;
+			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSizeMin);
+			m_rotateAxis = Vec3(1, 0, 0);
+			m_isRotate = true;
 		}
 		else {
 			//nowPos = transptr->GetWorldPosition();
 			//transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
-			//isRotate = false;
+			//m_isRotate = false;
 		}
 	}
 
@@ -199,12 +152,12 @@ namespace basecross{
 		auto ptrTrans = GetComponent<Transform>();
 		auto mesh = ptrDraw->GetMeshResource();
 		vector<VertexPosition> verteces = mesh->GetVerteces();
-		xHalfSize = -99999;
-		yHalfSize = -99999;
-		zHalfSize = -99999;
-		xHalfSizeMin = 99999;
-		yHalfSizeMin = 99999;
-		zHalfSizeMin = 99999;
+		m_xHalfSize = -99999;
+		m_yHalfSize = -99999;
+		m_zHalfSize = -99999;
+		m_xHalfSizeMin = 99999;
+		m_yHalfSizeMin = 99999;
+		m_zHalfSizeMin = 99999;
 		auto worldmat = ptrTrans->GetWorldMatrix();
 		
 		for each (auto verPos in verteces)
@@ -217,103 +170,56 @@ namespace basecross{
 			float minx = verPos.position.getX();
 			float miny = verPos.position.getY();
 			float minz = verPos.position.getZ();
-			if (maxx >= xHalfSize) {
-				xHalfSize = maxx;
+			if (maxx >= m_xHalfSize) {
+				m_xHalfSize = maxx;
 			}
-			if (maxy >= xHalfSize) {
-				yHalfSize = maxy;
+			if (maxy >= m_xHalfSize) {
+				m_yHalfSize = maxy;
 			}
-			if (maxz >= zHalfSize) {
-				zHalfSize = maxz;
+			if (maxz >= m_zHalfSize) {
+				m_zHalfSize = maxz;
 			}
 
 			//底面で上書きしていく
-			if (minx <= xHalfSizeMin) {
-				xHalfSizeMin = minx;
+			if (minx <= m_xHalfSizeMin) {
+				m_xHalfSizeMin = minx;
 			}
-			if (miny <= yHalfSizeMin) {
-				yHalfSizeMin = miny;
+			if (miny <= m_yHalfSizeMin) {
+				m_yHalfSizeMin = miny;
 			}
-			if (minz <= zHalfSizeMin) {
-				zHalfSizeMin = minz;
+			if (minz <= m_zHalfSizeMin) {
+				m_zHalfSizeMin = minz;
 			}
 			
 		}
-		//xHalfSize *= ptrTrans->GetScale().getX();
-		//yHalfSize *= ptrTrans->GetScale().getY();
-		//zHalfSize *= ptrTrans->GetScale().getZ();
+		//m_xHalfSize *= ptrTrans->GetScale().getX();
+		//m_yHalfSize *= ptrTrans->GetScale().getY();
+		//m_zHalfSize *= ptrTrans->GetScale().getZ();
 	}
+
+
 		//else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis("Horizontal") <= -0.1f)
 		//{
-		//	rotatePoint = transform.position + new Vector3(-cubeSizeHalf, -cubeSizeHalf, 0f);
-		//	rotateAxis = new Vector3(0, 0, 1);
+		//	m_rotatePoint = transform.position + new Vector3(-cubeSizeHalf, -cubeSizeHalf, 0f);
+		//	m_rotateAxis = new Vector3(0, 0, 1);
 		//}
 		//else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetAxis("Vertical") >= 0.1f)
 		//{
-		//	rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, cubeSizeHalf);
-		//	rotateAxis = new Vector3(1, 0, 0);
+		//	m_rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, cubeSizeHalf);
+		//	m_rotateAxis = new Vector3(1, 0, 0);
 		//}
 		//else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetAxis("Vertical") <= -0.1f)
 		//{
-		//	rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, -cubeSizeHalf);
-		//	rotateAxis = new Vector3(-1, 0, 0);
+		//	m_rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, -cubeSizeHalf);
+		//	m_rotateAxis = new Vector3(-1, 0, 0);
 		//}
 		// 入力がない時はコルーチンを呼び出さないようにする
-		//if (rotatePoint == Vec3(0, 0, 0))
+		//if (m_rotatePoint == Vec3(0, 0, 0))
 		//	return;
 		//MoveCube();
 }
 
 
-
-	/*
-			Vec3 rotatePoint = Vec3{ 0 };  //回転の中心
-		Vec3 rotateAxis = Vec3{ 0 };   //回転軸
-		float cubeAngle = 0.0f;                //回転角度
-
-			
-		float cubeSizeHalf;                  //キューブの大きさの半分
-		bool isRotate = false;               //回転中に立つフラグ。回転中は入力を受け付けない
-
-		void Start()
-		{
-			cubeSizeHalf = transform.localScale.x / 2f;
-			PlColEve = GetComponent<PlayerColiderEvents>();
-		}
-
-		void Update()
-		{
-					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
-			//回転中は入力を受け付けない
-			if (isRotate)
-				return;
-
-			if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetAxis("Horizontal") >= 0.1f)
-			{
-				rotatePoint = transform.position + new Vector3(cubeSizeHalf, -cubeSizeHalf, 0f);
-				rotateAxis = new Vector3(0, 0, -1);
-			}
-			else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis("Horizontal") <= -0.1f)
-			{
-				rotatePoint = transform.position + new Vector3(-cubeSizeHalf, -cubeSizeHalf, 0f);
-				rotateAxis = new Vector3(0, 0, 1);
-			}
-			else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetAxis("Vertical") >= 0.1f)
-			{
-				rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, cubeSizeHalf);
-				rotateAxis = new Vector3(1, 0, 0);
-			}
-			else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetAxis("Vertical") <= -0.1f)
-			{
-				rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, -cubeSizeHalf);
-				rotateAxis = new Vector3(-1, 0, 0);
-			}
-			// 入力がない時はコルーチンを呼び出さないようにする
-			if (rotatePoint == Vector3.zero)
-				return;
-			StartCoroutine(MoveCube());
-		}
-			*/
 
 
 
