@@ -93,8 +93,8 @@ namespace basecross {
 	void TestStage::CreateViewLight() {
 		const Vec3 eye[7] = { Vec3(0.0f, 5.0f, -5.0f),//ïWèÄà íu
 							  Vec3(0.0f, 0.0f, -30.0f),
-							  Vec3(0.0f, 20.0f, 0.1f),
-							  Vec3(0.0f, 50.0f, -120.0f),
+							  Vec3(0.0f, 20.0f, 00.1f),
+							  Vec3(0.0f, 25.0f, -25.0f),
 							  Vec3(0.0f,15.0f,10.0f),
 							  Vec3(10.0f, 0.0f, -10.0f), 
 								Vec3(0.0f,15.0f,-10.0f)};

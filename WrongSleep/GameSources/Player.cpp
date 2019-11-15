@@ -25,9 +25,9 @@ namespace basecross{
 
 		auto ptr = AddComponent<Transform>();
 
-		ptr->SetScale(1.0f, 2.0f, 2.0f);	//’¼Œa225ƒZƒ“ƒ`‚Ì‹…‘Ì
+		ptr->SetScale(5.0f, 5.0f, 5.0f);	//’¼Œa225ƒZƒ“ƒ`‚Ì‹…‘Ì
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
-		ptr->SetPosition(Vec3(0.5f, 0.5f, 0));
+		ptr->SetPosition(Vec3(0.5f, 2.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
 		TempPivot = ptr->GetPivot();
 
@@ -123,22 +123,23 @@ namespace basecross{
 		float moveX = inPut.x;
 		float moveZ = inPut.y;
 		Vec3 nowPos = transptr->GetPosition();
+		float maxrot = 0.5f * XM_PI;
 
 
 		//==========================UnityˆÚA•¶========================
 					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
 			//‰ñ“]’†‚Í“ü—Í‚ğó‚¯•t‚¯‚È‚¢
-		if (isRotate) {
-			if (m_time < 0.25f * XM_2PI) {
+		if (isRotate == true) {
+			if (m_count < 5) {
 
 				pivot = rotatePoint;
 				exam = rotateAxis;
-				transptr->RotateAround(pivot, exam, 0.05f * XM_2PI, nowPos);
-				m_time += 0.05f * XM_2PI;
+				transptr->RotateAround(pivot, exam, 0.1f * XM_PI, nowPos);
+				m_count += 1;
 			}
 			else {
 
-				m_time = 0;
+				m_count = 0;
 				isRotate = false;
 
 			}
@@ -148,43 +149,47 @@ namespace basecross{
 			//transptr->RotateAround(pivot, exam, 0.25f * XM_2PI, nowPos);
 			//isRotate = false;
 
-		}
-		else if (moveX > 0)
+		}else if (moveX > 0)
 		{
 			GetQuadroEdge();
-			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(xHalfSize, yHalfSize, 0.0f);
+			nowPos = transptr->GetPosition();
+			rotatePoint = Vec3(xHalfSize, yHalfSizeMin, 0.0f);
 			rotateAxis = Vec3(0, 0, 1);
 			isRotate = true;
+
+			
+			//beforePos = transptr->GetPosition();
+			//beforeQ = transptr->GetQuaternion();
+			
 		}
 		else if (moveX < 0)
 		{
 			GetQuadroEdge();
-			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(-xHalfSize, yHalfSize, 0.0f);
+			nowPos = transptr->GetPosition();
+			rotatePoint = Vec3(xHalfSizeMin, yHalfSizeMin, 0.0f);
 			rotateAxis = Vec3(0, 0, -1);
 			isRotate = true;
 		}
 		else if (moveZ > 0)
 		{
 			GetQuadroEdge();
-			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(0.0f, yHalfSize, zHalfSize);
+			nowPos = transptr->GetPosition();
+			rotatePoint = Vec3(0.0f, yHalfSizeMin, zHalfSize);
 			rotateAxis = Vec3(-1, 0, 0);
 			isRotate = true;
 		}
 		else if (moveZ < 0)
 		{
 			GetQuadroEdge();
-			nowPos = transptr->GetWorldPosition();
-			rotatePoint = nowPos + Vec3(0.0f, yHalfSize, -zHalfSize);
+			nowPos = transptr->GetPosition();
+			rotatePoint = Vec3(0.0f, yHalfSizeMin, zHalfSizeMin);
 			rotateAxis = Vec3(1, 0, 0);
 			isRotate = true;
 		}
 		else {
-			nowPos = transptr->GetWorldPosition();
-			transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
-			isRotate = false;
+			//nowPos = transptr->GetWorldPosition();
+			//transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
+			//isRotate = false;
 		}
 	}
 
@@ -194,31 +199,49 @@ namespace basecross{
 		auto ptrTrans = GetComponent<Transform>();
 		auto mesh = ptrDraw->GetMeshResource();
 		vector<VertexPosition> verteces = mesh->GetVerteces();
-		xHalfSize = 0;
-		yHalfSize = 0;
-		zHalfSize = 0;
+		xHalfSize = -99999;
+		yHalfSize = -99999;
+		zHalfSize = -99999;
+		xHalfSizeMin = 99999;
+		yHalfSizeMin = 99999;
+		zHalfSizeMin = 99999;
+		auto worldmat = ptrTrans->GetWorldMatrix();
+		
 		for each (auto verPos in verteces)
 		{
+			verPos.position *= worldmat;
+			float maxx = verPos.position.getX();
+			float maxy = verPos.position.getY();
+			float maxz = verPos.position.getZ();
 
-			float x = verPos.position.getX();
-			float y = verPos.position.getY();
-			float z = verPos.position.getZ();
-			if (x >= xHalfSize) {
-				xHalfSize = x;
+			float minx = verPos.position.getX();
+			float miny = verPos.position.getY();
+			float minz = verPos.position.getZ();
+			if (maxx >= xHalfSize) {
+				xHalfSize = maxx;
 			}
-			if (z >= zHalfSize) {
-				zHalfSize = z;
+			if (maxy >= xHalfSize) {
+				yHalfSize = maxy;
+			}
+			if (maxz >= zHalfSize) {
+				zHalfSize = maxz;
 			}
 
 			//’ê–Ê‚Åã‘‚«‚µ‚Ä‚¢‚­
-			if (y <= yHalfSize) {
-				yHalfSize = y;
+			if (minx <= xHalfSizeMin) {
+				xHalfSizeMin = minx;
+			}
+			if (miny <= yHalfSizeMin) {
+				yHalfSizeMin = miny;
+			}
+			if (minz <= zHalfSizeMin) {
+				zHalfSizeMin = minz;
 			}
 			
 		}
-		xHalfSize *= ptrTrans->GetScale().getX();
-		yHalfSize *= ptrTrans->GetScale().getY();
-		zHalfSize *= ptrTrans->GetScale().getZ();
+		//xHalfSize *= ptrTrans->GetScale().getX();
+		//yHalfSize *= ptrTrans->GetScale().getY();
+		//zHalfSize *= ptrTrans->GetScale().getZ();
 	}
 		//else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis("Horizontal") <= -0.1f)
 		//{

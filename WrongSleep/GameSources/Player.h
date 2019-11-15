@@ -60,7 +60,14 @@ namespace basecross{
 		float xHalfSize = 0;
 		float yHalfSize = 0;
 		float zHalfSize = 0;
+		float xHalfSizeMin = 0;
+		float yHalfSizeMin = 0;
+		float zHalfSizeMin = 0;
 
+		Vec3 beforePos;
+		Quat beforeQ;
+
+		int m_count = 0;
 
 	public:
 		//ç\ízÇ∆îjä¸

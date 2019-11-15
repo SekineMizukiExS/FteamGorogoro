@@ -257,12 +257,13 @@ namespace basecross {
 		Mat3x3 rot = q.toRotMat();
 		//距離ベクトル
 		Vec3 dif = worldPos - point;
+		//dif = dif.normalize();
 		//ベクトルを指定方向に向ける
 		dif = rot * dif;
 		//回転の中心とベクトルを足して位置を算出する。
 		worldPos = point + dif;
 		//算出した座標に移動
-		SetWorldPosition(worldPos);
+		SetPosition(worldPos);
 
 		Quat bodyQ(axis, -angle);
 		Quat nowQ = GetQuaternion();
