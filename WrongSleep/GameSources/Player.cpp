@@ -24,11 +24,25 @@ namespace basecross{
 
 
 		auto ptr = AddComponent<Transform>();
-		//auto rigidbody = AddComponent<Rigidbody>();
+
+		//CollisionSphere衝突判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();
+
+		//各パフォーマンスを得る
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
+
+		//重力をつける
+		auto ptrGra = AddComponent<Gravity>();
+
+		GetStage()->SetCollisionPerformanceActive(true);
+		GetStage()->SetUpdatePerformanceActive(true);
+		GetStage()->SetDrawPerformanceActive(true);
 
 		ptr->SetScale(5.0f, 5.0f, 5.0f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
-		ptr->SetPosition(Vec3(0.5f, 2.5f, 0));
+		ptr->SetPosition(Vec3(8.5f, 7.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
 
 		//影をつける（シャドウマップを描画する）
@@ -45,7 +59,7 @@ namespace basecross{
 		//描画するテクスチャを設定
 		//ptrDraw->SetTextureResource(L"TRACE_TX");
 		//SetAlphaActive(true);
-
+		
 	}
 
 	void Player::DebugLine()

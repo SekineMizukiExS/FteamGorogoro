@@ -9,6 +9,7 @@
 
 namespace basecross{
 	class Player : public GameObject {
+		
 	private:
 		//--------------------------------------//
 //----コントローラ、システム側の変数----//
