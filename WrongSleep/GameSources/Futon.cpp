@@ -14,7 +14,7 @@ namespace basecross
 		DrawComp->SetTextureResource(L"Test_TX");
 		DrawComp->SetDrawActive(true);
 		auto TransComp = GetComponent<Transform>();
-		//TransComp->SetPosition(0, 0, 0);
+		//TransComp->SetPosition(50, 0, 0);
 		//TransComp->SetScale(20, 1, 20);
 		//•¨—”»’è
 		//auto ColComp = AddComponent<CollisionObb>();
@@ -78,5 +78,19 @@ namespace basecross
 		}
 		_timef += App::GetApp()->GetElapsedTime();
 		DrawComp->UpdateVertices(vertices);
+	}
+
+	void Futon::OnEvent(const shared_ptr<Event>&event)
+	{
+		if (event->m_MsgStr == L"StopFuton") {
+			//Update‚ğ~‚ß‚é
+			SetUpdateActive(false);
+		}
+
+		if (event->m_MsgStr == L"StartFuton") {
+			//Update‚ğ~‚ß‚é
+			SetUpdateActive(true);
+		}
+
 	}
 }

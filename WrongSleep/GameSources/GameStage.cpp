@@ -240,12 +240,26 @@ namespace basecross {
 			CreatePlayer();
 			CreateStageObject();
 			AddGameObject<GameManager>();
-			//AddGameObject<Futon>();
+			 _Ts= AddGameObject<Futon>();
 		}
 		catch (...) {
 			throw;
 		}
 	}
 
+
+	void TestStage::OnUpdate()
+	{
+		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
+		if (Dev.m_bLastKeyTbl['S'])
+		{
+			PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
+		}
+		if (Dev.m_bLastKeyTbl['W'])
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), _Ts, L"StartFuton");
+		}
+
+	}
 }
 //end basecross

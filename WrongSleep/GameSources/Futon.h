@@ -24,6 +24,8 @@ namespace basecross
 		*/
 		//-----------------------------------------------------------
 		void MeshDeform(float amplitude, float period, float wavelength);;
+
+		void OnEvent(const shared_ptr<Event>& event);
 	private:
 		float _timef;
 		int _cnt;

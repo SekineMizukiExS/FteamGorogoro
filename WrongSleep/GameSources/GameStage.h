@@ -45,6 +45,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	TestStageクラス
 	//--------------------------------------------------------------------------------------
+	class Futon;
 	class TestStage :public Stage
 	{
 		//ビューの作成
@@ -60,12 +61,16 @@ namespace basecross {
 		void CreateStageObject();
 
 		shared_ptr<MultiView>_MView;
+
+		shared_ptr<Futon> _Ts;
 	public:
 		//構築と破棄
 		TestStage() :Stage() {}
 		virtual ~TestStage() {}
 		//初期化
 		virtual void OnCreate()override;
+
+		virtual void OnUpdate()override;
 
 		shared_ptr<MultiView>GetMultiView()const
 		{

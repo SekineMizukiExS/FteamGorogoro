@@ -2,11 +2,14 @@
 #include "stdafx.h"
 
 namespace basecross {
-
+	
+	//-----------------------------------------
+	//ゲームマネージャークラス実装(シングルトン)予定
+	//-----------------------------------------
 	class GameManager final:public GameObject
 	{
 	public:
-		GameManager(const shared_ptr<Stage>&StagePtr)
+		explicit GameManager(const shared_ptr<Stage>&StagePtr)
 			:GameObject(StagePtr)
 		{
 		}
@@ -16,6 +19,8 @@ namespace basecross {
 
 	private:
 		void DebugLine();
+
+		unique_ptr<GameManager> _Ins;
 	};
 
 }
