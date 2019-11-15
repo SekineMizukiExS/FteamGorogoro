@@ -57,8 +57,13 @@ namespace basecross
 		wstring collTernCountStr(L"CollisionCountOfTern:\t");
 		collTernCountStr += Util::UintToWStr(GetStage()->GetCollisionManager()->GetCollisionCountOfTern());
 		collTernCountStr += L"\n";
+
+		wstring ObjCount(L"ObjectCount:\t");
+		ObjCount += Util::UintToWStr((UINT)GetStage()->GetGameObjectVec().size());
+		ObjCount += L"\n";
+
 		wstring str = fpsStr + updatePerStr + drawPerStr + collPerStr + collMiscStr
-			+ collTernCountStr;
+			+ collTernCountStr+ ObjCount;
 
 		//文字列コンポーネントの取得
 		auto ptrString = GetComponent<StringSprite>();

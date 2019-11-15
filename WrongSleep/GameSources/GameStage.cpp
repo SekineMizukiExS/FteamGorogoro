@@ -240,7 +240,7 @@ namespace basecross {
 			CreatePlayer();
 			CreateStageObject();
 			AddGameObject<GameManager>();
-			//AddGameObject<Futon>();
+			AddGameObject<Futon>();
 		}
 		catch (...) {
 			throw;

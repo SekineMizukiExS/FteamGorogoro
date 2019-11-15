@@ -14,7 +14,7 @@ namespace basecross
 		DrawComp->SetTextureResource(L"Test_TX");
 		DrawComp->SetDrawActive(true);
 		auto TransComp = GetComponent<Transform>();
-		//TransComp->SetPosition(0, 0, 0);
+		//TransComp->SetPosition(50, 0, 0);
 		//TransComp->SetScale(20, 1, 20);
 		//•¨—”»’è
 		//auto ColComp = AddComponent<CollisionObb>();
