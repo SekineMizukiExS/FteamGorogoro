@@ -10,9 +10,9 @@ namespace basecross
 	//----------------------------------------
 	//実装予定
 	//1.エネミーの生成
-	//2.巡回経路の一元管理
+	//2.巡回経路の一元管理*
 	//3.外部ファイルの読込
-	//4.
+	//4.生成時、死亡時の処理
 	class EnemyManager:public ObjectInterface
 	{
 	public:
@@ -38,6 +38,9 @@ namespace basecross
 		void OnEvent(const shared_ptr<Event>& event)override;
 
 	private:
+		// pImplイディオム
+		//struct Impl;
+		//unique_ptr<Impl> pImpl;
 		//コピー禁止
 		EnemyManager(const EnemyManager&) = delete;
 		EnemyManager& operator=(const EnemyManager&) = delete;

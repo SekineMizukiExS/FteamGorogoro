@@ -79,4 +79,18 @@ namespace basecross
 		_timef += App::GetApp()->GetElapsedTime();
 		DrawComp->UpdateVertices(vertices);
 	}
+
+	void Futon::OnEvent(const shared_ptr<Event>&event)
+	{
+		if (event->m_MsgStr == L"StopFuton") {
+			//Update‚ðŽ~‚ß‚é
+			SetUpdateActive(false);
+		}
+
+		if (event->m_MsgStr == L"StartFuton") {
+			//Update‚ðŽ~‚ß‚é
+			SetUpdateActive(true);
+		}
+
+	}
 }
