@@ -21,5 +21,7 @@
 #include "AreaBase.h"
 #include "Futon.h"
 
+#include "MyCamera.h"
+
 
 

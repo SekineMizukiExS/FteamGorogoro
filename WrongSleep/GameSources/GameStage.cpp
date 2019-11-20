@@ -117,14 +117,16 @@ namespace basecross {
 
 		_MView = CreateView <MultiView> ();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<Camera>();
+		auto PtrCamera = ObjectFactory::Create<MyCamera>();
 		_MView->AddView(Main,PtrCamera);
-		PtrCamera->SetEye(eye[3]);
+		PtrCamera->SetEye(eye[4]);
 		PtrCamera->SetAt(at);
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
 		PtrMultiLight->SetDefaultLighting();
+		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+		PtrCamera->SetTargetObject(ptrPlayer);
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
 		_MView->AddView(Sub, SubCamera);
@@ -230,17 +232,33 @@ namespace basecross {
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/st/objects/Object");
 	}
 
+	//void TestStage::ToMyCamera() {
+	//	auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+	//	//MyCameraに変更
+	//	auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(m_MyCameraView->GetCamera());
+	//	if (ptrMyCamera) {
+	//		ptrMyCamera->SetTargetObject(ptrPlayer);
+	//		//m_MyCameraViewを使う
+	//		//SetView(m_MyCameraView);
+	//		//m_CameraSelect = CameraSelect::myCamera;
+
+	//	}
+	//}
+
 	void TestStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			SetPhysicsActive(true);
+			CreatePlayer();
 			CreateViewLight();
 			//CreateFixedBox();
 			//CreateTilingFixedBox();
-			CreatePlayer();
+
 			CreateStageObject();
 			AddGameObject<GameManager>();
 			//AddGameObject<Futon>();
+
+			//ToMyCamera();
 		}
 		catch (...) {
 			throw;

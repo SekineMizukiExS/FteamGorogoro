@@ -79,6 +79,8 @@ namespace basecross{
 
 		void GetQuadroEdge();
 
+		void RotateMove();
+
 		/*
 		std::experimental::generator<int>  MoveCube()
 		{

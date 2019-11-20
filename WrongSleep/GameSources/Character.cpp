@@ -62,11 +62,17 @@ namespace basecross{
 		auto TransComp = AddComponent<Transform>();
 
 		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
-		DrawComp->SetTextureResource(L"Test_TX");
+		DrawComp->SetTextureResource(L"LeafMat_TX");
 
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);
 		TransComp->SetRotation(_Rot);
+
+		//CollisionSphereÕ“Ë”»’è‚ğ•t‚¯‚é
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
+
+		
 	}
 
 	//--------------------------------------------------------------------------------------

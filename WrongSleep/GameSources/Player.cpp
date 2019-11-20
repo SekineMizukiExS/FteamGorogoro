@@ -18,6 +18,8 @@ namespace basecross{
 	{}
 
 	void Player::OnCreate() {
+
+
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
 		ptrString->SetTextRect(Rect2D<float>(16.0f, 50.0f, 320.0f, 360.0f));
@@ -29,16 +31,16 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 
 		//各パフォーマンスを得る
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
+		//GetStage()->SetCollisionPerformanceActive(true);
+		//GetStage()->SetUpdatePerformanceActive(true);
+		//GetStage()->SetDrawPerformanceActive(true);
 
 		//重力をつける
 		auto ptrGra = AddComponent<Gravity>();
 
-		GetStage()->SetCollisionPerformanceActive(true);
-		GetStage()->SetUpdatePerformanceActive(true);
-		GetStage()->SetDrawPerformanceActive(true);
+		//GetStage()->SetCollisionPerformanceActive(true);
+		//GetStage()->SetUpdatePerformanceActive(true);
+		//GetStage()->SetDrawPerformanceActive(true);
 
 		ptr->SetScale(5.0f, 5.0f, 5.0f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
@@ -71,93 +73,14 @@ namespace basecross{
 	void Player::OnUpdate() {
 		//GetMoveVector();
 		//MovePlayer();
+		RotateMove();
 
-		auto transptr = GetComponent<Transform>();
 
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
 		//auto ptrString = GetComponent<StringSprite>();
 		//ptrString->SetText(tempQtx);
 
-		//Quat q = Quat(Vec3(0,0,1), m_time);
-
-		//transptr->SetQuaternion(q);
-
-		////transptr->(Vec3(0, 0, m_time));
-		//if (m_time >= 25) {
-		////	transptr->SetPivot(TempPivot);
-		//}
-
-
-		auto inPut = GetInputState();
-		float moveX = inPut.x;
-		float moveZ = inPut.y;
-		Vec3 nowPos = transptr->GetPosition();
-		float maxrot = 0.5f * XM_PI;
-
-
-		//==========================Unity移植文========================
-					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
-			//回転中は入力を受け付けない
-		if (m_isRotate == true) {
-			if (m_count < 5) {
-				transptr->RotateAround(m_rotatePoint, m_rotateAxis, 0.1f * XM_PI, nowPos);
-				m_count += 1;
-			}
-			else {
-
-				m_count = 0;
-				m_isRotate = false;
-
-			}
-
-			//pivot = m_rotatePoint;
-			//exam = m_rotateAxis;
-			//transptr->RotateAround(pivot, exam, 0.25f * XM_2PI, nowPos);
-			//m_isRotate = false;
-
-		}else if (moveX > 0)
-		{
-			GetQuadroEdge();
-			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(m_xHalfSize, m_yHalfSizeMin, 0.0f);
-			m_rotateAxis = Vec3(0, 0, 1);
-			m_isRotate = true;
-
-			
-			//beforePos = transptr->GetPosition();
-			//beforeQ = transptr->GetQuaternion();
-			
-		}
-		else if (moveX < 0)
-		{
-			GetQuadroEdge();
-			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(m_xHalfSizeMin, m_yHalfSizeMin, 0.0f);
-			m_rotateAxis = Vec3(0, 0, -1);
-			m_isRotate = true;
-		}
-		else if (moveZ > 0)
-		{
-			GetQuadroEdge();
-			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSize);
-			m_rotateAxis = Vec3(-1, 0, 0);
-			m_isRotate = true;
-		}
-		else if (moveZ < 0)
-		{
-			GetQuadroEdge();
-			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSizeMin);
-			m_rotateAxis = Vec3(1, 0, 0);
-			m_isRotate = true;
-		}
-		else {
-			//nowPos = transptr->GetWorldPosition();
-			//transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
-			//m_isRotate = false;
-		}
 	}
 
 
@@ -231,6 +154,82 @@ namespace basecross{
 		//if (m_rotatePoint == Vec3(0, 0, 0))
 		//	return;
 		//MoveCube();
+
+	void Player::RotateMove() {
+
+		auto transptr = GetComponent<Transform>();
+
+		auto inPut = GetInputState();
+		float moveX = inPut.x;
+		float moveZ = inPut.y;
+		Vec3 nowPos = transptr->GetPosition();
+		float maxrot = 0.5f * XM_PI;
+
+
+		//==========================Unity移植文========================
+					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
+			//回転中は入力を受け付けない
+		if (m_isRotate == true) {
+			if (m_count < 5) {
+				transptr->RotateAround(m_rotatePoint, m_rotateAxis, 0.1f * XM_PI, nowPos);
+				m_count += 1;
+			}
+			else {
+
+				m_count = 0;
+				m_isRotate = false;
+
+			}
+
+			//pivot = m_rotatePoint;
+			//exam = m_rotateAxis;
+			//transptr->RotateAround(pivot, exam, 0.25f * XM_2PI, nowPos);
+			//m_isRotate = false;
+
+		}
+		else if (moveX > 0)
+		{
+			GetQuadroEdge();
+			nowPos = transptr->GetPosition();
+			m_rotatePoint = Vec3(m_xHalfSize, m_yHalfSizeMin, 0.0f);
+			m_rotateAxis = Vec3(0, 0, 1);
+			m_isRotate = true;
+
+
+			//beforePos = transptr->GetPosition();
+			//beforeQ = transptr->GetQuaternion();
+
+		}
+		else if (moveX < 0)
+		{
+			GetQuadroEdge();
+			nowPos = transptr->GetPosition();
+			m_rotatePoint = Vec3(m_xHalfSizeMin, m_yHalfSizeMin, 0.0f);
+			m_rotateAxis = Vec3(0, 0, -1);
+			m_isRotate = true;
+		}
+		else if (moveZ > 0)
+		{
+			GetQuadroEdge();
+			nowPos = transptr->GetPosition();
+			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSize);
+			m_rotateAxis = Vec3(-1, 0, 0);
+			m_isRotate = true;
+		}
+		else if (moveZ < 0)
+		{
+			GetQuadroEdge();
+			nowPos = transptr->GetPosition();
+			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSizeMin);
+			m_rotateAxis = Vec3(1, 0, 0);
+			m_isRotate = true;
+		}
+		else {
+			//nowPos = transptr->GetWorldPosition();
+			//transptr->SetPosition(nowPos.x, 0.5f, nowPos.z);
+			//m_isRotate = false;
+		}
+	}
 }
 
 
