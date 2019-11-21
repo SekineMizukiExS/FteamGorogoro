@@ -48,6 +48,9 @@ namespace basecross {
 	class Futon;
 	class TestStage :public Stage
 	{
+		//オープニングのボスへのフォーカス用ビュー
+		shared_ptr<SingleView> m_MyCameraView;
+
 		//ビューの作成
 		void CreateViewLight();
 		//プレイヤーの作成
@@ -59,6 +62,8 @@ namespace basecross {
 		//タイリングボックスの作成
 		void CreateTilingFixedBox();
 		void CreateStageObject();
+
+		void ToMyCamera();
 
 		shared_ptr<MultiView>_MView;
 

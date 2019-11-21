@@ -9,6 +9,7 @@
 
 namespace basecross{
 	class Player : public GameObject {
+		
 	private:
 		//--------------------------------------//
 //----コントローラ、システム側の変数----//
@@ -77,6 +78,8 @@ namespace basecross{
 		void DebugLine();
 
 		void GetQuadroEdge();
+
+		void RotateMove();
 
 		/*
 		std::experimental::generator<int>  MoveCube()

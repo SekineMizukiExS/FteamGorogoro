@@ -20,6 +20,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Futon.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Futon.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectDraw.cpp" />
