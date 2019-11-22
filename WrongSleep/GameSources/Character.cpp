@@ -62,7 +62,7 @@ namespace basecross{
 		auto TransComp = AddComponent<Transform>();
 
 		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
-		DrawComp->SetTextureResource(L"LeafMat_TX");
+		DrawComp->SetTextureResource(L"LeafMatB_TX");
 
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);

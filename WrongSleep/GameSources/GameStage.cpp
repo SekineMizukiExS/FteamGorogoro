@@ -94,8 +94,8 @@ namespace basecross {
 		const Vec3 eye[7] = { Vec3(0.0f, 5.0f, -5.0f),//標準位置
 							  Vec3(0.0f, 0.0f, -30.0f),
 							  Vec3(0.0f, 20.0f, 00.1f),
-							  Vec3(0.0f, 25.0f, -25.0f),
-							  Vec3(0.0f,15.0f,10.0f),
+							  Vec3(0.0f, 25.0f, -50.0f),
+							  Vec3(0.0f,15.0f,50.0f),
 							  Vec3(10.0f, 0.0f, -10.0f), 
 								Vec3(0.0f,15.0f,-10.0f)};
 		const Vec3 at(0.0f);
@@ -125,8 +125,11 @@ namespace basecross {
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
 		PtrMultiLight->SetDefaultLighting();
-		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+		//プレイヤーの情報を渡す
+		auto ptrPlayer = GetSharedGameObject<PlayerMarker>(L"PlayerMarker");
 		PtrCamera->SetTargetObject(ptrPlayer);
+		PtrCamera->SetMinArm(40.0f);
+		PtrCamera->SetMaxArm(50.0f);
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
 		_MView->AddView(Sub, SubCamera);
@@ -141,6 +144,10 @@ namespace basecross {
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
+
+		auto ptrPlayerMarker = AddGameObject<PlayerMarker>();
+		ptrPlayerMarker->SetTargetObject(ptrPlayer);
+		SetSharedGameObject(L"PlayerMarker", ptrPlayerMarker);
 	}
 //ボックスの作成
 	void TestStage::CreateTilingFixedBox() {

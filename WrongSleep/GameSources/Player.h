@@ -121,6 +121,35 @@ namespace basecross{
 		*/
 	};
 
+
+	class PlayerMarker : public GameObject {
+
+	private:
+		weak_ptr<GameObject> m_TargetObject;	//目標となるオブジェクト
+	public:
+		/*!
+		@brief	追従目標オブジェクトを得る
+		@return	追従目標
+		*/
+		//--------------------------------------------------------------------------------------
+		shared_ptr<GameObject> GetTargetObject() const;
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	追従目標オブジェクトを設定する
+		@param[in]	Obj	追従目標オブジェクト
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SetTargetObject(const shared_ptr<GameObject>& Obj);
+		//--------------------------------------------------------------------------------------
+
+		PlayerMarker(const shared_ptr<Stage>& StagePtr);
+
+		//初期化
+		virtual void OnCreate() override;
+		//更新
+		virtual void OnUpdate() override;
+	};
 }
 //end basecross
 

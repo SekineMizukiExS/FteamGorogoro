@@ -230,6 +230,39 @@ namespace basecross{
 			//m_isRotate = false;
 		}
 	}
+	//=======================================================================
+	//========================PlayerMarker===================================
+	//=======================================================================
+	PlayerMarker::PlayerMarker(const shared_ptr<Stage>& StagePtr) :
+		GameObject(StagePtr)
+	{}
+
+
+	shared_ptr<GameObject> PlayerMarker::GetTargetObject() const {
+		if (!m_TargetObject.expired()) {
+			return m_TargetObject.lock();
+		}
+		return nullptr;
+	}
+
+	void PlayerMarker::SetTargetObject(const shared_ptr<GameObject>& Obj) {
+		m_TargetObject = Obj;
+	}
+
+
+	void PlayerMarker::OnCreate() {
+		auto ptr = AddComponent<Transform>();
+	}
+
+	void PlayerMarker::OnUpdate() {
+		auto ptrTarget = GetTargetObject();
+		if (ptrTarget) {
+			auto ptrTrans = GetComponent<Transform>();
+			Vec3 tempPos(ptrTarget->GetComponent<Transform>()->GetPosition());
+			ptrTrans->SetPosition(tempPos.x,3,tempPos.z);
+		}
+	}
+
 }
 
 

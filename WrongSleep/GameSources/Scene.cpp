@@ -34,7 +34,7 @@ namespace basecross{
 		App::GetApp()->GetDataDirectory(mediaPath);
 		App::GetApp()->RegisterTexture(L"Test_TX", mediaPath + L"Textures/" + L"KB.png");
 		App::GetApp()->RegisterTexture(L"LeafMat_TX", mediaPath + L"Textures/" + L"leafmat_tx.png");
-		App::GetApp()->RegisterTexture(L"LeafMat_TX", mediaPath + L"Textures/" + L"leafmatBlack_tx.png");
+		App::GetApp()->RegisterTexture(L"LeafMatB_TX", mediaPath + L"Textures/" + L"leafmatBlack_tx.png");
 		App::GetApp()->RegisterTexture(L"Player_TX", mediaPath + L"Textures/" + L"Tx_Player.png");
 
 		auto modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"MatTest.bmf",true);
