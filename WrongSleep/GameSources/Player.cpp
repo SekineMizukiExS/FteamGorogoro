@@ -5,9 +5,15 @@
 
 #include "stdafx.h"
 #include "Project.h"
+#include "ObjUtil.h"
 #include <experimental/generator>
 
+
+
 namespace basecross{
+
+
+
 	//--------------------------------------------------------------------------------------
 //	class Player : public GameObject;
 //	用途: プレイヤー
@@ -87,17 +93,17 @@ namespace basecross{
 	}
 
 
-	void Player::GetQuadroEdge() {
+	void Player::GetInFourEdge() {
 		auto ptrDraw = GetComponent<BcPNTStaticDraw>();
 		auto ptrTrans = GetComponent<Transform>();
 		auto mesh = ptrDraw->GetMeshResource();
 		vector<VertexPosition> verteces = mesh->GetVerteces();
-		m_xHalfSize = -99999;
-		m_yHalfSize = -99999;
-		m_zHalfSize = -99999;
-		m_xHalfSizeMin = 99999;
-		m_yHalfSizeMin = 99999;
-		m_zHalfSizeMin = 99999;
+		m_V3HS._xHalfSize = -99999;
+		m_V3HS._yHalfSize = -99999;
+		m_V3HS._zHalfSize = -99999;
+		m_V3HS._xHalfSizeMin = 99999;
+		m_V3HS._yHalfSizeMin = 99999;
+		m_V3HS._zHalfSizeMin = 99999;
 		auto worldmat = ptrTrans->GetWorldMatrix();
 		
 		for each (auto verPos in verteces)
@@ -110,57 +116,34 @@ namespace basecross{
 			float minx = verPos.position.getX();
 			float miny = verPos.position.getY();
 			float minz = verPos.position.getZ();
-			if (maxx >= m_xHalfSize) {
-				m_xHalfSize = maxx;
+			if (maxx >= m_V3HS._xHalfSize) {
+				m_V3HS._xHalfSize = maxx;
 			}
-			if (maxy >= m_xHalfSize) {
-				m_yHalfSize = maxy;
+			if (maxy >= m_V3HS._xHalfSize) {
+				m_V3HS._yHalfSize = maxy;
 			}
-			if (maxz >= m_zHalfSize) {
-				m_zHalfSize = maxz;
+			if (maxz >= m_V3HS._zHalfSize) {
+				m_V3HS._zHalfSize = maxz;
 			}
 
 			//底面で上書きしていく
-			if (minx <= m_xHalfSizeMin) {
-				m_xHalfSizeMin = minx;
+			if (minx <= m_V3HS._xHalfSizeMin) {
+				m_V3HS._xHalfSizeMin = minx;
 			}
-			if (miny <= m_yHalfSizeMin) {
-				m_yHalfSizeMin = miny;
+			if (miny <= m_V3HS._yHalfSizeMin) {
+				m_V3HS._yHalfSizeMin = miny;
 			}
-			if (minz <= m_zHalfSizeMin) {
-				m_zHalfSizeMin = minz;
+			if (minz <= m_V3HS._zHalfSizeMin) {
+				m_V3HS._zHalfSizeMin = minz;
 			}
 			
 		}
-		//m_xHalfSize *= ptrTrans->GetScale().getX();
-		//m_yHalfSize *= ptrTrans->GetScale().getY();
-		//m_zHalfSize *= ptrTrans->GetScale().getZ();
 	}
-
-
-		//else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis("Horizontal") <= -0.1f)
-		//{
-		//	m_rotatePoint = transform.position + new Vector3(-cubeSizeHalf, -cubeSizeHalf, 0f);
-		//	m_rotateAxis = new Vector3(0, 0, 1);
-		//}
-		//else if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetAxis("Vertical") >= 0.1f)
-		//{
-		//	m_rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, cubeSizeHalf);
-		//	m_rotateAxis = new Vector3(1, 0, 0);
-		//}
-		//else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetAxis("Vertical") <= -0.1f)
-		//{
-		//	m_rotatePoint = transform.position + new Vector3(0f, -cubeSizeHalf, -cubeSizeHalf);
-		//	m_rotateAxis = new Vector3(-1, 0, 0);
-		//}
-		// 入力がない時はコルーチンを呼び出さないようにする
-		//if (m_rotatePoint == Vec3(0, 0, 0))
-		//	return;
-		//MoveCube();
 
 	void Player::RotateMove() {
 
 		auto transptr = GetComponent<Transform>();
+		auto drawptr = GetComponent<BcPNTStaticDraw>();
 
 		auto inPut = GetInputState();
 		float moveX = inPut.x;
@@ -192,9 +175,9 @@ namespace basecross{
 		}
 		else if (moveX > 0)
 		{
-			GetQuadroEdge();
+			m_V3HS = GetFourEdge(transptr,drawptr);
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(m_xHalfSize, m_yHalfSizeMin, 0.0f);
+			m_rotatePoint = Vec3(m_V3HS._xHalfSize, m_V3HS._yHalfSizeMin, 0.0f);
 			m_rotateAxis = Vec3(0, 0, 1);
 			m_isRotate = true;
 
@@ -205,25 +188,25 @@ namespace basecross{
 		}
 		else if (moveX < 0)
 		{
-			GetQuadroEdge();
+			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(m_xHalfSizeMin, m_yHalfSizeMin, 0.0f);
+			m_rotatePoint = Vec3(m_V3HS._xHalfSizeMin, m_V3HS._yHalfSizeMin, 0.0f);
 			m_rotateAxis = Vec3(0, 0, -1);
 			m_isRotate = true;
 		}
 		else if (moveZ > 0)
 		{
-			GetQuadroEdge();
+			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSize);
+			m_rotatePoint = Vec3(0.0f, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSize);
 			m_rotateAxis = Vec3(-1, 0, 0);
 			m_isRotate = true;
 		}
 		else if (moveZ < 0)
 		{
-			GetQuadroEdge();
+			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(0.0f, m_yHalfSizeMin, m_zHalfSizeMin);
+			m_rotatePoint = Vec3(0.0f, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSizeMin);
 			m_rotateAxis = Vec3(1, 0, 0);
 			m_isRotate = true;
 		}

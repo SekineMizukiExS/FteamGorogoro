@@ -5,6 +5,7 @@
 
 #pragma once
 #include "stdafx.h"
+#include "ObjUtil.h"
 #include <experimental/generator>
 
 namespace basecross{
@@ -51,12 +52,7 @@ namespace basecross{
 		Vec3 m_rotateAxis = Vec3(0, 0, 0);
 
 		//
-		float m_xHalfSize = 0;
-		float m_yHalfSize = 0;
-		float m_zHalfSize = 0;
-		float m_xHalfSizeMin = 0;
-		float m_yHalfSizeMin = 0;
-		float m_zHalfSizeMin = 0;
+		Vec3HalfSizes m_V3HS;
 
 		int m_count = 0;
 
@@ -77,7 +73,7 @@ namespace basecross{
 
 		void DebugLine();
 
-		void GetQuadroEdge();
+		void GetInFourEdge();
 
 		void RotateMove();
 

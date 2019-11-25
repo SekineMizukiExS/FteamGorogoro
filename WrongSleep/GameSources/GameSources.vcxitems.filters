@@ -47,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)EnemyBase.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ObjUtil.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -87,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)EnemyBase.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ObjUtil.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="$(MSBuildThisFileDirectory)FutonVS.hlsl">
