@@ -42,7 +42,7 @@ namespace basecross{
 		//GetStage()->SetUpdatePerformanceActive(true);
 		//GetStage()->SetDrawPerformanceActive(true);
 
-		ptr->SetScale(5.0f, 5.0f, 5.0f);	//直径225センチの球体
+		ptr->SetScale(1.0f, 5.0f, 5.0f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(8.5f, 7.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
@@ -56,11 +56,14 @@ namespace basecross{
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
 		//ptrDraw->SetMeshResource(L"Player_MD");
+		//ptrDraw->SetMeshResource(L"Apple_MD");
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetFogEnabled(true);
 		//描画するテクスチャを設定
 		//ptrDraw->SetTextureResource(L"TRACE_TX");
 		//SetAlphaActive(true);
+		//ptrDraw->SetTextureResource(L"RedApple_TX");
+		SetAlphaActive(true);
 		
 	}
 

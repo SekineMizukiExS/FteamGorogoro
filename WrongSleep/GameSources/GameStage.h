@@ -61,6 +61,9 @@ namespace basecross {
 		void CreateFixedBox();
 		//タイリングボックスの作成
 		void CreateTilingFixedBox();
+		//カスタムメッシュボックスの作成
+		void CreateCMeshBox();
+
 		void CreateStageObject();
 
 		void ToMyCamera();

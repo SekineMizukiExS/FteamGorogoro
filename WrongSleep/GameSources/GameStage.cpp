@@ -128,8 +128,8 @@ namespace basecross {
 		//プレイヤーの情報を渡す
 		auto ptrPlayer = GetSharedGameObject<PlayerMarker>(L"PlayerMarker");
 		PtrCamera->SetTargetObject(ptrPlayer);
-		PtrCamera->SetMinArm(40.0f);
-		PtrCamera->SetMaxArm(50.0f);
+		PtrCamera->SetMinArm(1.0f);
+		PtrCamera->SetMaxArm(20.0f);
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
 		_MView->AddView(Sub, SubCamera);
@@ -225,6 +225,48 @@ namespace basecross {
 			AddGameObject<FixedBox>(v[0], v[1], v[2]);
 		}
 	}
+
+
+	void TestStage::CreateCMeshBox() {
+		vector< vector<Vec3> > vec = {
+			//{
+			//	Vec3(50.0f, 1.0f, 50.0f),
+			//	Vec3(0.0f, 0.0f, 0.0f),
+			//	Vec3(0.0f, -0.5f, 0.0f)
+			//},
+			{
+				Vec3(5.0f, 0.5f, 5.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(10.0f, 0.25f, 10.0f)
+			},
+			{
+				Vec3(5.0f, 0.5f, 5.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(15.0f, 0.25f, 10.0f)
+			},
+
+			{
+				Vec3(2.0f, 1.0f, 2.0f),
+				Vec3(0, 0, 0),
+				Vec3(10.0f, 0.5f, 10.0f)
+			},
+			{
+				Vec3(4.0f, 1.0f, 4.0f),
+				Vec3(0, 0, 0),
+				Vec3(-10.0f, 0.5f, 10.0f)
+			},
+			{
+				Vec3(10.0f, 0.5f, 10.0f),
+				Vec3(-0.5f, 0.0f, -0.5f),
+				Vec3(-10.0f, 0.25f, 10.0f)
+			},
+		};
+		//オブジェクトの作成
+		for (auto v : vec) {
+			AddGameObject<CMeshBox>(v[0], v[1], v[2], L"RedApple_TX", L"Apple_MD");
+		}
+	}
+
 	void TestStage::CreateStageObject()
 	{
 		//ゲームオブジェクトビルダー
@@ -259,12 +301,15 @@ namespace basecross {
 			CreatePlayer();
 			CreateViewLight();
 			//CreateFixedBox();
-			//CreateTilingFixedBox();
+			CreateTilingFixedBox();
+			CreateCMeshBox();
+			//CreateStageObject();
 
-			CreateStageObject();
 			AddGameObject<GameManager>();
-			 _Ts= AddGameObject<Futon>();
+			//_Ts= AddGameObject<Futon>();
 			//AddGameObject<Futon>();
+
+			 
 
 			//ToMyCamera();
 		}

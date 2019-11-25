@@ -71,5 +71,31 @@ namespace basecross{
 		virtual void OnCreate() override;
 		//‘€ì
 	};
+
+	//--------------------------------------------------------------------------------------
+//	class CMeshBox : public GameObject;
+//--------------------------------------------------------------------------------------
+	class CMeshBox : public GameObject {
+		Vec3 m_Scale;
+		Vec3 m_Rotation;
+		Vec3 m_Position;
+		wstring _TexKey;
+		wstring _MeshKey;
+	public:
+		//\’z‚Æ”jŠü
+		CMeshBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Vec3& Rotation,
+			const Vec3& Position,
+			const wstring TexKey,
+			const wstring MeshKey
+
+		);
+
+		virtual ~CMeshBox();
+		//‰Šú‰»
+		virtual void OnCreate() override;
+		//‘€ì
+	};
 }
 //end basecross
