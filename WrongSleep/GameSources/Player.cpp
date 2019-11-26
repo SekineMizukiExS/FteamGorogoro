@@ -53,8 +53,8 @@ namespace basecross{
 		ptr->SetPosition(Vec3(8.5f, 7.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
 
-		m_nowSize = ptr->GetScale();
 
+		
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
 		//影の形（メッシュ）を設定
@@ -73,6 +73,11 @@ namespace basecross{
 		//ptrDraw->SetTextureResource(L"RedApple_TX");
 		SetAlphaActive(true);
 		
+		GetInFourEdge(true);
+		Vec3 buttomPos = ptr->GetPosition();
+		buttomPos.y = m_V3HS._yHalfSizeMin;
+		m_Buttom = buttomPos;
+		m_nowSize = ptr->GetScale();
 	}
 
 	void Player::DebugLine()
@@ -106,12 +111,13 @@ namespace basecross{
 
 	}
 
-
+	//=============四辺取得関数=====================
 	void Player::GetInFourEdge() {
 		auto ptrDraw = GetComponent<BcPNTStaticDraw>();
 		auto ptrTrans = GetComponent<Transform>();
 		auto mesh = ptrDraw->GetMeshResource();
 		vector<VertexPosition> verteces = mesh->GetVerteces();
+		
 		m_V3HS._xHalfSize = -99999;
 		m_V3HS._yHalfSize = -99999;
 		m_V3HS._zHalfSize = -99999;
@@ -149,10 +155,69 @@ namespace basecross{
 			}
 			if (minz <= m_V3HS._zHalfSizeMin) {
 				m_V3HS._zHalfSizeMin = minz;
-			}
-			
+			}	
 		}
 	}
+
+	void Player::GetInFourEdge(bool bcheck) {
+		auto ptrDraw = GetComponent<BcPNTStaticDraw>();
+		auto ptrTrans = GetComponent<Transform>();
+		auto mesh = ptrDraw->GetMeshResource();
+		vector<VertexPosition> verteces = mesh->GetVerteces();
+
+		m_V3HS._xHalfSize = -99999;
+		m_V3HS._yHalfSize = -99999;
+		m_V3HS._zHalfSize = -99999;
+		m_V3HS._xHalfSizeMin = 99999;
+		m_V3HS._yHalfSizeMin = 99999;
+		m_V3HS._zHalfSizeMin = 99999;
+		auto worldmat = ptrTrans->GetWorldMatrix();
+
+		for each (auto verPos in verteces)
+		{
+			verPos.position *= worldmat;
+			float maxx = verPos.position.getX();
+			float maxy = verPos.position.getY();
+			float maxz = verPos.position.getZ();
+
+			float minx = verPos.position.getX();
+			float miny = verPos.position.getY();
+			float minz = verPos.position.getZ();
+			if (maxx >= m_V3HS._xHalfSize) {
+				m_V3HS._xHalfSize = maxx;
+			}
+			if (maxy >= m_V3HS._xHalfSize) {
+				m_V3HS._yHalfSize = maxy;
+			}
+			if (maxz >= m_V3HS._zHalfSize) {
+				m_V3HS._zHalfSize = maxz;
+			}
+
+			//底面で上書きしていく
+			if (minx <= m_V3HS._xHalfSizeMin) {
+				m_V3HS._xHalfSizeMin = minx;
+			}
+			if (miny <= m_V3HS._yHalfSizeMin) {
+				m_V3HS._yHalfSizeMin = miny;
+
+			}
+			if (minz <= m_V3HS._zHalfSizeMin) {
+				m_V3HS._zHalfSizeMin = minz;
+			}
+		}
+		if (bcheck) {
+			for each (auto verPos in verteces)
+			{
+				verPos.position *= worldmat;
+				float miny = verPos.position.getY();
+				if (miny <= m_V3HS._yHalfSizeMin) {
+					m_ButtomVertexs.push_back(verPos);
+				}
+			}
+		}
+	}
+
+	//=================箱の伸縮処理==============
 	void Player::BoxExtending() {
 		auto ptr = AddComponent<Transform>();
 		Vec3 tempVec = ptr->GetScale();
@@ -243,6 +308,9 @@ namespace basecross{
 			//m_isRotate = false;
 		}
 	}
+
+
+
 	//=======================================================================
 	//========================PlayerMarker===================================
 	//=======================================================================

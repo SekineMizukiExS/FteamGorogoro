@@ -53,6 +53,8 @@ namespace basecross{
 
 		//接地面の四辺を格納して置く構造体
 		Vec3HalfSizes m_V3HS;
+		Vec3 m_Buttom;
+		vector<VertexPosition> m_ButtomVertexs;
 
 		Vec3 m_nowSize = Vec3(1, 1, 1);
 
@@ -76,10 +78,13 @@ namespace basecross{
 		void DebugLine();
 		//接地面の四辺を取得し、メンバ変数に代入する。
 		void GetInFourEdge();
+		void GetInFourEdge(bool bcheck);
 		//回転移動
 		void RotateMove();
 		//伸びる
 		void BoxExtending();
+		//プレイヤーの最初の底面を取得する関数
+		
 
 
 		/*
