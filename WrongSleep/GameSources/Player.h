@@ -59,7 +59,8 @@ namespace basecross{
 		Vec3 m_nowSize = Vec3(1, 1, 1);
 
 		int m_count = 0;
-
+		int angleCount[7];
+		int m_vCount = 0;
 	public:
 		//\’z‚Æ”jŠü
 //--------------------------------------------------------------------------------------
@@ -83,6 +84,9 @@ namespace basecross{
 		void RotateMove();
 		//L‚Ñ‚é
 		void BoxExtending();
+		//” ‚ªL‚Ñ‚é•ûŒü‚ğæ“¾
+		Vec3 GetExtendingAngle();
+
 		//ƒvƒŒƒCƒ„[‚ÌÅ‰‚Ì’ê–Ê‚ğæ“¾‚·‚éŠÖ”
 		
 
