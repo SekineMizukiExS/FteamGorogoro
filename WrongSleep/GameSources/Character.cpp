@@ -169,7 +169,7 @@ namespace basecross{
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		ptrDraw->SetTextureResource(L"LeafMatB_TX");
-		ptrDraw->SetFogEnabled(true);
+		//ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 	}
 	//--------------------------------------------------------------------------------------
@@ -212,7 +212,7 @@ namespace basecross{
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetMeshResource(_MeshKey);
 		ptrDraw->SetTextureResource(_TexKey);
-		ptrDraw->SetFogEnabled(true);
+		//ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 	}
 }
