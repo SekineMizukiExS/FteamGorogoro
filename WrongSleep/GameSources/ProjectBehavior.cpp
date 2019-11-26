@@ -238,6 +238,42 @@ namespace basecross {
 			utilPtr->RotToHead(angle, 1.0f);
 		}
 	}
+
+	//-------------------------------------------------------------
+	///エネミー行動クラス実装
+	//-------------------------------------------------------------
+	//struct TravelingPoint;
+	bool EnemyBehavior::TravelingMove(float MoveTime)
+	{
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		_TotalTime += ElapsedTime;
+		if (_TotalTime > MoveTime) {
+			_TotalTime = 0;
+			return true;
+		}
+		Easing<Vec3> easing;
+		auto TgtPos = easing.EaseInOut(EasingType::Cubic, _CurrntPos, _MovePoint, _TotalTime, MoveTime);
+		auto ptrTrans = GetGameObject()->GetComponent<Transform>();
+		ptrTrans->SetPosition(TgtPos);
+		return false;
+	}
+
+	void EnemyBehavior::SetNextPoint()
+	{
+		auto TransComp = GetGameObject()->GetComponent<Transform>();
+		auto EnemyObj = dynamic_pointer_cast<EnemyBase>(GetGameObject());
+
+		_MovePoint = GetPoint(TransComp->GetPosition(), EnemyObj->GetTravelingPoint());
+	}
+
+	Vec3 EnemyBehavior::GetPoint(const Vec3& CurrntPosition, const vector<TravelingPoint>& Point)
+	{
+		Vec3 result(0);
+		result = Point[NextKey].Point;
+		NextKey = Point[NextKey].after;
+		_CurrntPos = CurrntPosition;
+		return result;
+	}
 }
 
 //end basecross

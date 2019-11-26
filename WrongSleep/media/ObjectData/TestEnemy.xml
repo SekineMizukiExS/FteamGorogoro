@@ -2,11 +2,22 @@
 <root>
   <Stage1>
     <InitObject>
-      <GameObject Type ="Test" Pos ="0,5,0" Scale ="5,5,5 " Rot ="0,0,0" MeshKey ="DEFAULT_CUBE" TexKey ="Test_TX">
+      <GameObject Type ="Test" Pos ="5,1,0" Scale ="2,2,2 " Rot ="0,0,0" MeshKey ="DEFAULT_CUBE" TexKey ="Test_TX">
         <ObjParam State ="Wait"/>
         <MovePoint>
-          <Point Pos ="0,0,0" TravelingNum="0"/>
-          <Point Pos ="5,0,0" TravelingNum="1"/>
+          <Point Pos ="1,0,1" TravelingB="3" TravelingA ="1"/>
+          <Point Pos ="10,0,0" TravelingB="0" TravelingA ="2"/>
+          <Point Pos ="10,0,10" TravelingB="1" TravelingA ="3"/>
+          <Point Pos ="0,0,10" TravelingB="2" TravelingA ="0"/>
+        </MovePoint>
+      </GameObject>
+      <GameObject Type ="Test" Pos ="5,1,0" Scale ="1,1,1 " Rot ="0,0,0" MeshKey ="DEFAULT_CUBE" TexKey ="LeafMat_TX">
+        <ObjParam State ="Wait"/>
+        <MovePoint>
+          <Point Pos ="1,0,1" TravelingB="3" TravelingA ="1"/>
+          <Point Pos ="10,5,0" TravelingB="0" TravelingA ="2"/>
+          <Point Pos ="10,2,10" TravelingB="1" TravelingA ="3"/>
+          <Point Pos ="0,5,10" TravelingB="2" TravelingA ="0"/>
         </MovePoint>
       </GameObject>
     </InitObject>

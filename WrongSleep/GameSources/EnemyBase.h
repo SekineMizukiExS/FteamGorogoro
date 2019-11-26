@@ -56,6 +56,17 @@ namespace basecross
 	@brief
 	//----------------------------------------
 	*/
+	struct TravelingPoint
+	{
+		int before;
+		Vec3 Point;
+		int after;
+		TravelingPoint(int b1, Vec3 p1, int a1)
+			:before(b1),Point(p1),after(a1)
+		{
+
+		}
+	};
 
 	class EnemyBase :public GameObject
 	{
@@ -71,13 +82,17 @@ namespace basecross
 		
 		virtual void OnEvent(const shared_ptr<Event>& event)override;
 
-	protected:
-		
 		unique_ptr<StateMachine<EnemyBase>> &GetStateMachine()
 		{
 			return m_SteteMachine;
 		}
 
+		vector<TravelingPoint> GetTravelingPoint()const
+		{
+			return _TravelingPoint;
+		}
+
+	protected:
 		friend EnemyManager;
 
 		//ステートマシン
@@ -109,7 +124,7 @@ namespace basecross
 		//識別コード (オブジェクトクラス名)-(継承クラス名)-(個別番号)
 		//wstring _CODE;
 		//巡回経路
-		map<int, Vec3> TravelingPoint;
+		vector<TravelingPoint> _TravelingPoint;
 		//捜索範囲
 		float _Distance;
 		//追跡対象
@@ -121,7 +136,7 @@ namespace basecross
 	//-----------------------------------------------------
 	//ステートマシンベース
 	//-----------------------------------------------------
-	//ステートマシンはエネミーごとに記述
+	//ステートマシン記述
 	class TravelingState :public ObjState<EnemyBase>
 	{
 		TravelingState() {}
@@ -152,8 +167,7 @@ namespace basecross
 
 		void OnCreate()override;
 
-		void OnUpdate()override
-		{}
+		void OnUpdate()override;
 
 	private:
 		

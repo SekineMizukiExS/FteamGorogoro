@@ -214,6 +214,52 @@ namespace basecross {
 
 		}
 	};
+
+	//------------------------------------------------------------------------
+	///エネミー行動クラス
+	//------------------------------------------------------------------------
+	struct TravelingPoint;
+	class EnemyBehavior :public Behavior
+	{
+	public:
+		EnemyBehavior(const shared_ptr<GameObject>&GameObjectPtr)
+			:Behavior(GameObjectPtr), NextKey(0)
+		{}
+		
+		//移動完了したらTRUE
+		bool TravelingMove(float MoveTime);
+
+		//プレイヤーを発見したらTRUE
+		//bool SearchPlayer();
+		void SetNextPoint();
+
+		void SetTargetObject(const shared_ptr<GameObject> &obj)
+		{
+			_TargetObject = obj;
+		}
+
+		void SetPositon(const Vec3& Pos)
+		{
+			_CurrntPos = Pos;
+		}
+	private:
+		//一番近い座標を返す
+		Vec3 GetPoint(const Vec3& CurrntPosition, const vector<TravelingPoint>& Point);
+
+		//現在位置
+		Vec3 _CurrntPos;
+		//状態遷移時の位置
+		Vec3 _BreakPos;
+		//目的地
+		Vec3 _MovePoint;
+		//次のPointのkey;
+		int NextKey;
+		//経過時間
+		float _TotalTime;
+		//TargetObject(プレイヤー)
+		shared_ptr<GameObject> _TargetObject;
+	};
+	//！
 }
 //end basecross
 
