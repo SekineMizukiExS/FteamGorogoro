@@ -4,7 +4,6 @@
 namespace basecross
 {
 	class EnemyBase;
-
 	//----------------------------------------
 	//エネミーの管理クラス
 	//----------------------------------------
@@ -17,8 +16,7 @@ namespace basecross
 	{
 	public:
 		EnemyManager();
-		
-
+		virtual ~EnemyManager() {}
 		//----------------------------------------------------------------------------------
 		/*!
 		@brief エネミー生成用関数
@@ -26,7 +24,7 @@ namespace basecross
 		@return なし
 		*/
 		//----------------------------------------------------------------------------------
-		void GenerateEnemyObject(const shared_ptr<Stage>&TargetStage, const wstring &EnemyDataPath);
+		void SetEnemyObject(const shared_ptr<EnemyBase> EnemyObj);
 
 		//----------------------------------------------------------------------------------
 		/*!
@@ -36,11 +34,9 @@ namespace basecross
 		*/
 		//----------------------------------------------------------------------------------
 		void OnEvent(const shared_ptr<Event>& event)override;
-
 	private:
-		// pImplイディオム
-		//struct Impl;
-		//unique_ptr<Impl> pImpl;
+		//エネミー
+		vector<shared_ptr<EnemyBase>> _EnemyObjects;
 		//コピー禁止
 		EnemyManager(const EnemyManager&) = delete;
 		EnemyManager& operator=(const EnemyManager&) = delete;
@@ -50,158 +46,6 @@ namespace basecross
 
 	};
 
-	//オブジェクトビルダーをエネミー専用にして作成
-	
-	//エネミ-用引数構造体
-	struct EnemyXMLDataIN
-	{
-		wstring XMLFileName;//XMLファイルパス
-		wstring ObjectsPath;//エネミー配置パス
-		wstring paramPath;	//パラメータパス
-		wstring rootPointPath;//巡回経路パス
-	};
-
-	struct EnemyXMLDataOUT
-	{
-		IXMLDOMNodePtr InitData;	//初期化データ
-		IXMLDOMNodePtr Param;		//パラメータ
-		IXMLDOMNodePtr Point;		//巡回地点
-
-		EnemyXMLDataOUT(const IXMLDOMNodePtr &InitData,const IXMLDOMNodePtr& Param,const IXMLDOMNodePtr Point)
-			:InitData(InitData), Param(Param), Point(Point)
-		{
-
-		}
-	};
-	//--------------------------------------------------------------------------------------
-	//	エネミー専用クリエータークラス(親)
-	//--------------------------------------------------------------------------------------
-	class EnemyXMLCreatorBase {
-	protected:
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	コンストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		explicit EnemyXMLCreatorBase() {}
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	デストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		virtual ~EnemyXMLCreatorBase() {}
-	public:
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	ゲームオブジェクトを作成する（純粋仮想関数）
-		@param[in]	StagePtr	ステージ
-		@param[in]	pNode	XMLノード
-		@return	ゲームオブジェクトのポインタ
-		*/
-		//--------------------------------------------------------------------------------------
-		virtual shared_ptr<EnemyBase> Create(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode) = 0;
-
-		virtual shared_ptr<EnemyBase> Create(const shared_ptr<Stage>& StagePtr, EnemyXMLDataOUT pNode) = 0;
-	};
-
-	//----------------------------------------
-	//エネミーXMLジェネレイト
-	//----------------------------------------
-	template<class EXEnemy>
-	class EnemyXMLCreater :public EnemyXMLCreatorBase
-	{
-	public:
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	コンストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		explicit EnemyXMLCreater() {}
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	デストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		virtual ~EnemyXMLCreater() {}
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	ゲームオブジェクトを作成する（仮想関数）
-		@param[in]	StagePtr	ステージ
-		@param[in]	pNode	XMLノード
-		@return	ゲームオブジェクトのポインタ
-		*/
-		//--------------------------------------------------------------------------------------
-		shared_ptr<EnemyBase> Create(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode)override {
-			return StagePtr->AddGameObject<T>(pNode);
-		}
-
-		shared_ptr<EnemyBase> Create(const shared_ptr<Stage>& StagePtr, EnemyXMLDataOUT pNode)override {
-			return StagePtr->AddGameObject<T>(pNode);
-		}
-
-	};
-
-	//--------------------------------------------------------------------------------------
-	//エネミー専用XMLビルダー
-	//--------------------------------------------------------------------------------------
-	class EnemyXMLBuilder {
-		map<wstring, shared_ptr<EnemyXMLCreatorBase>>& GetCreatorMap() const;
-	public:
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	コンストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		EnemyXMLBuilder();
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	デストラクタ
-		*/
-		//--------------------------------------------------------------------------------------
-		virtual ~EnemyXMLBuilder();
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	クリエーターを登録する
-		@tparam	T	登録する型（ゲームオブジェクトの派生）
-		@param[in]	ClsName	型の識別名（通常は型名を文字列にしたもの）
-		@return	なし
-		*/
-		//--------------------------------------------------------------------------------------
-		template<typename T>
-		void Register(const wstring& ClsName) {
-			GetCreatorMap()[ClsName] = shared_ptr<EnemyXMLCreater<T>>(new EnemyXMLCreater<T>());
-		}
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	型の識別名を使ってゲームオブジェクトを構築する
-		@param[in]	ClsName	型の識別名（通常は型名を文字列にしたもの）
-		@param[in]	StagePtr	所属するステージ
-		@param[in]	pNode	XMLノード
-		@return	作成したゲームオブジェクト
-		*/
-		//--------------------------------------------------------------------------------------
-		void CreateFromXML(const wstring& ClsName, const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode);
-
-		void CreateFromXML(const wstring& ClsName, const shared_ptr<Stage>& StagePtr, EnemyXMLDataOUT pNode);
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief	XMLからゲームオブジェクトを構築する
-		@param[in]	StagePtr	所属するステージ
-		@param[in]	XMLFileName	XMLファイル名
-		@param[in]	GameObjectsPath	ゲームオブジェクト(複数)のノードへのパス
-		@return	なし
-		*/
-		//--------------------------------------------------------------------------------------
-		void Build(const shared_ptr<Stage>& StagePtr, const wstring& XMLFileName, const wstring& GameObjectsPath);
-
-		void Build(const shared_ptr<Stage>& StagePtr, const EnemyXMLDataIN input);
-
-		//EnemyXMLDataOUT CheckToNodeList(const IXMLDOMNodeListPtr& NodeList, const int &sortNum);
-	private:
-		// pImplイディオム
-		struct Impl;
-		unique_ptr<Impl> pImpl;
-	};
 
 
 	//----------------------------------------
@@ -212,34 +56,72 @@ namespace basecross
 	@brief
 	//----------------------------------------
 	*/
-	//エレメントデータ構造体宣言
-	struct ElemBase;
 
 	class EnemyBase :public GameObject
 	{
 	public:
 		EnemyBase(const shared_ptr<Stage>&stage);
+		EnemyBase(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
 
+		virtual ~EnemyBase(){}
 		//初期処理
 		virtual void OnCreate()override = 0;
 		//更新処理
 		virtual void OnUpdate()override = 0;
 		
-		virtual void SetElement(const ElemBase& Elem);
+		virtual void OnEvent(const shared_ptr<Event>& event)override;
 
 	protected:
-		virtual ElemBase GetElement();
 		
-		friend GameManager;
+		unique_ptr<StateMachine<EnemyBase>> &GetStateMachine()
+		{
+			return m_SteteMachine;
+		}
 
-		struct Impl;
-		unique_ptr<Impl>pImpl;
+		friend EnemyManager;
+
+		//ステートマシン
+		unique_ptr<StateMachine<EnemyBase>> m_SteteMachine;
+
+		//unique_ptr<EnemyParam>pImpl;
+		//TODO
+				//Position
+		Vec3 _Position;
+		//Scale
+		Vec3 _Scale;
+		//Rotate
+		Vec3 _Rotate;
+		//TexKey
+		wstring _TexKey;
+		//MeshKey
+		wstring _MeshKey;
+		//エネミーの状態＜巡回・追跡・索敵＞
+		enum State
+		{
+			Wait,//停止
+			Traveling,//巡回
+			Tracking,//追跡
+			Search//捜索
+		};
+		
+		//状態メンバ変数<=ゲームマネージャーから使う
+		State _state;
+		//識別コード (オブジェクトクラス名)-(継承クラス名)-(個別番号)
+		//wstring _CODE;
+		//巡回経路
+		map<int, Vec3> TravelingPoint;
+		//捜索範囲
+		float _Distance;
+		//追跡対象
+		shared_ptr<GameObject> _TargetObj;
+		//!
 	};
 
 
 	//-----------------------------------------------------
 	//ステートマシンベース
 	//-----------------------------------------------------
+	//ステートマシンはエネミーごとに記述
 	class TravelingState :public ObjState<EnemyBase>
 	{
 		TravelingState() {}
@@ -249,5 +131,31 @@ namespace basecross
 		virtual void Execute(const shared_ptr<EnemyBase>&Obj)override;
 		virtual void Exit(const shared_ptr<EnemyBase>&Obj)override;
 
+	};
+
+	//-----------------------------------------------------
+	///ここから下継承クラス
+	//-----------------------------------------------------
+	//-----------------------------------------------------
+	//ブリキ兵士
+	//-----------------------------------------------------
+	class ToyGuards : public EnemyBase
+	{
+	public:
+		ToyGuards(const shared_ptr<Stage>&StagePtr)
+			:EnemyBase(StagePtr)
+		{}
+		ToyGuards(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
+			:EnemyBase(stage, pNode)
+		{};
+
+
+		void OnCreate()override;
+
+		void OnUpdate()override
+		{}
+
+	private:
+		
 	};
 }

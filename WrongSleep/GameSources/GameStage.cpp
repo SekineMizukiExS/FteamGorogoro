@@ -305,11 +305,19 @@ namespace basecross {
 			CreateCMeshBox();
 			//CreateStageObject();
 
-			AddGameObject<GameManager>();
 			//_Ts= AddGameObject<Futon>();
 			//AddGameObject<Futon>();
-
-			 
+			//Test
+			GameObjecttXMLBuilder Builder;
+			//ゲームオブジェクトの登録
+			Builder.Register<ToyGuards>(L"Test");
+			wstring DataDir;
+			App::GetApp()->GetDataDirectory(DataDir);
+			//XMLからゲームオブジェクトの構築
+			wstring XMLStr = DataDir + L"ObjectData/" + L"TestEnemy";
+			XMLStr += L".xml";
+			shared_ptr<EnemyManager> test;
+			Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage1/InitObject/GameObject");			 
 
 			//ToMyCamera();
 		}
