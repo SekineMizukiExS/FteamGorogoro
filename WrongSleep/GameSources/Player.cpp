@@ -48,10 +48,12 @@ namespace basecross{
 		//GetStage()->SetUpdatePerformanceActive(true);
 		//GetStage()->SetDrawPerformanceActive(true);
 
-		ptr->SetScale(1.0f, 5.0f, 5.0f);	//直径225センチの球体
+		ptr->SetScale(1.0f, 1.0f, 1.0f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(8.5f, 7.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
+
+		m_nowSize = ptr->GetScale();
 
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
@@ -83,8 +85,20 @@ namespace basecross{
 		//GetMoveVector();
 		//MovePlayer();
 		RotateMove();
+		BoxExtending();
+		
+		//auto inPut = GetInputState();
+		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+		if (KeyState.m_bPressedKeyTbl['F']) {
+			m_nowSize.y += 1.0f;
+		}
+		if (KeyState.m_bPressedKeyTbl['X']) {
+			m_nowSize.y -= 1.0f;
+		}
 
-
+		if (m_nowSize.y <= 1) {
+			m_nowSize.y = 1.0f;
+		}
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
 		//auto ptrString = GetComponent<StringSprite>();
@@ -139,6 +153,15 @@ namespace basecross{
 			
 		}
 	}
+	void Player::BoxExtending() {
+		auto ptr = AddComponent<Transform>();
+		Vec3 tempVec = ptr->GetScale();
+		if (m_nowSize.y > tempVec.y) {
+			ptr->SetScale(tempVec.x, tempVec.y + 0.1f, tempVec.z);
+		}else if (m_nowSize.y < tempVec.y) {
+			ptr->SetScale(tempVec.x, tempVec.y - 0.1f, tempVec.z);
+		}
+	}
 
 	void Player::RotateMove() {
 
@@ -151,9 +174,13 @@ namespace basecross{
 		Vec3 nowPos = transptr->GetPosition();
 		float maxrot = 0.5f * XM_PI;
 
+		if (transptr->GetPosition().y <= 0.5) {
+			auto temppos = transptr->GetPosition();
+			transptr->SetPosition(temppos.x,0.5f,temppos.z);
+		}
 
 		//==========================Unity移植文========================
-					//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
+			//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
 			//回転中は入力を受け付けない
 		if (m_isRotate == true) {
 			if (m_count < 5) {

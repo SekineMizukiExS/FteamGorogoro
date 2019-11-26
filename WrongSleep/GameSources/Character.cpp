@@ -127,7 +127,7 @@ namespace basecross{
 		//自分に影が映りこむようにする
 		PtrDraw->SetOwnShadowActive(true);
 		//描画コンポーネントテクスチャの設定
-		PtrDraw->SetTextureResource(L"Test_TX");
+		PtrDraw->SetTextureResource(L"LeafMatB_TX");
 		//タイリング設定
 		PtrDraw->SetSamplerState(SamplerState::LinearWrap);
 
@@ -168,7 +168,7 @@ namespace basecross{
 		shadowPtr->SetMeshResource(L"DEFAULT_CUBE");
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetTextureResource(L"Test_TX");
+		ptrDraw->SetTextureResource(L"LeafMatB_TX");
 		ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 	}

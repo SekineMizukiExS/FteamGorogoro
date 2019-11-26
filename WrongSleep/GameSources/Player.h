@@ -51,8 +51,10 @@ namespace basecross{
 		Vec3 m_rotatePoint = Vec3(0, 0, 0);
 		Vec3 m_rotateAxis = Vec3(0, 0, 0);
 
-		//
+		//接地面の四辺を格納して置く構造体
 		Vec3HalfSizes m_V3HS;
+
+		Vec3 m_nowSize = Vec3(1, 1, 1);
 
 		int m_count = 0;
 
@@ -72,10 +74,13 @@ namespace basecross{
 		virtual void OnUpdate() override;
 
 		void DebugLine();
-
+		//接地面の四辺を取得し、メンバ変数に代入する。
 		void GetInFourEdge();
-
+		//回転移動
 		void RotateMove();
+		//伸びる
+		void BoxExtending();
+
 
 		/*
 		std::experimental::generator<int>  MoveCube()
