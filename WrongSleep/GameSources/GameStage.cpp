@@ -273,12 +273,14 @@ namespace basecross {
 		GameObjecttXMLBuilder Builder;
 		//ゲームオブジェクトの登録
 		Builder.Register<StageObjects>(L"FixedObject");
+		Builder.Register<ToyGuards>(L"Test");
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"TestStage";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"TestStageVer2";
 		XMLStr += L".xml";
-		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/st/objects/Object");
+		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
+		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
 	}
 
 	//void TestStage::ToMyCamera() {
@@ -298,18 +300,27 @@ namespace basecross {
 		try {
 			//ビューとライトの作成
 			SetPhysicsActive(true);
+			AddGameObject<GameManager>();
 			CreatePlayer();
 			CreateViewLight();
 			//CreateFixedBox();
-			CreateTilingFixedBox();
-			CreateCMeshBox();
-			//CreateStageObject();
-
-			AddGameObject<GameManager>();
+			//CreateTilingFixedBox();
+			//CreateCMeshBox();
+			CreateStageObject();
+			
 			//_Ts= AddGameObject<Futon>();
 			//AddGameObject<Futon>();
-
-			 
+			//Test
+			//GameObjecttXMLBuilder Builder;
+			////ゲームオブジェクトの登録
+			//Builder.Register<ToyGuards>(L"Test");
+			//wstring DataDir;
+			//App::GetApp()->GetDataDirectory(DataDir);
+			////XMLからゲームオブジェクトの構築
+			//wstring XMLStr = DataDir + L"ObjectData/" + L"TestEnemy";
+			//XMLStr += L".xml";
+			//shared_ptr<EnemyManager> test;
+			//Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage1/InitObject/GameObject");			 
 
 			//ToMyCamera();
 		}

@@ -3,8 +3,10 @@
 
 namespace basecross {
 	
+	//前方定義
+	class EnemyManager;
 	//-----------------------------------------
-	//ゲームマネージャークラス実装(シングルトン)予定
+	//ゲームマネージャークラス実装
 	//-----------------------------------------
 	class GameManager final:public GameObject
 	{
@@ -17,10 +19,28 @@ namespace basecross {
 		void OnCreate()override;
 		void OnUpdate()override;
 
+		shared_ptr<EnemyManager> GetEnemyManager()const
+		{
+			return _EnemyManager;
+		}
+
+		void SetEnemyManager(shared_ptr<EnemyManager> &EnemyM)
+		{
+			_EnemyManager = EnemyM;
+		}
+
+		friend EnemyManager;
 	private:
 		void DebugLine();
+		//
+		shared_ptr<EnemyManager> _EnemyManager;
+		//コピー禁止
+		GameManager(const GameManager&) = delete;
+		GameManager& operator=(const GameManager&) = delete;
+		//ムーブ禁止
+		GameManager(const GameManager&&) = delete;
+		GameManager& operator=(const GameManager&&) = delete;
 
-		unique_ptr<GameManager> _Ins;
 	};
 
 }

@@ -4,8 +4,8 @@
 namespace basecross
 {
 	//前方定義
+	class GameManager;
 	class EnemyBase;
-
 	//----------------------------------------
 	///エネミー管理クラス
 	//----------------------------------------
@@ -13,209 +13,155 @@ namespace basecross
 	{
 
 	}
-	
-	void EnemyManager::GenerateEnemyObject(const shared_ptr<Stage>& TargetStage, const wstring &EnemyDataPath)
+	void EnemyManager::SetEnemyObject(const shared_ptr<EnemyBase> EnemyObj)
 	{
-		//XMLファイルの読込
+		_EnemyObjects.push_back(EnemyObj);
 	}
 
 	void EnemyManager::OnEvent(const shared_ptr<Event>&event)
 	{
 
 	}
-
-	//----------------------------------------
-	///
-	//----------------------------------------
-	//--------------------------------------------------------------------------------------
-	//	struct GameObjecttXMLBuilder::Impl;
-	//	用途: Implイディオム
-	//--------------------------------------------------------------------------------------
-	struct EnemyXMLBuilder::Impl{
-		map<wstring, shared_ptr<EnemyXMLCreatorBase> > m_CreatorMap;
-		Impl()
-		{}
-		~Impl() {}
-	};
-
-	//--------------------------------------------------------------------------------------
-	//エネミー専用ビルダークラス
-	//--------------------------------------------------------------------------------------
-
-	EnemyXMLBuilder::EnemyXMLBuilder() :
-		pImpl(new Impl())
-	{
-
-	}
-	EnemyXMLBuilder::~EnemyXMLBuilder() {}
-
-	map<wstring, shared_ptr<EnemyXMLCreatorBase>>& EnemyXMLBuilder::GetCreatorMap() const {
-		return pImpl->m_CreatorMap;
-	}
-
-	void EnemyXMLBuilder::CreateFromXML(const wstring& ClsName, const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode) {
-		auto it = pImpl->m_CreatorMap.find(ClsName);
-		if (it == pImpl->m_CreatorMap.end()) {
-			return;
-		}
-		else {
-			(*it).second->Create(StagePtr, pNode);
-			return;
-		}
-	}
-
-	void EnemyXMLBuilder::CreateFromXML(const wstring& ClsName, const shared_ptr<Stage>& StagePtr, EnemyXMLDataOUT pNode) {
-		auto it = pImpl->m_CreatorMap.find(ClsName);
-		if (it == pImpl->m_CreatorMap.end()) {
-			return;
-		}
-		else {
-			(*it).second->Create(StagePtr, pNode);
-			return;
-		}
-	}
-
-	void EnemyXMLBuilder::Build(const shared_ptr<Stage>& StagePtr, const wstring& XMLFileName, const wstring& GameObjectsPath) {
-		try {
-			//XMLリーダー
-			XmlDocReader Reader(XMLFileName);
-			auto Nodes = Reader.GetSelectNodes(GameObjectsPath.c_str());
-			long CountNode = XmlDocReader::GetLength(Nodes);
-			for (long i = 0; i < CountNode; i++) {
-				auto Node = XmlDocReader::GetItem(Nodes, i);
-				auto TypeStr = XmlDocReader::GetAttribute(Node, L"Type");
-				CreateFromXML(TypeStr, StagePtr, Node);
-			}
-		}
-		catch (...) {
-			throw;
-		}
-	}
-
-	void EnemyXMLBuilder::Build(const shared_ptr<Stage>& StagePtr, const EnemyXMLDataIN input) {
-		try {
-			//XMLリーダー
-			XmlDocReader Reader(input.XMLFileName);
-			auto ObjectNodes = Reader.GetSelectNodes(input.ObjectsPath.c_str());
-			auto ParamNodes = Reader.GetSelectNodes(input.paramPath.c_str());
-			auto RootPointNodes = Reader.GetSelectNodes(input.rootPointPath.c_str());
-
-			long ObjectCount = XmlDocReader::GetLength(ObjectNodes);
-			long ParamCount = XmlDocReader::GetLength(ParamNodes);
-			long RootPointCount = XmlDocReader::GetLength(RootPointNodes);
-			
-			//パラメータのTypeを取得
-			for (int i = 0; i < ParamCount; i++)
-			{
-				auto param = XmlDocReader::GetItem(ParamNodes,i);
-				auto paramType = XmlDocReader::GetAttribute(param, L"Type");
-				for (int pos = 0; pos < ObjectCount; pos++)
-				{
-					auto Obj = XmlDocReader::GetItem(ParamNodes, pos);
-					auto ObjType = XmlDocReader::GetAttribute(Obj, L"Type");
-					if (paramType == ObjType)
-					{
-						auto ObjCode = XmlDocReader::GetAttribute(Obj, L"Code");
-						for (int root = 0; root < RootPointCount; root++)
-						{
-							auto Root = XmlDocReader::GetItem(RootPointNodes, root);
-							auto RootCode = XmlDocReader::GetAttribute(Obj, L"Code");
-							if (ObjCode == RootCode)
-							{
-								EnemyXMLDataOUT result(Obj, param, Root);
-
-								CreateFromXML(ObjType, StagePtr, result);
-							}
-						}
-					}
-					else
-					{
-						
-					}
-				}
-			}
-			//ルート
-			//出現位置
-
-		}
-		catch (...) {
-			throw;
-		}
-	}
-
-	//----------------------------------------
-	///エネミーのエレメントデータ構造体
-	//----------------------------------------
-	struct ElemBase
-	{
-		//エネミーの状態＜巡回・追跡・索敵＞
-		enum State
-		{
-			Wait,//停止
-			Traveling,//巡回
-			Tracking,//追跡
-			Search//捜索
-		};
-		//状態メンバ変数<=ゲームマネージャーから使う
-		State _state;
-		//識別コード (オブジェクトクラス名)-(継承クラス名)-(個別番号)
-		wstring _CODE;
-		//巡回経路
-		vector<Vec3> TravelingPoint;
-		//捜索範囲
-		float _Distance;
-		//追跡対象
-		shared_ptr<GameObject> _TargetObj;
-
-		ElemBase()
-			:_state(State::Traveling),TravelingPoint(NULL),_TargetObj(nullptr)
-		{
-			
-		}
-
-		//一番近い巡回経路を返す
-		const Vec3 GetNearPoint(const Vec3 &CurrentPosition)const
-		{
-
-		}
-	};
 	//----------------------------------------
 	//EnemyBase::Impl
 	//----------------------------------------
-	struct EnemyBase::Impl
-	{
-		ElemBase _Data;
-		
-		
+	//struct EnemyParam
+	//{
+	//	//Position
+	//	Vec3 _Position;
+	//	//Scale
+	//	Vec3 _Scale;
+	//	//Rotate
+	//	Vec3 _Rotate;
+	//	//TexKey
+	//	wstring _TexKey;
+	//	//MeshKey
+	//	wstring _MeshKey;
+	//	//エネミーの状態＜巡回・追跡・索敵＞
+	//	enum State
+	//	{
+	//		Wait,//停止
+	//		Traveling,//巡回
+	//		Tracking,//追跡
+	//		Search//捜索
+	//	};
+	//	//状態メンバ変数<=ゲームマネージャーから使う
+	//	State _state;
+	//	//識別コード (オブジェクトクラス名)-(継承クラス名)-(個別番号)
+	//	//wstring _CODE;
+	//	//巡回経路
+	//	map<int,Vec3> TravelingPoint;
+	//	//捜索範囲
+	//	float _Distance;
+	//	//追跡対象
+	//	shared_ptr<GameObject> _TargetObj;
 
-		ElemBase GetElement();
-		void SetElement(const ElemBase&Elem)
-		{
-			_Data = Elem;
-		}
-	};
+	//	EnemyParam()
+	//		:_state(State::Traveling), _TargetObj(nullptr)
+	//	{
 
-	ElemBase EnemyBase::Impl::GetElement()
-	{
-		return _Data;
-	}
+	//	}
+	//	~EnemyParam() {}
+	//	//一番近い巡回経路を返す
+	//	//const Vec3 GetNearPoint(const Vec3 &CurrentPosition)const
+	//	//{
+
+	//	//}
+	//			
+	//};
+
 	//-------------------------------------------
 	//Enemyクラスの実装
 	//-------------------------------------------
 	EnemyBase::EnemyBase(const shared_ptr<Stage>&Stage)
-		:GameObject(Stage),pImpl(new Impl())
+		:GameObject(Stage)
 	{
 
 	}
 
-	ElemBase EnemyBase::GetElement()
+	EnemyBase::EnemyBase(const shared_ptr<Stage>&Stage, IXMLDOMNodePtr pNode)
+		:GameObject(Stage)
 	{
-		return pImpl->GetElement();
-	}
+		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
+		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
+		auto PosStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 
-	void EnemyBase::SetElement(const ElemBase& Elem)
+		//メッシュ
+		_MeshKey = MeshStr;
+		//テクスチャ
+		_TexKey = TexStr;
+
+		//トークン（カラム）の配列
+		vector<wstring> Tokens;
+		//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+		//Position
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, PosStr, L',');
+		//各トークン（カラム）をスケール、回転、位置に読み込む
+		_Position = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+		//Scale
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, ScaleStr, L',');
+		_Scale = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+		//Rot
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, RotStr, L',');
+		//回転は「XM_PIDIV2」の文字列になっている場合がある
+		_Rotate.x = (Tokens[0] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[0].c_str());
+		_Rotate.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
+		_Rotate.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
+
+		//オブジェクトパラメータ
+		//パラメータノード
+		//auto ParamNode = XmlDocReader::GetSelectSingleNode(pNode, L"ObjParam");
+
+		
+		//巡回ポジションノード
+		auto MovePNode = XmlDocReader::GetSelectSingleNode(pNode, L"MovePoint");
+		auto PointNodes = XmlDocReader::GetSelectSingleNode(MovePNode, L"Pos");
+		auto POINTDATANODE = XmlDocReader::GetSelectNodes(PointNodes, L"POINTDATA");
+		auto PNCount = XmlDocReader::GetLength(POINTDATANODE);
+		for (int i = 0; i < PNCount; i++)
+		{
+			auto PointNode = XmlDocReader::GetItem(POINTDATANODE, i);
+			auto PointStr = XmlDocReader::GetAttribute(PointNode, L"Pos");
+			auto PointBStr = XmlDocReader::GetAttribute(PointNode, L"TravelingB");
+			auto PointAStr = XmlDocReader::GetAttribute(PointNode, L"TravelingA");
+			Tokens.clear();
+			Util::WStrToTokenVector(Tokens, PointStr, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			auto Point = Vec3(
+				(float)_wtof(Tokens[0].c_str()),
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str())
+			);
+
+			auto B = (int)_wtoi(PointBStr.c_str());
+			auto A = (int)_wtoi(PointAStr.c_str());
+
+			TravelingPoint temp(B, Point, A);
+
+			_TravelingPoint.push_back(temp);
+		}
+
+	}
+	void EnemyBase::OnEvent(const shared_ptr<Event> &event)
 	{
-		pImpl->SetElement(Elem);
+		if (event->m_MsgStr == L"SelectButton")
+		{
+			auto Active = GetUpdateActive();
+			SetUpdateActive(!Active);
+		}
 	}
 
 	//-------------------------------------------
@@ -224,16 +170,46 @@ namespace basecross
 	IMPLEMENT_SINGLETON_INSTANCE(TravelingState);
     void TravelingState::Enter(const shared_ptr<EnemyBase>&obj)
 	{
-
+		//前回位置がある場合その場所を最初のPointに設定
+		//現在地点か一番近いPointを取得
+		//obj->GetBehavior<EnemyBehavior>()->SetPositon(obj->GetComponent<Transform>()->GetPosition());
+		obj->GetBehavior<EnemyBehavior>()->SetNextPoint();
 	}
 
 	void TravelingState::Execute(const shared_ptr<EnemyBase>&obj)
 	{
-
+		//巡回経路を取得
+		if (obj->GetBehavior<EnemyBehavior>()->TravelingMove(2.0f))
+		{
+			//到達したら次の地点を取得
+			obj->GetBehavior<EnemyBehavior>()->SetNextPoint();
+		}
 	}
 
 	void TravelingState::Exit(const shared_ptr<EnemyBase>&Obj)
 	{
+		//状態遷移時の位置座標を保持
+	}
 
+	void ToyGuards::OnCreate()
+	{
+		auto DrawComp = AddComponent<AreaDraw>();
+		auto TransComp = AddComponent<Transform>();
+
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+
+		TransComp->SetPosition(_Position);
+		TransComp->SetScale(_Scale);
+		TransComp->SetRotation(_Rotate);
+
+		m_SteteMachine.reset(new StateMachine<EnemyBase>(GetThis<ToyGuards>()));
+
+		m_SteteMachine->ChangeState(TravelingState::Instance());
+	}
+
+	void ToyGuards::OnUpdate()
+	{
+		m_SteteMachine->Update();
 	}
 }
