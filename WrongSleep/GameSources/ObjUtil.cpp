@@ -46,4 +46,11 @@ namespace basecross {
 		return V3HS;
 	}
 
+	bool IsNearVecCheck(const Vec3& v1, const Vec3& v2){
+		if (abs(v1.x - v2.x) < 0.01f && abs(v1.y - v2.y) < 0.01 && abs(v1.z - v2.z) < 0.01f) {
+			return true;
+		}
+	return false;
+}
+
 }

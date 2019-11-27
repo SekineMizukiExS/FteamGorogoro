@@ -107,10 +107,10 @@ namespace basecross{
 		for each (auto verPos in m_ButtomVertexs)
 		{
 			CC++;
-			//verPos.position *= worldmat;
-			x = verPos.position.getX();
-			y = verPos.position.getY();
-			z = verPos.position.getZ();
+			Vec3 temp = verPos.position * worldmat;
+			x = temp.getX();
+			y = temp.getY();
+			z = temp.getZ();
 
 			Vertices += (L"x:");
 		Vertices += Util::FloatToWStr(x, 1, Util::FloatModify::Fixed);
@@ -133,18 +133,18 @@ namespace basecross{
 			counts += L",\n";
 		}
 		wstring HalfX(L"HalfX:\t");
-		HalfX += Util::FloatToWStr(m_V3HS._xHalfSizeMin, 5) + L"***";
-		HalfX += Util::FloatToWStr(m_V3HS._xHalfSize, 5);
+		HalfX += Util::FloatToWStr(m_V3HS._xHalfSizeMin, 1, Util::FloatModify::Fixed) + L"***";
+		HalfX += Util::FloatToWStr(m_V3HS._xHalfSize, 1, Util::FloatModify::Fixed);
 		HalfX += L"\n";
 
 		wstring HalfY(L"HalfY:\t");
-		HalfY += Util::FloatToWStr(m_V3HS._yHalfSizeMin, 5) + L"***";
-		HalfY += Util::FloatToWStr(m_V3HS._yHalfSize, 5);
+		HalfY += Util::FloatToWStr(m_V3HS._yHalfSizeMin, 1, Util::FloatModify::Fixed) + L"***";
+		HalfY += Util::FloatToWStr(m_V3HS._yHalfSize, 1, Util::FloatModify::Fixed);
 		HalfY += L"\n";
 
 		wstring HalfZ(L"HalfZ:\t");
-		HalfZ += Util::FloatToWStr(m_V3HS._zHalfSizeMin, 5) + L"***";
-		HalfZ += Util::FloatToWStr(m_V3HS._zHalfSize, 5);
+		HalfZ += Util::FloatToWStr(m_V3HS._zHalfSizeMin, 1, Util::FloatModify::Fixed) + L"***";
+		HalfZ += Util::FloatToWStr(m_V3HS._zHalfSize, 1, Util::FloatModify::Fixed);
 		HalfZ += L"\n";
 
 		wstring vCount(L"vCount:\t");
@@ -168,7 +168,9 @@ namespace basecross{
 		//auto inPut = GetInputState();
 		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
 		if (KeyState.m_bPressedKeyTbl['F']) {
-			m_nowSize.y += 1.0f;
+			if (m_usingSize > m_nowSize.y) {
+				m_nowSize.y += 1.0f;
+			}
 		}
 		if (KeyState.m_bPressedKeyTbl['X']) {
 			m_nowSize.y -= 1.0f;
@@ -180,9 +182,9 @@ namespace basecross{
 
 		auto transPtr = GetComponent<Transform>();
 		auto nowPos = transPtr->GetPosition();
-		if (nowPos.y < 0.5f) {
+		/*if (nowPos.y < 0.5f) {
 			transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
-		}
+		}*/
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
 		//auto ptrString = GetComponent<StringSprite>();
@@ -199,6 +201,7 @@ namespace basecross{
 			auto ptrTransform = GetComponent<Transform>();
 			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
 			Vec3 HitPoint;
+			m_usingSize += 1;
 			obj->SetUpdateActive(false);
 			obj->SetDrawActive(false);
 		}
@@ -310,11 +313,20 @@ namespace basecross{
 			m_ButtomVertexs.clear();
 			for each (auto verPos in verteces)
 			{
+				bool flg = false;
 				//verPos.position *= worldmat;
 				Vec3 tempVer = verPos.position * worldmat;
 				float miny = tempVer.getY();
-				if (miny <= m_V3HS._yHalfSizeMin) {
-					m_ButtomVertexs.push_back(verPos);
+				for each(auto ver2 in m_ButtomVertexs) {
+					if (IsNearVecCheck(verPos.position, ver2.position)) {
+						flg = true;
+						break;
+					}
+				}
+				if (!flg) {
+					if (miny <= m_V3HS._yHalfSizeMin) {
+						m_ButtomVertexs.push_back(verPos);
+					}
 				}
 			}
 		}
@@ -329,30 +341,30 @@ namespace basecross{
 		for each (auto verPos in m_ButtomVertexs)
 		{
 			Vec3 tempver = verPos.position * worldmat;
-			float maxx = tempver.x;
-			float maxy = tempver.y;
-			float maxz = tempver.z;
-			float minx = tempver.x;
-			float miny = tempver.y;
-			float minz = tempver.z;
-			if (maxx > m_V3HS._xHalfSize) {
+			float maxx = m_V3HS._xHalfSize - tempver.x;
+			float maxy = m_V3HS._yHalfSize - tempver.y;
+			float maxz = m_V3HS._zHalfSize - tempver.z;
+			float minx = tempver.x - m_V3HS._xHalfSizeMin;
+			float miny = tempver.y - m_V3HS._yHalfSizeMin;
+			float minz = tempver.z - m_V3HS._zHalfSizeMin;
+			if (maxx < 0.1f) {
 				angleCount[3] ++;
 			}
-			if (maxy > m_V3HS._yHalfSize) {
+			if (maxy < 0.1f) {
 				angleCount[4] ++;
 			}
-			if (maxz > m_V3HS._zHalfSize) {
+			if (maxz < 0.1f) {
 				angleCount[0] ++;
 			}
 			//’ê–Ê‚Åã‘‚«‚µ‚Ä‚¢‚­
-			if (minx < m_V3HS._xHalfSizeMin) {
+			if (minx < 0.1f) {
 				angleCount[2] ++;
 			}
-			if (miny < m_V3HS._yHalfSizeMin) {
+			if (miny < 0.1f) {
 				angleCount[5] ++;
 
 			}
-			if (minz < m_V3HS._zHalfSizeMin) {
+			if (minz < 0.1f) {
 				angleCount[1] ++;
 			}
 		}
@@ -399,11 +411,21 @@ namespace basecross{
 		Vec3 nowPos = ptr->GetPosition();
 		//Vec3 nextPos = nowPos + (extAngle * 0.1f);
 		if (m_nowSize.y > tempVec.y) {
-			ptr->SetScale(tempVec.x, tempVec.y + 0.1f, tempVec.z);
-			ptr->SetPosition(nowPos + (extAngle * 0.1f));
+			if (m_nowSize.y - tempVec.y >= 0.1f) {
+				ptr->SetScale(tempVec.x, tempVec.y + 0.1f, tempVec.z);
+				ptr->SetPosition(nowPos + (extAngle * 0.1f));
+			}
+			else {
+				ptr->SetScale(tempVec.x, m_nowSize.y, tempVec.z);
+			}
 		}else if (m_nowSize.y < tempVec.y) {
-			ptr->SetScale(tempVec.x, tempVec.y - 0.1f, tempVec.z);
-			ptr->SetPosition(nowPos + (extAngle * -0.1f));
+			if (tempVec.y - m_nowSize.y >= 0.1f) {
+				ptr->SetScale(tempVec.x, tempVec.y - 0.1f, tempVec.z);
+				ptr->SetPosition(nowPos + (extAngle * -0.1f));
+			}
+			else {
+				ptr->SetScale(tempVec.x, m_nowSize.y, tempVec.z);
+			}
 		}
 	}
 
