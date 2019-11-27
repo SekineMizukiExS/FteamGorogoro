@@ -61,6 +61,8 @@ namespace basecross{
 		int m_count = 0;
 		int angleCount[7];
 		int m_vCount = 0;
+		int m_usingSize = 2;//現在使用可能なサイズ容量、２が初期値
+
 	public:
 		//構築と破棄
 //--------------------------------------------------------------------------------------
