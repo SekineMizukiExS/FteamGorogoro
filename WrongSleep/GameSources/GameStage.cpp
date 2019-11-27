@@ -267,6 +267,46 @@ namespace basecross {
 		}
 	}
 
+	void TestStage::CreateCommonBox() {
+		vector< vector<Vec3> > vec = {
+			//{
+			//	Vec3(50.0f, 1.0f, 50.0f),
+			//	Vec3(0.0f, 0.0f, 0.0f),
+			//	Vec3(0.0f, -0.5f, 0.0f)
+			//},
+			{
+				Vec3(1.0f, 1.0f, 1.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(10.0f, 0.5f, 3.0f)
+			},
+			{
+				Vec3(1.0f, 1.0f, 1.0f),
+				Vec3(0.0f, 0.0f, 0.0f),
+				Vec3(15.0f, 0.5f, 2.0f)
+			},
+
+			{
+				Vec3(1.0f, 1.0f, 1.0f),
+				Vec3(0, 0, 0),
+				Vec3(10.0f, 0.5f, 1.0f)
+			},
+			{
+				Vec3(1.0f, 1.0f, 1.0f),
+				Vec3(0, 0, 0),
+				Vec3(-10.0f, 0.5f, -5.0f)
+			},
+			{
+				Vec3(1.0f, 1.0f, 1.0f),
+				Vec3(-0.5f, 0.0f, -0.5f),
+				Vec3(-10.0f, 0.5f, -3.0f)
+			},
+		};
+		//オブジェクトの作成
+		for (auto v : vec) {
+			AddGameObject<CommonBox>(v[0],v[1], v[2], L"LeafMatB_TX", L"Apple_MD");
+		}
+	}
+
 	void TestStage::CreateStageObject()
 	{
 		//ゲームオブジェクトビルダー
@@ -306,6 +346,9 @@ namespace basecross {
 			//CreateFixedBox();
 			//CreateTilingFixedBox();
 			//CreateCMeshBox();
+			//CreateTilingFixedBox();
+			CreateCMeshBox();
+			CreateCommonBox();
 			CreateStageObject();
 			
 			//_Ts= AddGameObject<Futon>();

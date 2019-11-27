@@ -63,7 +63,7 @@ namespace basecross {
 		void CreateTilingFixedBox();
 		//カスタムメッシュボックスの作成
 		void CreateCMeshBox();
-
+		void CreateCommonBox();
 		void CreateStageObject();
 
 		void ToMyCamera();

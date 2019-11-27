@@ -215,5 +215,49 @@ namespace basecross{
 		//ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 	}
+
+	//--------------------------------------------------------------------------------------
+//	class CommonBox : public GameObject;
+//--------------------------------------------------------------------------------------
+//構築と破棄
+	CommonBox::CommonBox(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Scale,
+		const Vec3& Rotation,
+		const Vec3& Position,
+		const wstring TexKey,
+		const wstring MeshKey
+
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Rotation(Rotation),
+		m_Position(Position),
+		_TexKey(TexKey),
+		_MeshKey(MeshKey)
+	{
+	}
+	CommonBox::~CommonBox() {}
+
+	//初期化
+	void CommonBox::OnCreate() {
+		auto ptrTransform = GetComponent<Transform>();
+		ptrTransform->SetScale(m_Scale);
+		ptrTransform->SetRotation(m_Rotation);
+		ptrTransform->SetPosition(m_Position);
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
+		//タグをつける
+		AddTag(L"CommonBox");
+		//影をつける（シャドウマップを描画する）
+		auto shadowPtr = AddComponent<Shadowmap>();
+		//影の形（メッシュ）を設定
+		shadowPtr->SetMeshResource(_MeshKey);
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		ptrDraw->SetMeshResource(_MeshKey);
+		ptrDraw->SetTextureResource(_TexKey);
+		//ptrDraw->SetFogEnabled(true);
+		ptrDraw->SetOwnShadowActive(true);
+	}
 }
 //end basecross

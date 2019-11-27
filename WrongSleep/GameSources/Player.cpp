@@ -103,8 +103,10 @@ namespace basecross{
 		float y;
 		float z;
 		wstring Vertices(L"ButtomVertices:\t");
+		int CC = 0;
 		for each (auto verPos in m_ButtomVertexs)
 		{
+			CC++;
 			//verPos.position *= worldmat;
 			x = verPos.position.getX();
 			y = verPos.position.getY();
@@ -116,7 +118,9 @@ namespace basecross{
 		Vertices += Util::FloatToWStr(y, 1, Util::FloatModify::Fixed);
 		Vertices += (L"z:");
 		Vertices += Util::FloatToWStr(z, 1, Util::FloatModify::Fixed);
-		Vertices += L"\n";
+			if (CC % 2 == 1) {
+				Vertices += L"\n";
+			}
 		}
 		wstring VerticesC(L"ButtomVerticesCount:\t");
 		VerticesC += Util::FloatToWStr(m_ButtomVertexs.size(), 5);
@@ -173,10 +177,31 @@ namespace basecross{
 		if (m_nowSize.y <= 1) {
 			m_nowSize.y = 1.0f;
 		}
+
+		auto transPtr = GetComponent<Transform>();
+		auto nowPos = transPtr->GetPosition();
+		if (nowPos.y < 0.5f) {
+			transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
+		}
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
 		//auto ptrString = GetComponent<StringSprite>();
 		//ptrString->SetText(tempQtx);
+
+	}
+	//================接触処理=========================
+		//何かにヒットした時
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& other) {
+
+		//ヒットしている物がコモンボックスなら *関数にできる
+		auto obj = dynamic_pointer_cast<CommonBox>(other);
+		if (obj) {
+			auto ptrTransform = GetComponent<Transform>();
+			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
+			Vec3 HitPoint;
+			obj->SetUpdateActive(false);
+			obj->SetDrawActive(false);
+		}
 
 	}
 
