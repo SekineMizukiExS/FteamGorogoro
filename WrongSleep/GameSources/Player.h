@@ -75,6 +75,8 @@ namespace basecross{
 		virtual void OnCreate() override;
 		//更新
 		virtual void OnUpdate() override;
+		//接触処理
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& other) override;
 
 		void DebugLine();
 		//接地面の四辺を取得し、メンバ変数に代入する。
