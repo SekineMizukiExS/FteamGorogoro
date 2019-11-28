@@ -9,6 +9,8 @@ namespace basecross {
 		float _xHalfSizeMin = 99999;
 		float _yHalfSizeMin = 99999;
 		float _zHalfSizeMin = 99999;
+
+		void GetFourEdge(const shared_ptr <Transform> &trans, const shared_ptr<AreaDraw> &draw);
 	};
 
 	Vec3HalfSizes GetFourEdge(shared_ptr <Transform> trans, shared_ptr<BcPNTStaticDraw> draw);

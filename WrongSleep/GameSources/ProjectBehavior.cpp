@@ -245,17 +245,18 @@ namespace basecross {
 	//struct TravelingPoint;
 	bool EnemyBehavior::TravelingMove(float MoveTime)
 	{
-		float ElapsedTime = App::GetApp()->GetElapsedTime();
-		_TotalTime += ElapsedTime;
-		if (_TotalTime > MoveTime) {
-			_TotalTime = 0;
-			return true;
-		}
-		Easing<Vec3> easing;
-		auto TgtPos = easing.EaseInOut(EasingType::Cubic, _CurrntPos, _MovePoint, _TotalTime, MoveTime);
-		auto ptrTrans = GetGameObject()->GetComponent<Transform>();
-		ptrTrans->SetPosition(TgtPos);
-		return false;
+		//float ElapsedTime = App::GetApp()->GetElapsedTime();
+		//_TotalTime += ElapsedTime;
+		//if (_TotalTime > MoveTime) {
+		//	_TotalTime = 0;
+		//	return true;
+		//}
+		//Easing<Vec3> easing;
+		//auto MoveForce = easing.EaseInOut(EasingType::Cubic, _CurrntPos, _MovePoint, _TotalTime, MoveTime);
+		////auto MoveForce = _MovePoint - _CurrntPos;
+		////MoveForce.normalize();
+		//RotateMove(MoveForce);
+		return RotateMove();
 	}
 
 	void EnemyBehavior::SetNextPoint()
@@ -274,6 +275,136 @@ namespace basecross {
 		_CurrntPos = CurrntPosition;
 		return result;
 	}
+
+	//移動関数
+	bool EnemyBehavior::RotateMove()
+	{
+		auto TransComp = GetGameObject()->GetComponent<Transform>();
+		auto DrawComp = GetGameObject()->GetComponent<AreaDraw>();
+		Vec3HalfSizes Test;
+		Vec3 nowPos = TransComp->GetPosition();
+		float maxrot = 0.5f * XM_PI;
+
+		//Key判定
+		if (Search(_MovePoint))
+		{
+			//めり込み直し
+			if (TransComp->GetPosition().y <= 0.5) {
+				auto temppos = TransComp->GetPosition();
+				TransComp->SetPosition(temppos.x, 0.5f, temppos.z);
+			}
+			if (_RotActive) {
+				if (_count < 5) {
+					TransComp->RotateAround(_RotPoint, _RotAxis, 0.1f * XM_PI, nowPos);
+					_count += 1;
+				}
+				else {
+
+					_count = 0;
+					_RotActive = false;
+
+				}
+			}
+			else
+			{
+				//NextCellのXZを比較する
+				//小さいほうから操作
+				if (_CellIndex == _TargetCellIndex) return true;
+
+				auto X = _CellPath[_NextCellIndex].x - _CellPath[_CellIndex].x;
+				auto Z = _CellPath[_NextCellIndex].z - _CellPath[_CellIndex].z;
+				
+				if (abs(X) > abs(Z))
+				{
+					//X
+					if (X > 0)//+
+					{
+						Test.GetFourEdge(TransComp, DrawComp);
+						nowPos = TransComp->GetPosition();
+						_RotPoint = Vec3(Test._xHalfSize, Test._yHalfSizeMin, 0.0f);
+						_RotAxis = Vec3(0, 0, 1);
+						_RotActive = true;
+					}
+					else if (X < 0)//-
+					{
+						Test.GetFourEdge(TransComp, DrawComp);
+						nowPos = TransComp->GetPosition();
+						_RotPoint = Vec3(Test._xHalfSizeMin, Test._yHalfSizeMin, 0.0f);
+						_RotAxis = Vec3(0, 0, -1);
+						_RotActive = true;
+
+					}
+				}
+				else
+				{
+					//Z
+					if (Z > 0)//+
+					{
+						Test.GetFourEdge(TransComp, DrawComp);
+						nowPos = TransComp->GetPosition();
+						_RotPoint = Vec3(0.0f, Test._yHalfSizeMin, Test._zHalfSize);
+						_RotAxis = Vec3(-1, 0, 0);
+						_RotActive = true;
+
+					}
+					else if (Z < 0)//-
+					{
+						Test.GetFourEdge(TransComp, DrawComp);
+						nowPos = TransComp->GetPosition();
+						_RotPoint = Vec3(0.0f, Test._yHalfSizeMin, Test._zHalfSizeMin);
+						_RotAxis = Vec3(1, 0, 0);
+						_RotActive = true;
+					}
+
+				}
+			}
+		}
+
+		//エネミーのAABB
+		Test.GetFourEdge(TransComp, DrawComp);
+		AABB TestAABB = AABB(Vec3(Test._xHalfSizeMin, Test._yHalfSizeMin, Test._zHalfSizeMin), Vec3(Test._xHalfSize, Test._yHalfSize, Test._zHalfSize));
+		//MovePointのAABB
+		AABB PointAABB = AABB(_MovePoint, 1, 1, 1);
+		if (HitTest::AABB_AABB_NOT_EQUAL(TestAABB,PointAABB))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	//ターゲットのセルを検索する
+	bool EnemyBehavior::Search(const Vec3& TargetPos)
+	{
+		auto MapPtr = EnemyBase::GetCellMap().lock();
+		if (MapPtr) {
+			auto PathPtr = GetGameObject()->GetComponent<PathSearch>();
+			_CellPath.clear();
+			//パス検索をかける
+			if (PathPtr->SearchCell(TargetPos, _CellPath)) {
+				//検索が成功した
+				_CellIndex = 0;
+				_TargetCellIndex = (int)(_CellPath.size() - 1);
+				if (_CellIndex == _TargetCellIndex) {
+					//すでに同じセルにいる
+					_NextCellIndex = _CellIndex;
+				}
+				else {
+					//離れている
+					_NextCellIndex = _CellIndex + 1;
+
+				}
+				return true;
+			}
+			else {
+				//失敗した
+				_CellIndex = -1;
+				_NextCellIndex = -1;
+				_TargetCellIndex = -1;
+			}
+		}
+		return false;
+	}
+
 }
 
 //end basecross

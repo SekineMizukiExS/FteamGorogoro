@@ -73,6 +73,9 @@ namespace basecross
 	//-------------------------------------------
 	//EnemyƒNƒ‰ƒX‚ÌÀ‘•
 	//-------------------------------------------
+	//Static•Ï”‚ÌÀ‘Ì
+	weak_ptr<StageCellMap> EnemyBase::_CellMap;
+
 	EnemyBase::EnemyBase(const shared_ptr<Stage>&Stage)
 		:GameObject(Stage)
 	{
@@ -206,6 +209,22 @@ namespace basecross
 		m_SteteMachine.reset(new StateMachine<EnemyBase>(GetThis<ToyGuards>()));
 
 		m_SteteMachine->ChangeState(TravelingState::Instance());
+
+		//Œo˜H’Tõ
+		auto MapPtr = _CellMap.lock();
+		if (MapPtr)
+		{
+			AddComponent<PathSearch>(MapPtr);
+		}
+		else
+		{
+			throw BaseException(
+				L"CellMap‚ª‚ ‚è‚Ü‚¹‚ñ",
+				L"Enemy.cpp",
+				L"EnemyBase::OnCreate()"
+			);
+		}
+
 	}
 
 	void ToyGuards::OnUpdate()

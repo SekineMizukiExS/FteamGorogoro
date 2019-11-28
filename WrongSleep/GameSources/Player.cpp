@@ -468,7 +468,7 @@ namespace basecross{
 		}
 		else if (moveX > 0)
 		{
-			m_V3HS = GetFourEdge(transptr,drawptr);
+			GetInFourEdge();
 			nowPos = transptr->GetPosition();
 			m_rotatePoint = Vec3(m_V3HS._xHalfSize, m_V3HS._yHalfSizeMin, 0.0f);
 			m_rotateAxis = Vec3(0, 0, 1);
