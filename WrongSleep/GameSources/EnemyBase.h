@@ -92,11 +92,23 @@ namespace basecross
 			return _TravelingPoint;
 		}
 
+		//static ゲッター
+		const static weak_ptr<StageCellMap> GetCellMap() { return _CellMap; }
+
+		//static セッター
+		const static void SetCellMap(const shared_ptr<StageCellMap> &CellMap)
+		{
+			_CellMap = CellMap;
+		}
+
 	protected:
 		friend EnemyManager;
 
 		//ステートマシン
 		unique_ptr<StateMachine<EnemyBase>> m_SteteMachine;
+
+		//ステージセルマップ
+		static weak_ptr<StageCellMap> _CellMap;
 
 		//unique_ptr<EnemyParam>pImpl;
 		//TODO

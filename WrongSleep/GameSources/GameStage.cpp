@@ -306,8 +306,16 @@ namespace basecross {
 			//CreateFixedBox();
 			//CreateTilingFixedBox();
 			//CreateCMeshBox();
+			float PieceSize = 3.0f;
+			UINT mapSizeUint = 35;
+			auto Ptr = AddGameObject<StageCellMap>(Vec3(-50.0f, 0.0f, -50.0f), PieceSize, mapSizeUint, mapSizeUint);
+			Ptr->SetDrawActive(true);
+
+			EnemyBase::SetCellMap(Ptr);
+
 			CreateStageObject();
 			
+
 			//_Ts= AddGameObject<Futon>();
 			//AddGameObject<Futon>();
 			//Test

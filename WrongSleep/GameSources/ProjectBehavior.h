@@ -223,7 +223,7 @@ namespace basecross {
 	{
 	public:
 		EnemyBehavior(const shared_ptr<GameObject>&GameObjectPtr)
-			:Behavior(GameObjectPtr), NextKey(0)
+			:Behavior(GameObjectPtr), NextKey(0), _RotActive(false),_MoveActive(false), _count(0), _RotPoint(Vec3(0)), _RotAxis(Vec3(0))
 		{}
 		
 		//移動完了したらTRUE
@@ -246,6 +246,18 @@ namespace basecross {
 		//一番近い座標を返す
 		Vec3 GetPoint(const Vec3& CurrntPosition, const vector<TravelingPoint>& Point);
 
+		//回転移動
+		bool RotateMove();
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	目的の場所をサーチする
+		@param[in]	ActiveObject	呼び出したオブジェクト
+		@param[in]	TargetPos	目的の箇所
+		@return	セル上に見つかったらtrue
+		*/
+		//--------------------------------------------------------------------------------------
+		bool Search(const Vec3& TargetPos);
+
 		//現在位置
 		Vec3 _CurrntPos;
 		//状態遷移時の位置
@@ -258,6 +270,24 @@ namespace basecross {
 		float _TotalTime;
 		//TargetObject(プレイヤー)
 		shared_ptr<GameObject> _TargetObject;
+
+		//移動変数
+		//回転中はTrue
+		bool _RotActive;
+		bool _MoveActive;
+		int _count;
+		Vec3 _RotPoint;
+		Vec3 _RotAxis;
+		bool _XActive = false, _ZActive = false;
+		int key = 1;
+
+		//セルマップ
+		vector<CellIndex> _CellPath;
+
+		int _CellIndex;
+		int _NextCellIndex;
+		int _TargetCellIndex;
+
 	};
 	//！
 }
