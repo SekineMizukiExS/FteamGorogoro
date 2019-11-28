@@ -131,7 +131,7 @@ namespace basecross
 		
 		//巡回ポジションノード
 		auto MovePNode = XmlDocReader::GetSelectSingleNode(pNode, L"MovePoint");
-		auto PointNodes = XmlDocReader::GetSelectSingleNode(MovePNode, L"Pos");
+		auto PointNodes = XmlDocReader::GetSelectSingleNode(MovePNode, L"Point");
 		auto POINTDATANODE = XmlDocReader::GetSelectNodes(PointNodes, L"POINTDATA");
 		auto PNCount = XmlDocReader::GetLength(POINTDATANODE);
 		for (int i = 0; i < PNCount; i++)

@@ -9,6 +9,19 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
+	//	ステージベースクラス
+	//--------------------------------------------------------------------------------------
+	void StageBase::OnUpdate()
+	{
+		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->OnUpdate();
+	}
+
+	void StageBase::OnDraw()
+	{
+		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->OnDraw();
+	}
+
+	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
@@ -317,7 +330,7 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"TestStageVer2";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"StageMapVer3";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");

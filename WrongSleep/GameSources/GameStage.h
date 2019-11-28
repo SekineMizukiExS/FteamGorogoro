@@ -9,6 +9,24 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
+	//	ステージベースクラス
+	//--------------------------------------------------------------------------------------
+	class StageBase : public Stage {
+		//ビューの作成
+		virtual void CreateViewLight() = 0;
+
+	public:
+		//構築と破棄
+		StageBase() :Stage() {}
+		virtual ~StageBase() {}
+		//初期化
+		virtual void OnCreate()override = 0;
+		//更新
+		virtual void OnUpdate()override;
+		//描画
+		virtual void OnDraw()override;
+	};
+	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
@@ -46,7 +64,7 @@ namespace basecross {
 	//	TestStageクラス
 	//--------------------------------------------------------------------------------------
 	class Futon;
-	class TestStage :public Stage
+	class TestStage :public StageBase
 	{
 		//オープニングのボスへのフォーカス用ビュー
 		shared_ptr<SingleView> m_MyCameraView;
@@ -73,7 +91,7 @@ namespace basecross {
 		shared_ptr<Futon> _Ts;
 	public:
 		//構築と破棄
-		TestStage() :Stage() {}
+		TestStage() :StageBase() {}
 		virtual ~TestStage() {}
 		//初期化
 		virtual void OnCreate()override;

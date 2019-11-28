@@ -223,7 +223,7 @@ namespace basecross {
 	{
 	public:
 		EnemyBehavior(const shared_ptr<GameObject>&GameObjectPtr)
-			:Behavior(GameObjectPtr), NextKey(0), _RotActive(false),_MoveActive(false), _count(0), _RotPoint(Vec3(0)), _RotAxis(Vec3(0))
+			:Behavior(GameObjectPtr), _NextKey(0), _RotActive(false),_MoveActive(false),_TestMove(true), _count(0), _RotPoint(Vec3(0)), _RotAxis(Vec3(0))
 		{}
 		
 		//移動完了したらTRUE
@@ -265,7 +265,7 @@ namespace basecross {
 		//目的地
 		Vec3 _MovePoint;
 		//次のPointのkey;
-		int NextKey;
+		int _NextKey;
 		//経過時間
 		float _TotalTime;
 		//TargetObject(プレイヤー)
@@ -275,6 +275,7 @@ namespace basecross {
 		//回転中はTrue
 		bool _RotActive;
 		bool _MoveActive;
+		bool _TestMove;
 		int _count;
 		Vec3 _RotPoint;
 		Vec3 _RotAxis;

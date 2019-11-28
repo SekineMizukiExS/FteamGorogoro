@@ -5,6 +5,7 @@
 */
 #pragma once
 #include "stdafx.h"
+#include "EfkInterface.h"
 
 namespace basecross {
 
@@ -1071,6 +1072,16 @@ namespace basecross {
 		*/
 		//--------------------------------------------------------------------------------------
 		shared_ptr<AudioResource> RegisterWav(const wstring& Key, const wstring& WavFileName);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief Wavリソースの登録(同じキーのWavリソースがなければファイル名で作成し、登録)。<br />
+		同じ名前のWavリソースがあればそのポインタを返す
+		@param[in]	Key リソースキー
+		@param[in]	WavFileName テクスチャファイル名
+		@return	リソースのスマートポインタ
+		*/
+		//--------------------------------------------------------------------------------------
+		shared_ptr<EffectResource> RegisterEffect(const wstring& key, const wstring& EfkFileName, const shared_ptr<EfkInterface>&efkInterface, float magnification = 1.0f);
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief リソースの確認
