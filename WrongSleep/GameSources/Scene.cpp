@@ -20,6 +20,9 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
+			//エフェクトインターフェイス生成
+			_EfkInterface = ObjectFactory::Create<EfkInterface>();
+
 			SetTextures();
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTestStage");
 		}
@@ -71,9 +74,15 @@ namespace basecross{
 		else if (event->m_MsgStr == L"ToTestStage")
 		{
 			//TestStage
-			ResetActiveStage<TestStage>();
-		}
-	}
+			auto StagePtr = ResetActiveStage<TestStage>();
 
+			if (!GameManager::MakeCheck())
+			{
+				GameManager::CreateManager(StagePtr);
+			}
+
+		}
+
+	}
 }
 //end basecross
