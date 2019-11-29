@@ -52,8 +52,8 @@ namespace basecross{
 		Vec3 m_rotateAxis = Vec3(0, 0, 0);
 
 		//接地面の四辺を格納して置く構造体
-		Vec3HalfSizes m_V3HS;
-		Vec3 m_Buttom;
+		Vec3HalfSizes m_V3HS = {0};
+		Vec3 m_Buttom = Vec3(0,0,0);
 		vector<VertexPosition> m_ButtomVertexs;
 
 		Vec3 m_nowSize = Vec3(1, 1, 1);
@@ -61,7 +61,7 @@ namespace basecross{
 		int m_count = 0;
 		int angleCount[7];
 		int m_vCount = 0;
-		int m_usingSize = 2;//現在使用可能なサイズ容量、２が初期値
+		int m_usingSize = 3;//現在使用可能なサイズ容量、２が初期値
 
 	public:
 		//構築と破棄
