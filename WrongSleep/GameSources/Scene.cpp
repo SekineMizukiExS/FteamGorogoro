@@ -37,7 +37,9 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"LeafMatB_TX", mediaPath + L"Textures/" + L"leafmatBlack_tx.png");
 		App::GetApp()->RegisterTexture(L"Player_TX", mediaPath + L"Textures/" + L"Tx_Player.png");
 		App::GetApp()->RegisterTexture(L"RedApple_TX", mediaPath + L"Textures/" + L"Tx_RedApple.png");
-
+		App::GetApp()->RegisterTexture(L"clearG_TX", mediaPath + L"Textures/" + L"clearGreen.png");
+		App::GetApp()->RegisterTexture(L"clearmat_TX", mediaPath + L"Textures/" + L"clearmat.png");
+		App::GetApp()->RegisterTexture(L"skybox_TX", mediaPath + L"Textures/" + L"skybox_tx.png");
 
 		auto modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"MatTest.bmf",true);
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
@@ -47,7 +49,11 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"Mat_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Apple2.bmf",true);
 		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"skyboxObj.bmf", true);
+		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
 
+		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"MitaGTmodels/", L"ValkylyeModel_TypeC_Valkylye.bmf", true);
+		//App::GetApp()->RegisterResource(L"MITAGTV_MD", multiModelMesh);
 	}
 
 	Scene::~Scene() {

@@ -27,6 +27,7 @@ namespace basecross{
 
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetText(L"");
+		ptrString->SetFont(L"x8y12pxTheStrongGamer",24);
 		ptrString->SetTextRect(Rect2D<float>(320.0f, 50.0f, 640.0f, 640.0f));
 
 
@@ -47,7 +48,7 @@ namespace basecross{
 		//GetStage()->SetUpdatePerformanceActive(true);
 		//GetStage()->SetDrawPerformanceActive(true);
 
-		ptr->SetScale(1.0f, 1.0f, 1.0f);	//直径225センチの球体
+		ptr->SetScale(2.0f, 2.0f, 2.0f);	//直径225センチの球体
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(8.5f, 7.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
@@ -65,12 +66,13 @@ namespace basecross{
 		//ptrDraw->SetMeshResource(L"Player_MD");
 		//ptrDraw->SetMeshResource(L"Apple_MD");
 		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
-		ptrDraw->SetFogEnabled(true);
+		//ptrDraw->SetFogEnabled(true);
 		//描画するテクスチャを設定
-		//ptrDraw->SetTextureResource(L"TRACE_TX");
+		ptrDraw->SetTextureResource(L"clearmat_TX");
 		//SetAlphaActive(true);
 		//ptrDraw->SetTextureResource(L"RedApple_TX");
 		SetAlphaActive(true);
+		ptrDraw->SetEmissive(Flt4(0.25f,0.25f,1,1));
 		
 		GetInFourEdge(true);
 		Vec3 buttomPos = ptr->GetPosition();
@@ -407,9 +409,10 @@ namespace basecross{
 	void Player::BoxExtending() {
 		auto ptr = AddComponent<Transform>();
 		Vec3 tempVec = ptr->GetScale();
-		Vec3 extAngle = GetExtendingAngle();
+		Vec3 extAngle = GetExtendingAngle();//伸びる方向の取得
 		Vec3 nowPos = ptr->GetPosition();
 		//Vec3 nextPos = nowPos + (extAngle * 0.1f);
+		//目標サイズと比較してまだ小さいならスケールを大きくする
 		if (m_nowSize.y > tempVec.y) {
 			if (m_nowSize.y - tempVec.y >= 0.1f) {
 				ptr->SetScale(tempVec.x, tempVec.y + 0.1f, tempVec.z);
@@ -418,7 +421,7 @@ namespace basecross{
 			else {
 				ptr->SetScale(tempVec.x, m_nowSize.y, tempVec.z);
 			}
-		}else if (m_nowSize.y < tempVec.y) {
+		}else if (m_nowSize.y < tempVec.y) {//目標サイズより小さい場合はスケールを減らす。
 			if (tempVec.y - m_nowSize.y >= 0.1f) {
 				ptr->SetScale(tempVec.x, tempVec.y - 0.1f, tempVec.z);
 				ptr->SetPosition(nowPos + (extAngle * -0.1f));

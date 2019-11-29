@@ -63,7 +63,7 @@ namespace basecross {
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
-		PtrMultiLight->SetDefaultLighting();
+		PtrMultiLight->SetDefaultLighting2();
 	}
 
 	void StartStage::OnCreate() {
@@ -357,6 +357,11 @@ namespace basecross {
 
 			CreateStageObject();
 			
+
+			//スカイボックス作成
+			//AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
+
+			//AddGameObject<CBoneMeshBox>(Vec3(1, 1, 1), Vec3(0, 0, 0), Vec3(0, 0, 0),L"MITAGTV_MD");
 
 			//_Ts= AddGameObject<Futon>();
 			//AddGameObject<Futon>();
