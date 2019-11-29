@@ -11,6 +11,11 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ステージベースクラス
 	//--------------------------------------------------------------------------------------
+	void StageBase::OnCreate()
+	{
+
+	}
+
 	void StageBase::OnUpdate()
 	{
 		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->OnUpdate();
@@ -65,7 +70,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void StartStage::CreateViewLight()
 	{
-		const Vec3 eye(0.0f, 5.0f, -5.0f);
+		const Vec3 eye(50.0f, 0.0f, 0.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
@@ -83,6 +88,7 @@ namespace basecross {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
+			//AddGameObject<TitleUI>(1280, 800, Vec2(0, 0), 0, L"Test_TX");
 		}
 		catch (...) {
 			throw;
@@ -353,14 +359,13 @@ namespace basecross {
 		try {
 			//ビューとライトの作成
 			SetPhysicsActive(true);
-			AddGameObject<GameManager>();
 			CreatePlayer();
 			CreateViewLight();
 			//CreateFixedBox();
 			//CreateTilingFixedBox();
 			//CreateCMeshBox();
 			//CreateTilingFixedBox();
-			//CreateCommonBox();
+			CreateCommonBox();
 			float PieceSize = 3.0f;
 			UINT mapSizeUint = 35;
 			auto Ptr = AddGameObject<StageCellMap>(Vec3(-50.0f, 0.0f, -50.0f), PieceSize, mapSizeUint, mapSizeUint);
@@ -368,6 +373,7 @@ namespace basecross {
 
 			EnemyBase::SetCellMap(Ptr);
 
+			AddGameObject<DebugObj>();
 			CreateStageObject();
 			
 

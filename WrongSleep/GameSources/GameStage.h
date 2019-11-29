@@ -9,7 +9,7 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ステージベースクラス
+	//	ステージベースクラス（エフェクトの更新・描画）
 	//--------------------------------------------------------------------------------------
 	class StageBase : public Stage {
 		//ビューの作成
@@ -20,7 +20,7 @@ namespace basecross {
 		StageBase() :Stage() {}
 		virtual ~StageBase() {}
 		//初期化
-		virtual void OnCreate()override = 0;
+		virtual void OnCreate()override;
 		//更新
 		virtual void OnUpdate()override;
 		//描画
@@ -97,6 +97,8 @@ namespace basecross {
 		virtual void OnCreate()override;
 
 		virtual void OnUpdate()override;
+
+		void OnDraw()override {}
 
 		shared_ptr<MultiView>GetMultiView()const
 		{

@@ -3,7 +3,63 @@
 
 namespace basecross 
 {
+	//static変数実体
+	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
+
+	//シングルトン構築
+	unique_ptr<GameManager, GameManager::GMDeleter>& GameManager::CreateManager(const shared_ptr<Stage>&StagePtr) {
+		try {
+			if (m_Ins.get() == 0) {
+				//自分自身の構築
+				m_Ins.reset(new GameManager(StagePtr));
+
+			}
+			return m_Ins;
+		}
+		catch (...) {
+			throw;
+		}
+	}
+
+	//シングルトンアクセサ
+	unique_ptr < GameManager, GameManager::GMDeleter > & GameManager::GetManager() {
+		try {
+			if (m_Ins.get() == 0) {
+				throw BaseException(
+					L"マネージャーがまだ作成されてません",
+					L"if (m_Ins.get() == 0)",
+					L"GameManager::GetManager()"
+				);
+			}
+			return m_Ins;
+		}
+		catch (...) {
+			throw;
+		}
+
+	}
+
+	bool GameManager::MakeCheck() {
+		if (m_Ins.get() == 0) {
+			return false;
+		}
+		return true;
+	}
+
+	//強制破棄
+	void GameManager::DeleteManager() {
+		if (m_Ins.get()) {
+			m_Ins.reset();
+		}
+	}
+
+
 	void GameManager::OnCreate()
+	{
+
+	}
+
+	void DebugObj::OnCreate()
 	{
 		//Debug
 		auto ptrString = AddComponent<StringSprite>();
@@ -14,22 +70,10 @@ namespace basecross
 		GetStage()->SetCollisionPerformanceActive(true);
 		GetStage()->SetUpdatePerformanceActive(true);
 		GetStage()->SetDrawPerformanceActive(true);
-
 	}
 
-	void GameManager::OnUpdate()
+	void DebugObj::OnUpdate()
 	{
-		DebugLine();
-	}
-
-	void GameManager::DebugLine()
-	{
-		//auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
-		//wstring FPS(L"FPS: ");
-		//FPS += Util::UintToWStr(fps) + L"\n";
-		//auto ptrString = GetComponent<StringSprite>();
-		//ptrString->SetText(FPS);
-				//文字列表示
 		auto fps = App::GetApp()->GetStepTimer().GetFramesPerSecond();
 		wstring fpsStr(L"FPS: ");
 		fpsStr += Util::UintToWStr(fps);
@@ -63,11 +107,12 @@ namespace basecross
 		ObjCount += L"\n";
 
 		wstring str = fpsStr + updatePerStr + drawPerStr + collPerStr + collMiscStr
-			+ collTernCountStr+ ObjCount;
+			+ collTernCountStr + ObjCount;
 
 		//文字列コンポーネントの取得
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
+
 
 	}
 }
