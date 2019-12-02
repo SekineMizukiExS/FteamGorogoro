@@ -89,6 +89,8 @@ namespace basecross {
 		shared_ptr<MultiView>_MView;
 
 		shared_ptr<Futon> _Ts;
+
+		shared_ptr<EfkPlay> m_EfkPlay;
 	public:
 		//\’z‚Æ”jŠü
 		TestStage() :StageBase() {}
@@ -98,7 +100,7 @@ namespace basecross {
 
 		virtual void OnUpdate()override;
 
-		void OnDraw()override {}
+		void OnDraw()override;
 
 		shared_ptr<MultiView>GetMultiView()const
 		{

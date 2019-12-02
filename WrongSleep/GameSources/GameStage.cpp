@@ -23,6 +23,8 @@ namespace basecross {
 
 	void StageBase::OnDraw()
 	{
+		auto& camera = GetView()->GetTargetCamera();
+		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->SetViewProj(camera->GetViewMatrix(), camera->GetProjMatrix());
 		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->OnDraw();
 	}
 
@@ -408,16 +410,24 @@ namespace basecross {
 
 	void TestStage::OnUpdate()
 	{
+		StageBase::OnUpdate();
+
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
 		if (Dev.m_bLastKeyTbl['S'])
 		{
-			PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
+			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"TestEfk", Vec3(0, 1, 0));
+			EfkPlay(L"TestEfk",Vec3(0, 1, 0));
+			//PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
 		}
 		if (Dev.m_bLastKeyTbl['W'])
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), _Ts, L"StartFuton");
 		}
+	}
 
+	void TestStage::OnDraw()
+	{
+		StageBase::OnDraw();
 	}
 }
 //end basecross
