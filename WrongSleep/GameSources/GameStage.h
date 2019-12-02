@@ -89,6 +89,8 @@ namespace basecross {
 		shared_ptr<MultiView>_MView;
 
 		shared_ptr<Futon> _Ts;
+
+		shared_ptr<EfkPlay> m_EfkPlay;
 	public:
 		//\’z‚Æ”jŠü
 		TestStage() :StageBase() {}

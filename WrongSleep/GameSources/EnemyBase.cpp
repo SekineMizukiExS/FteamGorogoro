@@ -167,6 +167,11 @@ namespace basecross
 		}
 	}
 
+	void EnemyBase::OnDestroy()
+	{
+		SendEvent(GetThis<ObjectInterface>(), L"EnemyManager", L"OnDestroy");
+	}
+
 	//-------------------------------------------
 	//Enemyステートマシン実装
 	//-------------------------------------------

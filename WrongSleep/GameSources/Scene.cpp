@@ -56,7 +56,8 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"skyboxObj.bmf", true);
 		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
-
+		//test
+		App::GetApp()->RegisterEffect(L"TestEfk", mediaPath + L"Effects/EnemyHit.efk", _EfkInterface,10);
 		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"MitaGTmodels/", L"ValkylyeModel_TypeC_Valkylye.bmf", true);
 		//App::GetApp()->RegisterResource(L"MITAGTV_MD", multiModelMesh);
 
