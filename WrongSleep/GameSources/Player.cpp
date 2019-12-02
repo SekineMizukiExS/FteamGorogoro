@@ -184,6 +184,12 @@ namespace basecross{
 
 		auto transPtr = GetComponent<Transform>();
 		auto nowPos = transPtr->GetPosition();
+
+		//nowPos.x = round(nowPos.x);
+		//nowPos.y = round(nowPos.y);
+		//nowPos.z = round(nowPos.z);
+		//transPtr->SetPosition(nowPos);
+
 		/*if (nowPos.y < 0.5f) {
 			transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
 		}*/
@@ -207,6 +213,17 @@ namespace basecross{
 			obj->SetUpdateActive(false);
 			obj->SetDrawActive(false);
 		}
+
+		auto obj2 = dynamic_pointer_cast<EnemyBase>(other);
+		if (obj2) {
+			auto ptrTransform = GetComponent<Transform>();
+			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
+			Vec3 HitPoint;
+			m_usingSize += 1;
+			obj2->SetUpdateActive(false);
+			obj2->SetDrawActive(false);
+		}
+
 
 	}
 

@@ -1,4 +1,4 @@
-/*!
+/*!=
 @file Player.h
 @brief ƒvƒŒƒCƒ„[‚È‚Ç
 */
