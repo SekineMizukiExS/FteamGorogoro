@@ -66,6 +66,25 @@ namespace basecross
 		{
 
 		}
+
+		inline bool operator==(const TravelingPoint& other) const
+		{
+			if (this->Point == other.Point&&
+				this->before == other.before&&
+				this->after == other.after)return true;
+
+			return false;
+		}
+		inline bool operator!=(const TravelingPoint& other)const
+		{
+			if (this->Point != other.Point&&
+				this->before != other.before&&
+				this->after != other.after)return true;
+
+			return false;
+
+		}
+
 	};
 
 	class EnemyBase :public GameObject

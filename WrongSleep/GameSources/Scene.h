@@ -39,8 +39,25 @@ namespace basecross{
 		*/
 		//--------------------------------------------------------------------------------------
 		virtual void OnEvent(const shared_ptr<Event>& event) override;
-
+		
 		void SetTextures();
+
+		void SetActiveEffect(bool b)
+		{
+			_IsSetEffect = b;
+		}
+
+		shared_ptr<EfkInterface> GetEfkInterface()const
+		{
+			return _EfkInterface;
+		}
+
+	private:
+		//エフェクトインターフェイス
+		shared_ptr<EfkInterface> _EfkInterface;
+		//エフェクトを更新するかどうか
+		bool _IsSetEffect;
+
 	};
 
 }

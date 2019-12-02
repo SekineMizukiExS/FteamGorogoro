@@ -270,8 +270,16 @@ namespace basecross {
 	Vec3 EnemyBehavior::GetPoint(const Vec3& CurrntPosition, const vector<TravelingPoint>& Point)
 	{
 		Vec3 result(0);
-		result = Point[NextKey].Point;
-		NextKey = Point[NextKey].after;
+		if (Point[_NextKey] == Point.back())
+		{
+			_TestMove = false;
+		}
+		else if (Point[_NextKey] == Point.front())
+		{
+			_TestMove = true;
+		}
+		result = Point[_NextKey].Point;
+		_NextKey = _TestMove ? Point[_NextKey].after:Point[_NextKey].before;
 		_CurrntPos = CurrntPosition;
 		return result;
 	}
