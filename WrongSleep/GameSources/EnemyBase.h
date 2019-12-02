@@ -101,6 +101,8 @@ namespace basecross
 		
 		virtual void OnEvent(const shared_ptr<Event>& event)override;
 
+		void OnDestroy()override;
+
 		unique_ptr<StateMachine<EnemyBase>> &GetStateMachine()
 		{
 			return m_SteteMachine;
