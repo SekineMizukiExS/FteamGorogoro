@@ -14,7 +14,8 @@ namespace basecross {
 	class StageBase : public Stage {
 		//ビューの作成
 		virtual void CreateViewLight() = 0;
-
+		shared_ptr<EfkPlay> m_EfkPlay[50];
+		int m_EfkCount = 0;
 	public:
 		//構築と破棄
 		StageBase() :Stage() {}
@@ -25,6 +26,8 @@ namespace basecross {
 		virtual void OnUpdate()override;
 		//描画
 		virtual void OnDraw()override;
+
+		void Effectplay(wstring Key, Vec3 hitpoint);
 	};
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
@@ -68,6 +71,7 @@ namespace basecross {
 	{
 		//オープニングのボスへのフォーカス用ビュー
 		shared_ptr<SingleView> m_MyCameraView;
+
 
 		//ビューの作成
 		void CreateViewLight();

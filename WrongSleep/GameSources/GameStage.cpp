@@ -169,6 +169,10 @@ namespace basecross {
 		auto ptrPlayerMarker = AddGameObject<PlayerMarker>();
 		ptrPlayerMarker->SetTargetObject(ptrPlayer);
 		SetSharedGameObject(L"PlayerMarker", ptrPlayerMarker);
+
+		auto ptrPlayerModel = AddGameObject<PlayerModel>();
+		ptrPlayerModel->SetTargetObject(ptrPlayer);
+		SetSharedGameObject(L"PlayerModel", ptrPlayerModel);
 	}
 //ボックスの作成
 	void TestStage::CreateTilingFixedBox() {
@@ -381,6 +385,8 @@ namespace basecross {
 			AddGameObject<MovingObject>();
 			AddGameObject<SwitchObject>();
 
+			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"Splash_EF");
+
 			//スカイボックス作成
 			//AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
 
@@ -407,6 +413,19 @@ namespace basecross {
 		}
 	}
 
+	void StageBase::Effectplay(wstring Key,Vec3 hitpoint) {
+		//エフェクトのプレイ********************************
+		//auto TransformPtr = &tr;
+		//auto ShEfkInterface = GetTypeStage<GameStage>()->GetEfkInterface();
+
+		m_EfkPlay[m_EfkCount] = ObjectFactory::Create<EfkPlay>(Key, hitpoint);
+		if (m_EfkCount == 19) {
+			m_EfkCount = 0;
+		}
+		else {
+			m_EfkCount++;
+		}
+	}
 
 	void TestStage::OnUpdate()
 	{
@@ -416,14 +435,13 @@ namespace basecross {
 		if (Dev.m_bLastKeyTbl['S'])
 		{
 			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"TestEfk", Vec3(0, 1, 0));
-			EfkPlay(L"TestEfk",Vec3(0, 1, 0));
+
 			//PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
 		}
 		if (Dev.m_bLastKeyTbl['W'])
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), _Ts, L"StartFuton");
 		}
-		StageBase::OnUpdate();
 		
 	}
 
@@ -431,8 +449,6 @@ namespace basecross {
 	{
 		StageBase::OnDraw();
 	}
-	void TestStage::OnDraw(){
-		StageBase::OnDraw();
-	}
+
 }
 //end basecross

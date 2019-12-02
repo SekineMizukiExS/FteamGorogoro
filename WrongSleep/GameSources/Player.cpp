@@ -63,9 +63,9 @@ namespace basecross{
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		ptrDraw->SetMeshResource(L"Player2_MD");
+		//ptrDraw->SetMeshResource(L"Player2_MD");
 		//ptrDraw->SetMeshResource(L"Apple_MD");
-		//ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		//ptrDraw->SetFogEnabled(true);
 		//描画するテクスチャを設定
 		ptrDraw->SetTextureResource(L"clearmat_TX");
@@ -79,6 +79,8 @@ namespace basecross{
 		buttomPos.y = m_V3HS._yHalfSizeMin;
 		m_Buttom = buttomPos;
 		m_nowSize = ptr->GetScale();
+
+		//m_EfkPlay = GetTypeStage<GameStage>()->();
 
 
 	}
@@ -210,7 +212,12 @@ namespace basecross{
 			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
 			Vec3 HitPoint;
 			m_usingSize += 1;
-			EfkPlay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition(), 0);
+			//EfkPlay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition(), 0);
+			auto stg = GetStage();
+			auto teststg = dynamic_pointer_cast<TestStage>(stg);
+			if (teststg) {
+				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+			}
 			obj->SetUpdateActive(false);
 			obj->SetDrawActive(false);
 
@@ -221,7 +228,12 @@ namespace basecross{
 			auto ptrTransform = GetComponent<Transform>();
 			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
 			Vec3 HitPoint;
-			EfkPlay(L"Splash_EF", obj2->GetComponent<Transform>()->GetPosition(), 0);
+			//EfkPlay(L"Splash_EF", obj2->GetComponent<Transform>()->GetPosition(), 0);
+			auto stg = GetStage();
+			auto teststg = dynamic_pointer_cast<TestStage>(stg);
+			if (teststg) {
+				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+			}
 			m_usingSize += 1;
 			obj2->SetUpdateActive(false);
 			obj2->SetDrawActive(false);
@@ -482,6 +494,11 @@ namespace basecross{
 				m_count = 0;
 				m_isRotate = false;
 
+				auto stg = GetStage();
+				auto teststg = dynamic_pointer_cast<TestStage>(stg);
+				if (teststg) {
+					teststg->Effectplay(L"SideSplash_EF",Vec3(nowPos.x,nowPos.y,nowPos.z));
+				}
 			}
 
 			//pivot = m_rotatePoint;
@@ -566,6 +583,54 @@ namespace basecross{
 			auto ptrTrans = GetComponent<Transform>();
 			Vec3 tempPos(ptrTarget->GetComponent<Transform>()->GetPosition());
 			ptrTrans->SetPosition(tempPos.x,3,tempPos.z);
+		}
+	}
+
+
+//=======================================================================
+//========================PlayerModel====================================
+//=======================================================================
+	PlayerModel::PlayerModel(const shared_ptr<Stage>& StagePtr) :
+		GameObject(StagePtr)
+	{}
+
+
+	shared_ptr<GameObject> PlayerModel::GetTargetObject() const {
+		if (!m_TargetObject.expired()) {
+			return m_TargetObject.lock();
+		}
+		return nullptr;
+	}
+
+	void PlayerModel::SetTargetObject(const shared_ptr<GameObject>& Obj) {
+		m_TargetObject = Obj;
+	}
+
+
+	void PlayerModel::OnCreate() {
+		auto ptr = AddComponent<Transform>();
+		//影をつける（シャドウマップを描画する）
+		auto shadowPtr = AddComponent<Shadowmap>();
+		//影の形（メッシュ）を設定
+		shadowPtr->SetMeshResource(L"Player2_MD");
+
+		//描画コンポーネントの設定
+		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
+		//描画するメッシュを設定
+		ptrDraw->SetMeshResource(L"Player2_MD");
+		//描画するテクスチャを設定
+		ptrDraw->SetTextureResource(L"Player002_TX");
+		SetAlphaActive(true);
+		ptrDraw->SetEmissive(Flt4(0.25f, 0.25f, 1, 1));
+
+	}
+
+	void PlayerModel::OnUpdate() {
+		auto ptrTarget = GetTargetObject();
+		if (ptrTarget) {
+			auto ptrTrans = GetComponent<Transform>();
+			Vec3 tempPos(ptrTarget->GetComponent<Transform>()->GetPosition());
+			ptrTrans->SetPosition(tempPos.x, tempPos.y -0.65f, tempPos.z);
 		}
 	}
 
