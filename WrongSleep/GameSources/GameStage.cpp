@@ -415,7 +415,12 @@ namespace basecross {
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), _Ts, L"StartFuton");
 		}
+		StageBase::OnUpdate();
+		
 
+	}
+	void TestStage::OnDraw(){
+		StageBase::OnDraw();
 	}
 }
 //end basecross

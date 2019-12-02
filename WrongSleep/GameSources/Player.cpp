@@ -63,9 +63,9 @@ namespace basecross{
 		//描画コンポーネントの設定
 		auto ptrDraw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		//ptrDraw->SetMeshResource(L"Player_MD");
+		ptrDraw->SetMeshResource(L"Player2_MD");
 		//ptrDraw->SetMeshResource(L"Apple_MD");
-		ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
+		//ptrDraw->SetMeshResource(L"DEFAULT_CUBE");
 		//ptrDraw->SetFogEnabled(true);
 		//描画するテクスチャを設定
 		ptrDraw->SetTextureResource(L"clearmat_TX");
@@ -210,8 +210,10 @@ namespace basecross{
 			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
 			Vec3 HitPoint;
 			m_usingSize += 1;
+			EfkPlay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition(), 0);
 			obj->SetUpdateActive(false);
 			obj->SetDrawActive(false);
+
 		}
 
 		auto obj2 = dynamic_pointer_cast<EnemyBase>(other);
@@ -219,9 +221,11 @@ namespace basecross{
 			auto ptrTransform = GetComponent<Transform>();
 			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
 			Vec3 HitPoint;
+			EfkPlay(L"Splash_EF", obj2->GetComponent<Transform>()->GetPosition(), 0);
 			m_usingSize += 1;
 			obj2->SetUpdateActive(false);
 			obj2->SetDrawActive(false);
+
 		}
 
 

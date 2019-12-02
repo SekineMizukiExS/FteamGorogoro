@@ -429,7 +429,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BasePhysics.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)..\..\..\WrongSleep\GameSources\EfkInterface.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)BaseHelper.cpp">
@@ -594,6 +593,5 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BasePhysics.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\..\WrongSleep\GameSources\EfkInterface.cpp" />
   </ItemGroup>
 </Project>

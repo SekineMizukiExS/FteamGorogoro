@@ -48,6 +48,8 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"PlayerModel.bmf");
 		App::GetApp()->RegisterResource(L"Player_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Player2.bmf");
+		App::GetApp()->RegisterResource(L"Player2_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Mat.bmf",true);
 		App::GetApp()->RegisterResource(L"Mat_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Apple2.bmf",true);
@@ -57,6 +59,9 @@ namespace basecross{
 
 		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"MitaGTmodels/", L"ValkylyeModel_TypeC_Valkylye.bmf", true);
 		//App::GetApp()->RegisterResource(L"MITAGTV_MD", multiModelMesh);
+
+
+		App::GetApp()->RegisterEffect(L"Splash_EF", mediaPath + L"Effect/" + L"splash_efk",_EfkInterface,1.0f);
 	}
 
 	Scene::~Scene() {

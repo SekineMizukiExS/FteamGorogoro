@@ -98,7 +98,7 @@ namespace basecross {
 
 		virtual void OnUpdate()override;
 
-		void OnDraw()override {}
+		void OnDraw()override;
 
 		shared_ptr<MultiView>GetMultiView()const
 		{
