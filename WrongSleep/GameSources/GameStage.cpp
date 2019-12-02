@@ -13,7 +13,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void StageBase::OnCreate()
 	{
-
+		GameManager::CreateManager(GetThis<StageBase>());
 	}
 
 	void StageBase::OnUpdate()
@@ -26,6 +26,11 @@ namespace basecross {
 		auto& camera = GetView()->GetTargetCamera();
 		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->SetViewProj(camera->GetViewMatrix(), camera->GetProjMatrix());
 		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->OnDraw();
+	}
+
+	void StageBase::OnDestroy()
+	{
+		GameManager::DeleteManager();
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -359,6 +364,7 @@ namespace basecross {
 
 	void TestStage::OnCreate() {
 		try {
+			StageBase::OnCreate();
 			//ビューとライトの作成
 			SetPhysicsActive(true);
 			CreatePlayer();
@@ -370,12 +376,12 @@ namespace basecross {
 			CreateCommonBox();
 			float PieceSize = 3.0f;
 			UINT mapSizeUint = 35;
-			auto Ptr = AddGameObject<StageCellMap>(Vec3(-50.0f, 0.0f, -50.0f), PieceSize, mapSizeUint, mapSizeUint);
-			Ptr->SetDrawActive(true);
+			auto Ptr = AddGameObject<StageCellMap>(Vec3(-50.0f, 0.5f, -50.0f), PieceSize, mapSizeUint, mapSizeUint);
+			//Ptr->SetDrawActive(true);
 
 			EnemyBase::SetCellMap(Ptr);
 
-			AddGameObject<DebugObj>();
+			//AddGameObject<DebugObj>();
 			CreateStageObject();
 			
 			AddGameObject<MovingObject>();
@@ -415,19 +421,14 @@ namespace basecross {
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
 		if (Dev.m_bLastKeyTbl['S'])
 		{
-			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"TestEfk", Vec3(0, 1, 0));
-			EfkPlay(L"TestEfk",Vec3(0, 1, 0));
+			m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"TestEfk", Vec3(0, 1, 0));
+			//EfkPlay(L"TestEfk",Vec3(0, 1, 0));
 			//PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
 		}
 		if (Dev.m_bLastKeyTbl['W'])
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), _Ts, L"StartFuton");
 		}
-	}
-
-	void TestStage::OnDraw()
-	{
-		StageBase::OnDraw();
 	}
 }
 //end basecross

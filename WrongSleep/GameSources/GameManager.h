@@ -17,11 +17,7 @@ namespace basecross {
 		};
 		static unique_ptr<GameManager, GMDeleter> m_Ins;		///< Singletonで利用する自分自身のポインタ
 
-		explicit GameManager(const shared_ptr<Stage>&StagePtr)
-			:_TargetStage(StagePtr)
-		{
-
-		}
+		explicit GameManager(const shared_ptr<StageBase>&StagePtr);
 
 		~GameManager(){}
 
@@ -36,7 +32,7 @@ namespace basecross {
 		@return	Managerのunique_ptr
 		*/
 		//--------------------------------------------------------------------------------------
-		static unique_ptr<GameManager, GMDeleter>& CreateManager(const shared_ptr<Stage>&StagePtr);
+		static unique_ptr<GameManager, GMDeleter>& CreateManager(const shared_ptr<StageBase>&StagePtr);
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief シングルトンアクセサ

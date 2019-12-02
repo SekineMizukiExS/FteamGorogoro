@@ -15,8 +15,13 @@ namespace basecross
 	class EnemyManager:public ObjectInterface
 	{
 	public:
-		EnemyManager();
+		explicit EnemyManager();
 		virtual ~EnemyManager() {}
+
+
+		void OnCreate()override {};
+		
+
 		//----------------------------------------------------------------------------------
 		/*!
 		@brief エネミー生成用関数
@@ -36,7 +41,6 @@ namespace basecross
 		void OnEvent(const shared_ptr<Event>& event)override;
 	private:
 		//エネミー
-		vector<shared_ptr<EnemyBase>> _EnemyObjects;
 		//コピー禁止
 		EnemyManager(const EnemyManager&) = delete;
 		EnemyManager& operator=(const EnemyManager&) = delete;

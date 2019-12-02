@@ -15,7 +15,7 @@ namespace basecross
 	}
 	void EnemyManager::SetEnemyObject(const shared_ptr<EnemyBase> EnemyObj)
 	{
-		_EnemyObjects.push_back(EnemyObj);
+
 	}
 
 	void EnemyManager::OnEvent(const shared_ptr<Event>&event)
@@ -229,11 +229,15 @@ namespace basecross
 				L"EnemyBase::OnCreate()"
 			);
 		}
+		
+		AddComponent<CollisionObb>();
 
+		AddComponent<Gravity>();
 	}
 
 	void ToyGuards::OnUpdate()
 	{
 		m_SteteMachine->Update();
+
 	}
 }

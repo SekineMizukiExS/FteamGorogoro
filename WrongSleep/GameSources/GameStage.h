@@ -15,16 +15,32 @@ namespace basecross {
 		//ビューの作成
 		virtual void CreateViewLight() = 0;
 
+		enum SelectStage
+		{
+			Stage1,
+			Stage2,
+			Stage3,
+			TestStage,
+		};
+
+		SelectStage _Selects;
+			
 	public:
 		//構築と破棄
-		StageBase() :Stage() {}
+		StageBase() :Stage(),_Selects(TestStage) {}
 		virtual ~StageBase() {}
 		//初期化
 		virtual void OnCreate()override;
 		//更新
 		virtual void OnUpdate()override;
 		//描画
-		virtual void OnDraw()override;
+		void OnDraw()override;
+
+		void OnDestroy()override;
+
+		SelectStage GetSelects()const {
+			return _Selects;
+		}
 	};
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
@@ -99,8 +115,6 @@ namespace basecross {
 		virtual void OnCreate()override;
 
 		virtual void OnUpdate()override;
-
-		void OnDraw()override;
 
 		shared_ptr<MultiView>GetMultiView()const
 		{
