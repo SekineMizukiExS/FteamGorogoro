@@ -63,6 +63,7 @@ namespace basecross{
 
 		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
 		DrawComp->SetTextureResource(L"LeafMatB_TX");
+		//DrawComp->SetDrawActive(false);
 
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);
@@ -71,8 +72,9 @@ namespace basecross{
 		//CollisionSphereÕ“Ë”»’è‚ğ•t‚¯‚é
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
-
-		
+		//ptrColl->SetDrawActive(true);
+		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
+		Group->IntoGroup(GetThis<StageObjects>());
 	}
 
 	//--------------------------------------------------------------------------------------

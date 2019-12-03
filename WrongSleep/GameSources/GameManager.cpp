@@ -5,14 +5,22 @@ namespace basecross
 {
 	//static•Ï”À‘Ì
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
+	//\’z‚Æ”jŠü
+	GameManager::GameManager(const shared_ptr<StageBase>&StagePtr)
+		:_TargetStage(StagePtr)
+	{
+		_EnemyManager = make_shared<EnemyManager>();
+	}
+
 
 	//ƒVƒ“ƒOƒ‹ƒgƒ“\’z
-	unique_ptr<GameManager, GameManager::GMDeleter>& GameManager::CreateManager(const shared_ptr<Stage>&StagePtr) {
+	unique_ptr<GameManager, GameManager::GMDeleter>& GameManager::CreateManager(const shared_ptr<StageBase>&StagePtr) {
 		try {
 			if (m_Ins.get() == 0) {
 				//©•ª©g‚Ì\’z
 				m_Ins.reset(new GameManager(StagePtr));
-
+				m_Ins->OnPreCreate();
+				m_Ins->OnCreate();
 			}
 			return m_Ins;
 		}
@@ -56,8 +64,12 @@ namespace basecross
 
 	void GameManager::OnCreate()
 	{
-
+		_TargetStage->AddGameObject<DebugObj>();
 	}
+
+
+
+	//-----------------------------------------------------------
 
 	void DebugObj::OnCreate()
 	{

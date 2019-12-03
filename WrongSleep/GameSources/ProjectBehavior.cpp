@@ -243,7 +243,7 @@ namespace basecross {
 	///エネミー行動クラス実装
 	//-------------------------------------------------------------
 	//struct TravelingPoint;
-	bool EnemyBehavior::TravelingMove(float MoveTime)
+	bool EnemyBehavior::TravelingMove()
 	{
 		//float ElapsedTime = App::GetApp()->GetElapsedTime();
 		//_TotalTime += ElapsedTime;
@@ -256,6 +256,15 @@ namespace basecross {
 		////auto MoveForce = _MovePoint - _CurrntPos;
 		////MoveForce.normalize();
 		//RotateMove(MoveForce);
+		return RotateMove();
+	}
+
+	bool EnemyBehavior::TrackingMove()
+	{
+		if (_TargetObject)
+		{
+			_MovePoint = _TargetObject->GetComponent<Transform>()->GetPosition();
+		}
 		return RotateMove();
 	}
 
@@ -297,7 +306,7 @@ namespace basecross {
 		if (Search(_MovePoint))
 		{
 			//めり込み直し
-			if (TransComp->GetPosition().y <= 0.5) {
+			if (TransComp->GetPosition().y <= 0.5f) {
 				auto temppos = TransComp->GetPosition();
 				TransComp->SetPosition(temppos.x, 0.5f, temppos.z);
 			}

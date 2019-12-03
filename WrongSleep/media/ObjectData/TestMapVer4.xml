@@ -3,11 +3,6 @@
   <Stage>
     <StageObjects>
       <Object Type="FixedObject">
-        <Pos>18,0,-12.029</Pos>
-        <Scale>22.608,1,37.9724</Scale>
-        <Rot>0,0,0</Rot>
-      </Object>
-      <Object Type="FixedObject">
         <Pos>-10.16,0,16.15</Pos>
         <Scale>78.9921,1,19.41139</Scale>
         <Rot>0,0,0</Rot>
@@ -22,17 +17,22 @@
         <Scale>24.41664,1,23.54289</Scale>
         <Rot>0,0,0</Rot>
       </Object>
+      <Object Type="FixedObject">
+        <Pos>17.984,0,-12.31</Pos>
+        <Scale>22.58525,1,37.44099</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
     </StageObjects>
     <EnemyDatas>
-      <EnemyData Type="Test" Pos="-43.94,3,-42.28" Scale="2.0,2.0,2.0" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="Test_TX">
+      <EnemyData Type="Test" Pos="-43.94,1,-42.28" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="Test_TX">
         <ObjParam State="Wait" />
         <MovePoint>
           <Point>
-            <POINTDATA Pos="-43.94,0.6,-42.28" TravelingB="4" TravelingA="1" />
-            <POINTDATA Pos="18.2,0.5,-39.3" TravelingB="0" TravelingA="2" />
-            <POINTDATA Pos="18.2,0.5,15.3" TravelingB="1" TravelingA="3" />
-            <POINTDATA Pos="-41,0.5,15.3" TravelingB="2" TravelingA="4" />
-            <POINTDATA Pos="-41,0.5,44.8" TravelingB="3" TravelingA="0" />
+            <POINTDATA Pos="-43.94,1,-42.28" TravelingB="4" TravelingA="1" />
+            <POINTDATA Pos="18.2,0,-39.3" TravelingB="0" TravelingA="2" />
+            <POINTDATA Pos="18.2,0,15.3" TravelingB="1" TravelingA="3" />
+            <POINTDATA Pos="-41,0,15.3" TravelingB="2" TravelingA="4" />
+            <POINTDATA Pos="-41,0,44.8" TravelingB="3" TravelingA="0" />
           </Point>
         </MovePoint>
       </EnemyData>

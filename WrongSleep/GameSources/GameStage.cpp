@@ -13,7 +13,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void StageBase::OnCreate()
 	{
-
+		GameManager::CreateManager(GetThis<StageBase>());
 	}
 
 	void StageBase::OnUpdate()
@@ -26,6 +26,11 @@ namespace basecross {
 		auto& camera = GetView()->GetTargetCamera();
 		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->SetViewProj(camera->GetViewMatrix(), camera->GetProjMatrix());
 		App::GetApp()->GetScene<Scene>()->GetEfkInterface()->OnDraw();
+	}
+
+	void StageBase::OnDestroy()
+	{
+		GameManager::DeleteManager();
 	}
 
 	//--------------------------------------------------------------------------------------
@@ -115,7 +120,7 @@ namespace basecross {
 		const Vec3 eye[7] = { Vec3(0.0f, 5.0f, -5.0f),//標準位置
 							  Vec3(0.0f, 0.0f, -30.0f),
 							  Vec3(0.0f, 20.0f, 00.1f),
-							  Vec3(0.0f, 25.0f, -50.0f),
+							  Vec3(0.0f, 110.0f, -75.0f),
 							  Vec3(0.0f,15.0f,50.0f),
 							  Vec3(10.0f, 0.0f, -10.0f), 
 								Vec3(0.0f,15.0f,-10.0f)};
@@ -154,7 +159,7 @@ namespace basecross {
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
 		_MView->AddView(Sub, SubCamera);
-		SubCamera->SetEye(eye[1]);
+		SubCamera->SetEye(eye[3]);
 		SubCamera->SetAt(at);
 
 	}
@@ -330,6 +335,7 @@ namespace basecross {
 
 	void TestStage::CreateStageObject()
 	{
+		auto test = CreateSharedObjectGroup(L"StageObjects");
 		//ゲームオブジェクトビルダー
 		GameObjecttXMLBuilder Builder;
 		//ゲームオブジェクトの登録
@@ -338,7 +344,7 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"StageMapVer3";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"MapTestVer5";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
@@ -357,8 +363,40 @@ namespace basecross {
 	//	}
 	//}
 
+	void TestStage::SetCellMapCost() {
+		//セルマップ内にFixedBoxの情報をセット
+		auto PtrCellmap = EnemyBase::GetCellMap().lock();
+		auto StageGroup = GetSharedObjectGroup(L"StageObjects");
+		//セルマップからセルの配列を取得
+		auto& CellVec = PtrCellmap->GetCellVec();
+		//ボックスグループからボックスの配列を取得
+		auto& BoxVec = StageGroup->GetGroupVector();
+		vector<AABB> ObjectsAABBVec;
+		for (auto& v : BoxVec) {
+			auto FixedBoxPtr = dynamic_pointer_cast<StageObjects>(v.lock());
+			if (FixedBoxPtr) {
+				auto ColPtr = FixedBoxPtr->GetComponent<CollisionObb>();
+				//ボックスの衝突判定かラッピングするAABBを取得して保存
+				ObjectsAABBVec.push_back(ColPtr->GetObb().GetWrappedAABB());
+			}
+		}
+		//セル配列からセルをスキャン
+		for (auto& v : CellVec) {
+			for (auto& v2 : v) {
+				for (auto& vObj : ObjectsAABBVec) {
+					if (HitTest::AABB_AABB_NOT_EQUAL(v2.m_PieceRange,vObj)) {
+						//ボックスのABBとNOT_EQUALで衝突判定
+						v2.m_Cost = 1;
+						break;
+					}
+				}
+			}
+		}
+	}
+
 	void TestStage::OnCreate() {
 		try {
+			StageBase::OnCreate();
 			//ビューとライトの作成
 			SetPhysicsActive(true);
 			CreatePlayer();
@@ -370,13 +408,12 @@ namespace basecross {
 			CreateCommonBox();
 			float PieceSize = 3.0f;
 			UINT mapSizeUint = 35;
-			auto Ptr = AddGameObject<StageCellMap>(Vec3(-50.0f, 0.0f, -50.0f), PieceSize, mapSizeUint, mapSizeUint);
+			auto Ptr = AddGameObject<StageCellMap>(Vec3(-49.5f, -0.5f, -46.5f), PieceSize, mapSizeUint, mapSizeUint,-1);
 			Ptr->SetDrawActive(true);
-
 			EnemyBase::SetCellMap(Ptr);
-
-			AddGameObject<DebugObj>();
 			CreateStageObject();
+			SetCellMapCost();
+			//AddGameObject<DebugObj>();
 			
 			AddGameObject<MovingObject>();
 			AddGameObject<SwitchObject>();
@@ -416,7 +453,7 @@ namespace basecross {
 		if (Dev.m_bLastKeyTbl['S'])
 		{
 			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"TestEfk", Vec3(0, 1, 0));
-			EfkPlay(L"TestEfk",Vec3(0, 1, 0));
+			//EfkPlay(L"TestEfk",Vec3(0, 1, 0));
 			//PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
 		}
 		if (Dev.m_bLastKeyTbl['W'])
@@ -425,14 +462,6 @@ namespace basecross {
 		}
 		StageBase::OnUpdate();
 		
-	}
-
-	void TestStage::OnDraw()
-	{
-		StageBase::OnDraw();
-	}
-	void TestStage::OnDraw(){
-		StageBase::OnDraw();
 	}
 }
 //end basecross

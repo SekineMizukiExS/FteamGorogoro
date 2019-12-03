@@ -15,7 +15,7 @@ namespace basecross
 	}
 	void EnemyManager::SetEnemyObject(const shared_ptr<EnemyBase> EnemyObj)
 	{
-		_EnemyObjects.push_back(EnemyObj);
+
 	}
 
 	void EnemyManager::OnEvent(const shared_ptr<Event>&event)
@@ -187,7 +187,7 @@ namespace basecross
 	void TravelingState::Execute(const shared_ptr<EnemyBase>&obj)
 	{
 		//巡回経路を取得
-		if (obj->GetBehavior<EnemyBehavior>()->TravelingMove(2.0f))
+		if (obj->GetBehavior<EnemyBehavior>()->TravelingMove())
 		{
 			//到達したら次の地点を取得
 			obj->GetBehavior<EnemyBehavior>()->SetNextPoint();
@@ -199,6 +199,35 @@ namespace basecross
 		//状態遷移時の位置座標を保持
 	}
 
+	//
+	IMPLEMENT_SINGLETON_INSTANCE(TrackingState);
+	void TrackingState::Enter(const shared_ptr<EnemyBase>&obj)
+	{
+		//前回位置がある場合その場所を最初のPointに設定
+		//現在地点か一番近いPointを取得
+		auto Temp = obj->GetStage()->GetSharedGameObject<Player>(L"Player");
+		obj->GetBehavior<EnemyBehavior>()->SetTargetObject(Temp);
+
+	}
+
+	void TrackingState::Execute(const shared_ptr<EnemyBase>&obj)
+	{
+		//巡回経路を取得
+		if (obj->GetBehavior<EnemyBehavior>()->TrackingMove())
+		{
+	
+		}
+	}
+
+	void TrackingState::Exit(const shared_ptr<EnemyBase>&Obj)
+	{
+		//状態遷移時の位置座標を保持
+	}
+
+
+	//------------------------------------------------------------------
+	//
+	//------------------------------------------------------------------
 	void ToyGuards::OnCreate()
 	{
 		auto DrawComp = AddComponent<AreaDraw>();
@@ -229,11 +258,21 @@ namespace basecross
 				L"EnemyBase::OnCreate()"
 			);
 		}
+		
+		AddComponent<CollisionObb>();
 
+		AddComponent<Gravity>();
 	}
 
 	void ToyGuards::OnUpdate()
 	{
 		m_SteteMachine->Update();
+
+		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
+		if (Dev.m_bLastKeyTbl['B'])
+		{
+			m_SteteMachine->ChangeState(TrackingState::Instance());
+		}
+
 	}
 }
