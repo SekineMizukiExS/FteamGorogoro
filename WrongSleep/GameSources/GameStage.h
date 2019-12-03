@@ -25,6 +25,9 @@ namespace basecross {
 
 		SelectStage _Selects;
 			
+		shared_ptr<EfkPlay> m_EfkPlay[50];
+		int m_EfkCount = 0;
+
 	public:
 		//構築と破棄
 		StageBase() :Stage(),_Selects(TestStage) {}
@@ -41,6 +44,8 @@ namespace basecross {
 		SelectStage GetSelects()const {
 			return _Selects;
 		}
+
+		void Effectplay(wstring Key, Vec3 hitpoint);
 	};
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
@@ -84,6 +89,7 @@ namespace basecross {
 	{
 		//オープニングのボスへのフォーカス用ビュー
 		shared_ptr<SingleView> m_MyCameraView;
+
 
 		//ビューの作成
 		void CreateViewLight();

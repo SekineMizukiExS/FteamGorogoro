@@ -59,9 +59,9 @@ namespace basecross
 		*/
 		//--------------------------------------------------------------------------------------
 		//EfkPlay(const shared_ptr<EfkEffect>& effect, const bsm::Vec3& Emitter);
-		EfkPlay(const wstring&key, const bsm::Vec3& Emitter,const int DrawLayer = 0);
+		EfkPlay(const wstring&key, const bsm::Vec3& Emitter);
 		//’Ç‰Á
-		EfkPlay(const shared_ptr<EffectResource>& effect, const bsm::Vec3& Emitter, const int DrawLayer = 0);
+		EfkPlay(const shared_ptr<EffectResource>& effect, const bsm::Vec3& Emitter);
 
 		virtual ~EfkPlay();
 		//--------------------------------------------------------------------------------------
@@ -101,11 +101,9 @@ namespace basecross
 		@return	‚È‚µ
 		*/
 		//--------------------------------------------------------------------------------------
-		void SetDrawLayer(const int DrawLayer);
 	private:
 		::Effekseer::Handle m_Handle;
 		weak_ptr<EfkInterface> m_EfkInterface;
-		int m_DrawLayer;
 	};
 
 	//--------------------------------------------------------------------------------------

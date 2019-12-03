@@ -63,6 +63,8 @@ namespace basecross{
 		int m_vCount = 0;
 		int m_usingSize = 3;//現在使用可能なサイズ容量、２が初期値
 
+		shared_ptr<EfkPlay> m_EfkPlay;
+
 	public:
 		//構築と破棄
 //--------------------------------------------------------------------------------------
@@ -158,6 +160,35 @@ namespace basecross{
 		//--------------------------------------------------------------------------------------
 
 		PlayerMarker(const shared_ptr<Stage>& StagePtr);
+
+		//初期化
+		virtual void OnCreate() override;
+		//更新
+		virtual void OnUpdate() override;
+	};
+
+	class PlayerModel : public GameObject {
+
+	private:
+		weak_ptr<GameObject> m_TargetObject;	//目標となるオブジェクト
+	public:
+		/*!
+		@brief	追従目標オブジェクトを得る
+		@return	追従目標
+		*/
+		//--------------------------------------------------------------------------------------
+		shared_ptr<GameObject> GetTargetObject() const;
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	追従目標オブジェクトを設定する
+		@param[in]	Obj	追従目標オブジェクト
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SetTargetObject(const shared_ptr<GameObject>& Obj);
+		//--------------------------------------------------------------------------------------
+
+		PlayerModel(const shared_ptr<Stage>& StagePtr);
 
 		//初期化
 		virtual void OnCreate() override;

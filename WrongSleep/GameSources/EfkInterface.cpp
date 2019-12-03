@@ -47,8 +47,8 @@ namespace basecross
 	//--------------------------------------------------------------------------------------
 	///	EffekseerエフェクトのPlayオブジェクト
 	//--------------------------------------------------------------------------------------
-	EfkPlay::EfkPlay(const wstring&key,const bsm::Vec3& Emitter,const int DrawLayer)
-		:m_Handle(-1),m_DrawLayer(DrawLayer)
+	EfkPlay::EfkPlay(const wstring&key,const bsm::Vec3& Emitter)
+		:m_Handle(-1)
 	{
 		try {
 			auto effect = App::GetApp()->GetResource<EffectResource>(key);
@@ -56,7 +56,7 @@ namespace basecross
 			auto iface = effect->m_EfkInterface.lock();
 			if (iface)
 			{
-				m_Handle = iface->m_Manager->Play(effect->m_Effect, Emitter.x, Emitter.y, (float)m_DrawLayer);
+				m_Handle = iface->m_Manager->Play(effect->m_Effect, Emitter.x, Emitter.y, Emitter.z);
 				m_EfkInterface = iface;
 			}
 		}
@@ -69,13 +69,13 @@ namespace basecross
 	//--------------------------------------------------------------------------------------
 	///	EffekseerエフェクトのPlayオブジェクト(追加)
 	//--------------------------------------------------------------------------------------
-	EfkPlay::EfkPlay(const shared_ptr<EffectResource>& effect, const bsm::Vec3& Emitter, const int DrawLayer) :
-		m_Handle(-1),m_DrawLayer(DrawLayer)
+	EfkPlay::EfkPlay(const shared_ptr<EffectResource>& effect, const bsm::Vec3& Emitter) :
+		m_Handle(-1)
 	{
 		try {
 			auto iface = effect->m_EfkInterface.lock();
 			if (iface) {
-				m_Handle = iface->m_Manager->Play(effect->m_Effect, Emitter.x, Emitter.y,(float)m_DrawLayer);
+				m_Handle = iface->m_Manager->Play(effect->m_Effect, Emitter.x, Emitter.y, Emitter.z);
 				m_EfkInterface = iface;
 			}
 		}
@@ -95,7 +95,7 @@ namespace basecross
 		auto shptr = m_EfkInterface.lock();
 		if (shptr && m_Handle != -1)
 		{
-			shptr->m_Manager->AddLocation(m_Handle, ::Effekseer::Vector3D(Location.x, Location.y, (float)m_DrawLayer));
+			shptr->m_Manager->AddLocation(m_Handle, ::Effekseer::Vector3D(Location.x, Location.y, Location.z));
 		}
 	}
 
@@ -104,7 +104,7 @@ namespace basecross
 		auto shptr = m_EfkInterface.lock();
 		if (shptr && m_Handle != -1)
 		{
-			shptr->m_Manager->SetLocation(m_Handle, ::Effekseer::Vector3D(Location.x, Location.y, (float)m_DrawLayer));
+			shptr->m_Manager->SetLocation(m_Handle, ::Effekseer::Vector3D(Location.x, Location.y, Location.z));
 		}
 	}
 
@@ -117,10 +117,7 @@ namespace basecross
 		}
 	}
 
-	void EfkPlay::SetDrawLayer(const int DrawLayer)
-	{
-		m_DrawLayer = DrawLayer;
-	}
+
 
 	//--------------------------------------------------------------------------------------
 	///	Effekseerエフェクトのインターフェイス
