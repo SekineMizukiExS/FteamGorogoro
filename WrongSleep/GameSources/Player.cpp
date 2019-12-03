@@ -232,11 +232,10 @@ namespace basecross{
 			auto stg = GetStage();
 			auto teststg = dynamic_pointer_cast<TestStage>(stg);
 			if (teststg) {
-				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+				teststg->Effectplay(L"Splash_EF", obj2->GetComponent<Transform>()->GetPosition());
 			}
 			m_usingSize += 1;
-			obj2->SetUpdateActive(false);
-			obj2->SetDrawActive(false);
+			obj2->OnDestroy();
 
 		}
 

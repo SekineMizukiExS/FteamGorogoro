@@ -170,6 +170,7 @@ namespace basecross
 	void EnemyBase::OnDestroy()
 	{
 		SendEvent(GetThis<ObjectInterface>(), L"EnemyManager", L"OnDestroy");
+		GetStage()->RemoveGameObject<EnemyBase>(GetThis<EnemyBase>());
 	}
 
 	//-------------------------------------------

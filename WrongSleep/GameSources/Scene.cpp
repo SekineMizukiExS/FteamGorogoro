@@ -64,7 +64,7 @@ namespace basecross{
 
 
 		App::GetApp()->RegisterEffect(L"Splash_EF", mediaPath + L"Effect/" + L"splash_efk.efk",_EfkInterface,10.0f);
-		App::GetApp()->RegisterEffect(L"SideSplash_EF", mediaPath + L"Effect/" + L"sidesplash.efk", _EfkInterface, 10.0f);
+		App::GetApp()->RegisterEffect(L"SideSplash_EF", mediaPath + L"Effect/" + L"sidesplash.efk", _EfkInterface, 5.0f);
 	}
 
 	Scene::~Scene() {
