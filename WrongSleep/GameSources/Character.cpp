@@ -73,7 +73,8 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
 		//ptrColl->SetDrawActive(true);
-		
+		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
+		Group->IntoGroup(GetThis<StageObjects>());
 	}
 
 	//--------------------------------------------------------------------------------------

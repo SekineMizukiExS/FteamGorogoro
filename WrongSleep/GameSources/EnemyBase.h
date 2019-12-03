@@ -8,10 +8,6 @@ namespace basecross
 	//エネミーの管理クラス
 	//----------------------------------------
 	//実装予定
-	//1.エネミーの生成
-	//2.巡回経路の一元管理*
-	//3.外部ファイルの読込
-	//4.生成時、死亡時の処理
 	class EnemyManager:public ObjectInterface
 	{
 	public:
@@ -179,6 +175,18 @@ namespace basecross
 		TravelingState() {}
 	public:
 		DECLARE_SINGLETON_INSTANCE(TravelingState);
+		virtual void Enter(const shared_ptr<EnemyBase>&obj)override;
+		virtual void Execute(const shared_ptr<EnemyBase>&Obj)override;
+		virtual void Exit(const shared_ptr<EnemyBase>&Obj)override;
+
+	};
+
+	//追跡中
+	class TrackingState :public ObjState<EnemyBase>
+	{
+		TrackingState() {}
+	public:
+		DECLARE_SINGLETON_INSTANCE(TrackingState);
 		virtual void Enter(const shared_ptr<EnemyBase>&obj)override;
 		virtual void Execute(const shared_ptr<EnemyBase>&Obj)override;
 		virtual void Exit(const shared_ptr<EnemyBase>&Obj)override;

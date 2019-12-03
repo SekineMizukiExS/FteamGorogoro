@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Stage>
+    <StageObjects>
+      <Object Type="FixedObject">
+        <Pos>0,0,-39</Pos>
+        <Scale>99,1,15</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>0,0,21</Pos>
+        <Scale>99,1,15</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>-39,0,39</Pos>
+        <Scale>21,1,21</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>18,0,-9</Pos>
+        <Scale>21,1,45</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+    </StageObjects>
+    <EnemyDatas>
+      <EnemyData Type="Test" Pos="-43.94,1,-37.8" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="Test_TX">
+        <ObjParam State="Wait" />
+        <MovePoint>
+          <Point>
+            <POINTDATA Pos="-43.94,1,-37.8" TravelingB="4" TravelingA="1" />
+            <POINTDATA Pos="18.2,0,-39.3" TravelingB="0" TravelingA="2" />
+            <POINTDATA Pos="18.2,0,20.6" TravelingB="1" TravelingA="3" />
+            <POINTDATA Pos="-41,0,20.3" TravelingB="2" TravelingA="4" />
+            <POINTDATA Pos="-41,0,44.8" TravelingB="3" TravelingA="0" />
+          </Point>
+        </MovePoint>
+      </EnemyData>
+    </EnemyDatas>
+  </Stage>
+</root>

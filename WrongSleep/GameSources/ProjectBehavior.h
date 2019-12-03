@@ -227,7 +227,9 @@ namespace basecross {
 		{}
 		
 		//ˆÚ“®Š®—¹‚µ‚½‚çTRUE
-		bool TravelingMove(float MoveTime);
+		bool TravelingMove();
+
+		bool TrackingMove();
 
 		//ƒvƒŒƒCƒ„[‚ğ”­Œ©‚µ‚½‚çTRUE
 		//bool SearchPlayer();

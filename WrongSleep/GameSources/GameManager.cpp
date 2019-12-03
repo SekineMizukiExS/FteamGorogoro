@@ -67,6 +67,10 @@ namespace basecross
 		_TargetStage->AddGameObject<DebugObj>();
 	}
 
+
+
+	//-----------------------------------------------------------
+
 	void DebugObj::OnCreate()
 	{
 		//Debug

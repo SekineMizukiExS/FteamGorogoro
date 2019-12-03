@@ -101,6 +101,8 @@ namespace basecross {
 		void CreateStageObject();
 
 		void ToMyCamera();
+		
+		void SetCellMapCost();
 
 		shared_ptr<MultiView>_MView;
 

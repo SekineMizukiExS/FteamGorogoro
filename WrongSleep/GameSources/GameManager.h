@@ -23,7 +23,7 @@ namespace basecross {
 
 		shared_ptr<GameObject> _DebugObj;
 
-		shared_ptr<Stage> _TargetStage;
+		shared_ptr<StageBase> _TargetStage;
 
 	public:
 		//--------------------------------------------------------------------------------------
