@@ -155,7 +155,7 @@ namespace basecross {
 		auto ptrPlayer = GetSharedGameObject<PlayerMarker>(L"PlayerMarker");
 		PtrCamera->SetTargetObject(ptrPlayer);
 		PtrCamera->SetMinArm(1.0f);
-		PtrCamera->SetMaxArm(20.0f);
+		PtrCamera->SetMaxArm(50.0f);
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
 		_MView->AddView(Sub, SubCamera);
@@ -349,7 +349,7 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"Stage2";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"Stage2_2";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
@@ -414,7 +414,7 @@ namespace basecross {
 			float PieceSize = 3.0f;
 			UINT mapSizeUint = 35;
 			auto Ptr = AddGameObject<StageCellMap>(Vec3(-49.5f, -0.5f, -46.5f), PieceSize, mapSizeUint, mapSizeUint,-1);
-			Ptr->SetDrawActive(true);
+			Ptr->SetDrawActive(false);
 			EnemyBase::SetCellMap(Ptr);
 			CreateStageObject();
 			SetCellMapCost();
