@@ -12,7 +12,7 @@ namespace basecross
 	{
 	public:
 		explicit EnemyManager();
-		virtual ~EnemyManager() {}
+		virtual ~EnemyManager();
 
 
 		void OnCreate()override {};
@@ -20,12 +20,15 @@ namespace basecross
 
 		//----------------------------------------------------------------------------------
 		/*!
-		@brief エネミー生成用関数
-		@paramf[in] stage　生成させるターゲットステージ EnemyDataPath エネミーの情報が入ったデータパス
+		@brief エネミー
+		@paramf[in] stage　生成させるターゲットステージ
+		@paramf[in] Builder オブジェクトビルダー
+		@paramf[in]	XMLFilePath	参照するXMLファイルのパス
+		@paramf[in] EnemyObjPath　Objectデータまでのパス
 		@return なし
 		*/
 		//----------------------------------------------------------------------------------
-		void SetEnemyObject(const shared_ptr<EnemyBase> EnemyObj);
+		void SetEnemyObject(const shared_ptr<GameObject>&ObjectPtr);
 
 		//----------------------------------------------------------------------------------
 		/*!
@@ -37,7 +40,9 @@ namespace basecross
 		void OnEvent(const shared_ptr<Event>& event)override;
 	private:
 		//エネミー
-		//コピー禁止
+		struct Impl;
+		unique_ptr<Impl> pImpl;
+		////コピー禁止
 		EnemyManager(const EnemyManager&) = delete;
 		EnemyManager& operator=(const EnemyManager&) = delete;
 		//ムーブ禁止
@@ -176,8 +181,8 @@ namespace basecross
 	public:
 		DECLARE_SINGLETON_INSTANCE(TravelingState);
 		virtual void Enter(const shared_ptr<EnemyBase>&obj)override;
-		virtual void Execute(const shared_ptr<EnemyBase>&Obj)override;
-		virtual void Exit(const shared_ptr<EnemyBase>&Obj)override;
+		virtual void Execute(const shared_ptr<EnemyBase>&obj)override;
+		virtual void Exit(const shared_ptr<EnemyBase>&obj)override;
 
 	};
 
@@ -188,8 +193,8 @@ namespace basecross
 	public:
 		DECLARE_SINGLETON_INSTANCE(TrackingState);
 		virtual void Enter(const shared_ptr<EnemyBase>&obj)override;
-		virtual void Execute(const shared_ptr<EnemyBase>&Obj)override;
-		virtual void Exit(const shared_ptr<EnemyBase>&Obj)override;
+		virtual void Execute(const shared_ptr<EnemyBase>&obj)override;
+		virtual void Exit(const shared_ptr<EnemyBase>&obj)override;
 
 	};
 

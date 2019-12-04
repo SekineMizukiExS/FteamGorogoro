@@ -330,7 +330,7 @@ namespace basecross {
 
 				auto X = _CellPath[_NextCellIndex].x - _CellPath[_CellIndex].x;
 				auto Z = _CellPath[_NextCellIndex].z - _CellPath[_CellIndex].z;
-				
+
 				if (abs(X) > abs(Z))
 				{
 					//X
@@ -376,7 +376,8 @@ namespace basecross {
 				}
 			}
 		}
-
+		else
+			return true;
 		//エネミーのAABB
 		Test.GetFourEdge(TransComp, DrawComp);
 		AABB TestAABB = AABB(Vec3(Test._xHalfSizeMin, Test._yHalfSizeMin, Test._zHalfSizeMin), Vec3(Test._xHalfSize, Test._yHalfSize, Test._zHalfSize));

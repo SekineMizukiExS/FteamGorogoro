@@ -9,7 +9,7 @@ namespace basecross
 	GameManager::GameManager(const shared_ptr<StageBase>&StagePtr)
 		:_TargetStage(StagePtr)
 	{
-		_EnemyManager = make_shared<EnemyManager>();
+		_EnemyManager = ObjectFactory::Create<EnemyManager>();
 	}
 
 
