@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Stage>
+    <StageObjects>
+      <Object Type="FixedObject">
+        <Pos>-28,0,-39</Pos>
+        <Scale>40,1,15</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>0,0,21</Pos>
+        <Scale>99,1,15</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>-39,0,39</Pos>
+        <Scale>21,1,21</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>18,0,-9</Pos>
+        <Scale>10,1,27</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>40,0,-23</Pos>
+        <Scale>5,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>40,0,-28</Pos>
+        <Scale>5,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>40,0,-18</Pos>
+        <Scale>5,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>40,0,-6</Pos>
+        <Scale>15,1,15</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>-4,0,-33</Pos>
+        <Scale>5,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>-1,0,-39</Pos>
+        <Scale>5,1,5</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>1,0,-45</Pos>
+        <Scale>5,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>8,0,-44.97</Pos>
+        <Scale>6,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>12,0,-40</Pos>
+        <Scale>6,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>20,0,-40</Pos>
+        <Scale>6,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>34,0,-40</Pos>
+        <Scale>18,1,15</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>20,0,-35</Pos>
+        <Scale>6,1,3</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+      <Object Type="FixedObject">
+        <Pos>20,0,-28</Pos>
+        <Scale>3,1,8</Scale>
+        <Rot>0,0,0</Rot>
+      </Object>
+    </StageObjects>
+    <EnemyDatas>
+      <EnemyData Type="Test" Pos="-43.94,1,-37.8" Scale="5,5,5" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="Test_TX">
+        <ObjParam State="Wait" />
+        <MovePoint>
+          <Point>
+            <POINTDATA Pos="-43.94,1,-37.8" TravelingB="4" TravelingA="1" />
+            <POINTDATA Pos="44.8,0,20.9" TravelingB="0" TravelingA="2" />
+            <POINTDATA Pos="18.2,0,20.6" TravelingB="1" TravelingA="3" />
+            <POINTDATA Pos="-41,0,20.3" TravelingB="2" TravelingA="4" />
+            <POINTDATA Pos="-41,0,44.8" TravelingB="3" TravelingA="0" />
+          </Point>
+        </MovePoint>
+      </EnemyData>
+    </EnemyDatas>
+  </Stage>
+</root>

@@ -167,6 +167,7 @@ namespace basecross {
 	void TestStage::CreatePlayer() {
 		//プレーヤーの作成
 		auto ptrPlayer = AddGameObject<Player>();
+		ptrPlayer->GetComponent<Transform>()->SetPosition(-45, 5, -40);
 		//シェア配列にプレイヤーを追加
 		SetSharedGameObject(L"Player", ptrPlayer);
 		ptrPlayer->AddTag(L"Player");
@@ -307,28 +308,28 @@ namespace basecross {
 			{
 				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(10.0f, 0.5f, 3.0f)
+				Vec3(17.0f, 0.5f, 2.0f)
 			},
 			{
 				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0.0f, 0.0f, 0.0f),
-				Vec3(15.0f, 0.5f, 2.0f)
+				Vec3(17.0f, 0.5f, -4.0f)
 			},
 
 			{
 				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0, 0, 0),
-				Vec3(10.0f, 0.5f, 1.0f)
+				Vec3(17.0f, 0.5f, -10.0f)
 			},
 			{
 				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0, 0, 0),
-				Vec3(-10.0f, 0.5f, -5.0f)
+				Vec3(17.0f, 0.5f, -16.0f)
 			},
 			{
 				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(-0.5f, 0.0f, -0.5f),
-				Vec3(-10.0f, 0.5f, -3.0f)
+				Vec3(17.0f, 0.5f, -22.0f)
 			},
 		};
 		//オブジェクトの作成
@@ -348,10 +349,10 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"MapTestVer5";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"Stage2";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
-		//Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
+		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
 	}
 
 	//void TestStage::ToMyCamera() {
