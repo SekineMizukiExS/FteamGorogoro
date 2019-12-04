@@ -9,13 +9,26 @@ namespace basecross
 	//----------------------------------------
 	///エネミー管理クラス
 	//----------------------------------------
+	struct EnemyManager::Impl
+	{
+		Impl()
+		{}
+		~Impl() {}
+
+	};
+
 	EnemyManager::EnemyManager()
+		:pImpl(make_unique<Impl>())
 	{
 
 	}
-	void EnemyManager::SetEnemyObject(const shared_ptr<EnemyBase> EnemyObj)
-	{
 
+	EnemyManager::~EnemyManager()
+	{}
+
+	void EnemyManager::SetEnemyObject(const shared_ptr<GameObject>&ObjectPtr)
+	{
+		
 	}
 
 	void EnemyManager::OnEvent(const shared_ptr<Event>&event)
@@ -216,13 +229,14 @@ namespace basecross
 		//巡回経路を取得
 		if (obj->GetBehavior<EnemyBehavior>()->TrackingMove())
 		{
-	
+			obj->GetStateMachine()->ChangeState(TravelingState::Instance());
 		}
 	}
 
-	void TrackingState::Exit(const shared_ptr<EnemyBase>&Obj)
+	void TrackingState::Exit(const shared_ptr<EnemyBase>&obj)
 	{
-		//状態遷移時の位置座標を保持
+		//ターゲット情報を破棄
+		obj->GetBehavior<EnemyBehavior>()->SetTargetObject(nullptr);
 	}
 
 
