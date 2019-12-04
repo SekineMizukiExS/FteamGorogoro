@@ -168,7 +168,7 @@ namespace basecross{
 		RotateMove();
 		GetInFourEdge();
 		BoxExtending();
-		DebugLine();
+		//DebugLine();
 		//auto inPut = GetInputState();
 		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
 		if (KeyState.m_bPressedKeyTbl['F']) {

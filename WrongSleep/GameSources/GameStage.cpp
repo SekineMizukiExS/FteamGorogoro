@@ -426,7 +426,7 @@ namespace basecross {
 			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"Splash_EF");
 
 			//スカイボックス作成
-			//AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
+			AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
 
 			//AddGameObject<CBoneMeshBox>(Vec3(1, 1, 1), Vec3(0, 0, 0), Vec3(0, 0, 0),L"MITAGTV_MD");
 
