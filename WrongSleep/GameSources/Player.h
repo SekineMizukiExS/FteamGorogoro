@@ -92,6 +92,8 @@ namespace basecross{
 		void BoxExtending();
 		//” ‚ªL‚Ñ‚é•ûŒü‚ğæ“¾
 		Vec3 GetExtendingAngle();
+		//‰ñ“]æ‚ğæ“¾‚·‚éŠÖ”
+		Vec3 GetRotateVector();
 
 		//ƒvƒŒƒCƒ„[‚ÌÅ‰‚Ì’ê–Ê‚ğæ“¾‚·‚éŠÖ”
 		

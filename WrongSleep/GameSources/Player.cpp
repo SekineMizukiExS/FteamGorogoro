@@ -52,7 +52,7 @@ namespace basecross{
 		ptr->SetRotation(0.0f, 0.0f, 0.0f);
 		ptr->SetPosition(Vec3(8.5f, 7.5f, 0));
 		//ptr->SetPivot(Vec3(0, 0, 0));
-
+		ptr->SetQuaternion(Quat());
 
 		
 		//影をつける（シャドウマップを描画する）
@@ -240,6 +240,11 @@ namespace basecross{
 		}
 
 
+	}
+
+	Vec3 Player::GetRotateVector() {
+		Vec3 rotVec(-m_rotateAxis.z, m_rotateAxis.y, m_rotateAxis.x);
+		return rotVec;
 	}
 
 	//=============四辺取得関数=====================
@@ -496,7 +501,7 @@ namespace basecross{
 				auto stg = GetStage();
 				auto teststg = dynamic_pointer_cast<TestStage>(stg);
 				if (teststg) {
-					teststg->Effectplay(L"SideSplash_EF",Vec3(nowPos.x,nowPos.y,nowPos.z));
+					teststg->Effectplay(L"SideSplash_EF",Vec3(nowPos.x,0.5,nowPos.z));
 				}
 			}
 
@@ -625,12 +630,36 @@ namespace basecross{
 	}
 
 	void PlayerModel::OnUpdate() {
+		auto ptrTrans = GetComponent<Transform>();
 		auto ptrTarget = GetTargetObject();
 		if (ptrTarget) {
-			auto ptrTrans = GetComponent<Transform>();
+
 			Vec3 tempPos(ptrTarget->GetComponent<Transform>()->GetPosition());
 			ptrTrans->SetPosition(tempPos.x, tempPos.y -0.65f, tempPos.z);
+
+			auto obj = dynamic_pointer_cast<Player>(ptrTarget);
+			if (obj) {
+				Vec3 MAngle = obj->GetRotateVector();
+
+				MAngle.y = 0;
+				MAngle.normalize();
+				//進行方向向きからの角度を算出
+				float frontAngle = atan2(MAngle.z, MAngle.x);
+
+				//トータルの角度を算出
+				float totalAngle = frontAngle;
+				Vec3 angle(0, 0, 0);
+				//角度からベクトルを作成
+				angle = Vec3(cos(totalAngle), 0, sin(totalAngle));
+				//正規化する
+				angle.normalize();
+
+				auto utilPtr = GetBehavior<UtilBehavior>();
+				utilPtr->RotToHead(angle, 1.0f);
+			}
 		}
+
+
 	}
 
 }

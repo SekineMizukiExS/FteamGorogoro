@@ -248,7 +248,9 @@ namespace basecross {
 		//回転開始位置
 		Vec3 worldPos = pos;
 		//クォータニオン作成
-		Quat tempq(axis, angle);
+		auto tempaxis = axis;
+		tempaxis.normalize();
+		Quat tempq(tempaxis, angle);
 		//回転角度を作成
 		Quat q = tempq;
 		//quat.rotation(axis, angle);

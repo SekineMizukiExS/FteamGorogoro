@@ -351,7 +351,7 @@ namespace basecross {
 		wstring XMLStr = DataDir+L"ObjectData/" + L"MapTestVer5";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
-		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
+		//Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
 	}
 
 	//void TestStage::ToMyCamera() {

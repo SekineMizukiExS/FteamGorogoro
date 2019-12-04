@@ -57,14 +57,17 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"skyboxObj.bmf", true);
 		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
+
 		//test
 		App::GetApp()->RegisterEffect(L"TestEfk", mediaPath + L"Effects/EnemyHit.efk", _EfkInterface,10);
 		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"MitaGTmodels/", L"ValkylyeModel_TypeC_Valkylye.bmf", true);
 		//App::GetApp()->RegisterResource(L"MITAGTV_MD", multiModelMesh);
 
+		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"Models/", L"Player2_Motion.bmf", true);
+		//App::GetApp()->RegisterResource(L"Player3_MD", multiModelMesh);
 
 		App::GetApp()->RegisterEffect(L"Splash_EF", mediaPath + L"Effect/" + L"splash_efk.efk",_EfkInterface,10.0f);
-		App::GetApp()->RegisterEffect(L"SideSplash_EF", mediaPath + L"Effect/" + L"sidesplash.efk", _EfkInterface, 5.0f);
+		App::GetApp()->RegisterEffect(L"SideSplash_EF", mediaPath + L"Effect/" + L"sidesplash.efk", _EfkInterface, 1.0f);
 	}
 
 	Scene::~Scene() {
