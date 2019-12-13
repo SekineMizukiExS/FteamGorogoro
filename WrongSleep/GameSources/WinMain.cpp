@@ -168,7 +168,7 @@ int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth
 		vector<DWORD> UseKeyVec = {
 					VK_PRIOR,VK_NEXT,VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT,VK_SPACE,
 			VK_LBUTTON, VK_RBUTTON, VK_MBUTTON,
-			'W','A','S','D','X','B','F'
+			'W','A','S','D','X','B','F','L'
 		};
 		while (WM_QUIT != msg.message) {
 			if (!App::GetApp()->ResetInputState(hWnd, UseKeyVec)) {
@@ -330,6 +330,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		}
+	case WM_SIZE:
+		if (App::AppCheck()) {
+			App::GetApp()->OnSize();
+		}
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

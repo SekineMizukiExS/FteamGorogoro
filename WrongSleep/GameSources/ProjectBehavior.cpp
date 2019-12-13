@@ -423,6 +423,44 @@ namespace basecross {
 		return false;
 	}
 
+	//
+	bool EventCameraBehavior::Move()
+	{
+		if (Execute())
+		{
+			//return NextPoint();
+		}
+		return false;
+	}
+
+	bool EventCameraBehavior::Execute(float TotalTime)
+	{
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		_CurrntTime += ElapsedTime;
+		if (_CurrntTime > TotalTime) {
+			return true;
+		}
+		Easing<Vec3> easing;
+		auto TgtPos = easing.EaseInOut(EasingType::Cubic, _StartEyePos, _EndEyePos, _CurrntTime, TotalTime);
+		_AtPos = easing.EaseInOut(EasingType::Cubic, _StartAtPos, _EndAtPos, _CurrntTime, TotalTime);
+		auto ptrTrans = GetGameObject()->GetComponent<Transform>();
+		ptrTrans->SetPosition(TgtPos);
+
+		auto ptrEVC = GetGameObject()->GetTypeStage<StageBase>()->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+		ptrEVC->SetAtPos(_AtPos);
+		return false;
+	}
+
+	//bool EventCameraBehavior::NextPoint()
+	//{
+
+	//}
+
+	//void EventCameraBehavior::RevertParam()
+	//{
+
+	//}
+
 }
 
 //end basecross

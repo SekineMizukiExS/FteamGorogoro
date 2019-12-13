@@ -234,5 +234,88 @@ namespace basecross{
 		virtual void OnCreate() override;
 		//操作
 	};
+
+	//-----------------------------------------------------------------
+	//イベント関係オブジェクト宣言
+	//-----------------------------------------------------------------
+	//-----------------------------------------------------------------
+	//イベントカメラパラメータ構造体
+	//-----------------------------------------------------------------
+	//struct EventCameraParam
+	//{
+	//	//カメラ座標
+	//	vector<Vec3> _TargetEyePos;
+	//	//注視点
+	//	vector<Vec3> _TargetAtPos;
+	//	//イベント後カメラを戻すかどうか
+	//	bool _IsStay;
+	//	EventCameraParam()
+	//	{}
+	//	EventCameraParam(const vector<Vec3> TEyePos, const vector<Vec3> TAtPos,bool Stay = false)
+	//		:_TargetEyePos(TEyePos),_TargetAtPos(TAtPos),_IsStay(Stay)
+	//	{}
+
+	//};
+	//-----------------------------------------------------------------
+	//イベントカメラマンクラス
+	//-----------------------------------------------------------------
+	class EventCameraMan :public GameObject
+	{
+	public:
+		EventCameraMan(const shared_ptr<Stage>&StagePtr)
+			:GameObject(StagePtr)
+		{}
+		~EventCameraMan() {}
+
+		void OnCreate()override;
+
+		void OnUpdate()override;
+
+		void OnEvent(const shared_ptr<Event>&event)override;
+
+		unique_ptr<StateMachine<EventCameraMan>> &GetStateMachine()
+		{
+			return _StateMachine;
+		}
+
+		void SetAtPos(const Vec3& Pos) {
+			_CurrntEyePos = Pos;
+		}
+
+		const Vec3 &GetAtPos()const
+		{
+			return _CurrntAtPos;
+		}
+
+	private:
+		unique_ptr<StateMachine<EventCameraMan>> _StateMachine;
+
+		Vec3 _CurrntEyePos;
+		Vec3 _CurrntAtPos;
+	};
+
+	//-------------------------------------------------------------------
+	//イベントカメラステートマシン
+	//-------------------------------------------------------------------
+	//イベント地点へむかう
+	class EventMove :public ObjState<EventCameraMan>
+	{
+		EventMove(){ }
+	public:
+		DECLARE_SINGLETON_INSTANCE(EventMove)
+		void Enter(const shared_ptr<EventCameraMan>&obj)override;
+		void Execute(const shared_ptr<EventCameraMan>&obj)override;
+		void Exit(const shared_ptr<EventCameraMan>&obj)override;
+	};
+	//イベント中
+	class EventExecute :public ObjState<EventCameraMan>
+	{
+		EventExecute() { }
+	public:
+		DECLARE_SINGLETON_INSTANCE(EventExecute)
+		void Enter(const shared_ptr<EventCameraMan>&obj)override;
+		void Execute(const shared_ptr<EventCameraMan>&obj)override;
+		void Exit(const shared_ptr<EventCameraMan>&obj)override;
+	};
 }
 //end basecross

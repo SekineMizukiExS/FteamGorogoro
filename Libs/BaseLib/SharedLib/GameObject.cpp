@@ -1345,6 +1345,60 @@ namespace basecross {
 		}
 	}
 
+	//ステージ内のすべての描画（シーンからよばれる）
+	void Stage::MultiRenderStage() {
+		if (IsDrawPerformanceActive()) {
+			pImpl->m_DrawPerformance.Start();
+		}
+		//描画デバイスの取得
+		auto Dev = App::GetApp()->GetDeviceResources();
+		auto MultiPtr = dynamic_pointer_cast<MultiView>(GetView());
+		if (MultiPtr) {
+			for (size_t i = 0; i < MultiPtr->GetViewSize(); i++) {
+				MultiPtr->SetTargetIndex(i);
+				if (IsShadowmapDraw()) {
+					Dev->ClearShadowmapViews();
+					Dev->StartShadowmapDraw();
+					DrawShadowmapStage();
+					Dev->EndShadowmapDraw();
+				}
+				//デフォルト描画の開始
+				Dev->StartDefaultDraw();
+#if (BASECROSS_DXVERSION == 11)
+				RsSetViewport(MultiPtr->GetTargetViewport());
+#endif
+				DrawStage();
+				//デフォルト描画の終了
+				Dev->EndDefaultDraw();
+			}
+			//描画が終わったら更新処理用に先頭のカメラにターゲットを設定する
+			MultiPtr->SetTargetIndex(0);
+		}
+		else {
+			if (IsShadowmapDraw()) {
+				Dev->ClearShadowmapViews();
+				Dev->StartShadowmapDraw();
+				DrawShadowmapStage();
+				Dev->EndShadowmapDraw();
+			}
+			//デフォルト描画の開始
+			Dev->StartDefaultDraw();
+#if (BASECROSS_DXVERSION == 11)
+			RsSetViewport(GetView()->GetTargetViewport());
+#endif
+			DrawStage();
+			//デフォルト描画の終了
+			Dev->EndDefaultDraw();
+		}
+		//子供ステージの描画
+		for (auto PtrChileStage : GetChileStageVec()) {
+			PtrChileStage->RenderStage();
+		}
+		if (IsDrawPerformanceActive()) {
+			pImpl->m_DrawPerformance.End();
+		}
+	}
+
 	void Stage::DestroyStage() {
 		//子供ステージの削除処理
 		for (auto PtrChileStage : pImpl->m_ChildStageVec) {
@@ -1410,6 +1464,11 @@ namespace basecross {
 	}
 	void MovieStage::SetAutoRepeat(bool b) {
 		App::GetApp()->SetMovieAutoRepeat(b);
+	}
+
+	bool MovieStage::EndMedia()const
+	{
+		return App::GetApp()->IsEndMovie();
 	}
 
 	void MovieStage::OnDestroy() {

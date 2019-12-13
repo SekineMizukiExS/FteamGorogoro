@@ -20,7 +20,7 @@ namespace basecross
 		wstring m_textureKey;
 		float m_halfSize;
 		//バックアップ頂点データ
-		vector<VertexPositionColor>  vertices;
+		vector<VertexPositionColorTexture>  vertices;
 	public:
 		Sprite(
 			const shared_ptr<Stage>& stagePtr,
@@ -32,7 +32,38 @@ namespace basecross
 		);
 		virtual	~Sprite() {}
 		virtual void OnCreate() override;
-		virtual void OnUpdate() override {}
+		virtual void OnUpdate() override = 0;
+	};
+	//---------------------------------------------------
+	//アニメーションスプライト
+	//---------------------------------------------------
+	enum AnimationType
+	{
+		Flashing
+	};
+
+	class AnimationSprite : public Sprite
+	{
+	public:
+		AnimationSprite(const shared_ptr<Stage>&Stage, const wstring& textureKey,
+			bool trace,
+			const Vec2& startScale,
+			const Vec3& startPos,
+			const float halfSize,
+			const float AnimationSpeed,
+			const AnimationType AnimType = AnimationType::Flashing
+		);
+		
+		~AnimationSprite() {}
+
+		void OnCreate()override;
+
+		void OnUpdate()override;
+
+	private:
+		AnimationType _AType;
+		float _AnimationSpeed;
+		float _TotalTime;
 	};
 
 	//生成時に縦横の長さを任意で指定できるタイプのスプライトです

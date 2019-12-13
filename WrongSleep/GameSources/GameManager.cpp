@@ -61,13 +61,62 @@ namespace basecross
 		}
 	}
 
+	void GameManager::LoadStart(const StageType type)
+	{
+		std::thread LoadThread(&GameManager::LoadResource, this, type);
+		LoadThread.detach();
+	}
 
+	//
+	void GameManager::LoadResource(const StageType type)
+	{
+		_mutex.lock();
+		_LoadEnd = false;
+		_ResMap.clear();
+		_mutex.unlock();
+
+		//メディアパス
+		wstring mediaPath;
+		App::GetApp()->GetDataDirectory(mediaPath);
+		wstring TexturePath = mediaPath + L"Textures/";
+		wstring ModelPath = mediaPath + L"Models/";
+		wstring EffectPath = mediaPath + L"Effect/";
+
+		switch (type)
+		{
+		case StageType::TitleStage://タイトルステージで使うデータ
+			break;
+		case StageType::GameStage:
+			break;
+		case StageType::LoadStage:
+			break;
+		case StageType::SelectStage:
+			break;
+		}
+
+		_mutex.lock();
+		_LoadEnd = true;
+		_mutex.unlock();
+	}
+	//
 	void GameManager::OnCreate()
 	{
 		//_TargetStage->AddGameObject<DebugObj>();
 	}
 
+	void GameManager::OnEvent(const shared_ptr<Event>&event)
+	{
+		if (event->m_MsgStr == L"EventStart")
+		{
+			//auto EventCamera = _TargetStage->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+			//SendEvent(GetThis<ObjectInterface>(), _TargetStage, L"ChangeCamera");
+		}
+	}
 
+	void GameManager::ChangeEventCamera()
+	{
+		
+	}
 
 	//-----------------------------------------------------------
 

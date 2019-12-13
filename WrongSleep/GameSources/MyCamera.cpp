@@ -325,5 +325,24 @@ namespace basecross {
 		Camera::OnUpdate();
 	}
 
+	//--------------------------------------------------------------------------------------
+	//イベントカメラ(コンポーネントではない）
+	//--------------------------------------------------------------------------------------
+	EventCamera::EventCamera()
+		:Camera()
+	{}
+	EventCamera::~EventCamera()
+	{}
+
+	void EventCamera::OnUpdate()
+	{
+		auto ptrOpeningCameraman = dynamic_pointer_cast<EventCameraMan>(GetCameraObject());
+		if (ptrOpeningCameraman) {
+			auto pos = ptrOpeningCameraman->GetAtPos();
+			SetAt(pos);
+		}
+		Camera::OnUpdate();
+	}
+
 }
 //end basecross
