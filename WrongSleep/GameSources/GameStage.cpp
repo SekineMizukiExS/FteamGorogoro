@@ -33,6 +33,20 @@ namespace basecross {
 		GameManager::DeleteManager();
 	}
 
+	void StageBase::Effectplay(wstring Key, Vec3 hitpoint) {
+		//エフェクトのプレイ********************************
+		//auto TransformPtr = &tr;
+		//auto ShEfkInterface = GetTypeStage<GameStage>()->GetEfkInterface();
+
+		m_EfkPlay[m_EfkCount] = ObjectFactory::Create<EfkPlay>(Key, hitpoint);
+		if (m_EfkCount == 19) {
+			m_EfkCount = 0;
+		}
+		else {
+			m_EfkCount++;
+		}
+	}
+
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
@@ -75,7 +89,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	StartStageクラス実体
 	//--------------------------------------------------------------------------------------
-	void StartStage::CreateViewLight()
+	void TitleStage::CreateViewLight()
 	{
 		const Vec3 eye(50.0f, 0.0f, 0.0f);
 		const Vec3 at(0.0f);
@@ -91,10 +105,13 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting2();
 	}
 
-	void StartStage::OnCreate() {
+	void TitleStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
+			//AddChileStage<TestStage>();
+			AddGameObject<MovingObject>();
+
 			//AddGameObject<TitleUI>(1280, 800, Vec2(0, 0), 0, L"Test_TX");
 		}
 		catch (...) {
@@ -102,7 +119,7 @@ namespace basecross {
 		}
 	}
 
-	void StartStage::OnUpdate()
+	void TitleStage::OnUpdate()
 	{
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
 		if (Dev.m_bLastKeyTbl['S'])
@@ -112,6 +129,72 @@ namespace basecross {
 	}
 
 	//!endStartStage
+
+	//--------------------------------------------------------------------------------------
+	//LoadStageクラス（読み込むステージ）
+	//--------------------------------------------------------------------------------------
+	void LoadStage::CreateViewLight() {
+		auto PtrView = CreateView<SingleView>();
+		//ビューのカメラの設定
+		auto PtrCamera = ObjectFactory::Create<Camera>();
+		PtrView->SetCamera(PtrCamera);
+		PtrCamera->SetEye(Vec3(0.0f, 2.0f, -3.0f));
+		PtrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		//マルチライトの作成
+		auto PtrMultiLight = CreateLight<MultiLight>();
+		//デフォルトのライティングを指定
+		PtrMultiLight->SetDefaultLighting();
+
+	}
+
+	//スプライトの作成
+	void LoadStage::CreateLoadSprite() 
+	{
+
+	}
+
+	//初期化
+	void LoadStage::OnCreate() 
+	{
+		CreateViewLight();
+		//スプライトの作成
+		CreateLoadSprite();
+	}
+
+	//更新
+	void LoadStage::OnUpdate() {
+		//if () {
+		//	//リソースのロードが終了したらタイトルステージに移行
+		//	PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+		//}
+	}
+
+	//--------------------------------------------------------------------------------------
+	//Movieクラス
+	//--------------------------------------------------------------------------------------
+	//初期化
+	void MyMovieStage::OnCreate() {
+		MovieStage::OnCreate();
+		wstring dataDir;
+		//サンプルのためアセットディレクトリを取得
+		App::GetApp()->GetDataDirectory(dataDir);
+		wstring strMovie = dataDir + L"/Movies/" + L"PV.mp4";
+		SetMovieFileName(strMovie);
+		MovieStage::SetAutoRepeat(false);
+		//再生
+		Play();
+		GameManager::GetManager()->LoadStart(StageType::TitleStage);
+	}
+
+	void MyMovieStage::OnUpdate()
+	{
+		auto Input = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+
+		if ((MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&GameManager::GetManager()->GetLoadEnd())
+		{
+			PostEvent(0.0f, GetThis <ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTestStage");
+		}
+	}
 
 	//--------------------------------------------------------------------------------------
 	//	TestStageクラス実体
@@ -144,7 +227,8 @@ namespace basecross {
 		_MView = CreateView <MultiView> ();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>();
-		_MView->AddView(Main,PtrCamera);
+		//カメラインデックス
+		_MyCameraIndex =_MView->AddView(Main,PtrCamera);
 		PtrCamera->SetEye(eye[4]);
 		PtrCamera->SetAt(at);
 		//マルチライトの作成
@@ -158,9 +242,16 @@ namespace basecross {
 		PtrCamera->SetMaxArm(50.0f);
 
 		auto SubCamera = ObjectFactory::Create<Camera>();
-		_MView->AddView(Sub, SubCamera);
+		_SubCametaIndex=_MView->AddView(Sub, SubCamera);
 		SubCamera->SetEye(eye[3]);
 		SubCamera->SetAt(at);
+
+		//イベントカメラのView作成
+		_EventView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
+		auto EventCameraPtr = ObjectFactory::Create<EventCamera>();
+		_EventView->SetCamera(EventCameraPtr);
+		EventCameraPtr->SetEye(eye[3]);
+		EventCameraPtr->SetAt(at);
 
 	}
 
@@ -422,11 +513,12 @@ namespace basecross {
 			
 			AddGameObject<MovingObject>();
 			AddGameObject<SwitchObject>();
-
+			AddGameObject<EventCameraMan>();
 			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"Splash_EF");
 
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
+
 
 			//AddGameObject<CBoneMeshBox>(Vec3(1, 1, 1), Vec3(0, 0, 0), Vec3(0, 0, 0),L"MITAGTV_MD");
 
@@ -451,35 +543,31 @@ namespace basecross {
 		}
 	}
 
-	void StageBase::Effectplay(wstring Key,Vec3 hitpoint) {
-		//エフェクトのプレイ********************************
-		//auto TransformPtr = &tr;
-		//auto ShEfkInterface = GetTypeStage<GameStage>()->GetEfkInterface();
-
-		m_EfkPlay[m_EfkCount] = ObjectFactory::Create<EfkPlay>(Key, hitpoint);
-		if (m_EfkCount == 19) {
-			m_EfkCount = 0;
-		}
-		else {
-			m_EfkCount++;
-		}
-	}
-
 	void TestStage::OnUpdate()
 	{
 		StageBase::OnUpdate();
 
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
-		if (Dev.m_bLastKeyTbl['S'])
+		if (Dev.m_bLastKeyTbl['L'])
 		{
-			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"TestEfk", Vec3(0, 1, 0));
-			//EfkPlay(L"TestEfk",Vec3(0, 1, 0));
+			auto ptrEventCamera = dynamic_pointer_cast<EventCamera>(_EventView->GetCamera());
+			if (ptrEventCamera)
+			{
+				//m_MyCameraView
+				this->SetView(_EventView);
+			}
+			else
+			{
+				throw BaseException
+				(L"カメラの切り替えに失敗した",
+					L"GameStage.cpp",
+					L"Line:198");
+			}
 
-			//PostEvent(1.0f, GetThis<ObjectInterface>(), _Ts, L"StopFuton");
 		}
 		if (Dev.m_bLastKeyTbl['W'])
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), _Ts, L"StartFuton");
+			//SendEvent(GetThis<ObjectInterface>(), GetSharedGameObject<EventCameraMan>(L"EventCameraMan"), L"EventEnd");
 		}
 		
 	}

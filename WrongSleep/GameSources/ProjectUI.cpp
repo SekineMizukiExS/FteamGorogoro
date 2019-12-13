@@ -24,19 +24,17 @@ namespace basecross
 		m_startScale(startScale),
 		m_startPos(startPos),
 		m_halfSize(halfSize)
-	{}
+	{
+		vertices.push_back(VertexPositionColorTexture(Vec3(-m_halfSize, m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
+		vertices.push_back(VertexPositionColorTexture(Vec3(m_halfSize, m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
+		vertices.push_back(VertexPositionColorTexture(Vec3(-m_halfSize, -m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
+		vertices.push_back(VertexPositionColorTexture(Vec3(m_halfSize, -m_halfSize, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)));
+	}
 
 	void Sprite::OnCreate()
 	{
-		//頂点配列（縦横５個ずつ表示）
-		vector<VertexPositionColorTexture> vertices = {
-			{ VertexPositionColorTexture(Vec3(-m_halfSize, m_halfSize, 0),Col4(1.0f,1.0f,1.0f,1.0f), Vec2(0.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_halfSize, m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(-m_halfSize, -m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_halfSize, -m_halfSize, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)) },
-		};
-		//インデックス配列
 		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
+		//頂点配列（縦横５個ずつ表示）
 		SetAlphaActive(m_trace);
 		auto ptrTransform = GetComponent<Transform>();
 		ptrTransform->SetScale(m_startScale.x, m_startScale.y, 1.0f);
@@ -46,6 +44,36 @@ namespace basecross
 		auto ptrDraw = AddComponent<PCTSpriteDraw>(vertices, indices);
 		ptrDraw->SetSamplerState(SamplerState::LinearWrap);
 		ptrDraw->SetTextureResource(m_textureKey);
+	}
+	
+	//-------------------------------------------------------------------------
+	//アニメーションスプライト
+	//-------------------------------------------------------------------------
+	AnimationSprite::AnimationSprite(const shared_ptr<Stage>&Stage, const wstring& textureKey,bool trace,const Vec2& startScale,const Vec3& startPos,
+		const float halfSize,
+		const float AnimationSpeed,const AnimationType AnimType)
+		:Sprite(Stage,textureKey,trace,startScale,startPos,halfSize),_AnimationSpeed(AnimationSpeed), _AType(AnimType),_TotalTime(0.0f)
+	{
+
+	}
+
+	void AnimationSprite::OnCreate()
+	{
+		Sprite::OnCreate();
+	}
+
+	void AnimationSprite::OnUpdate()
+	{
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		_TotalTime += ElapsedTime * 5.0f;
+		if (_TotalTime >= XM_2PI) {
+			_TotalTime = 0;
+		}
+		auto PtrDraw = GetComponent<PCTSpriteDraw>();
+		Col4 col(1.0, 1.0, 1.0, 1.0);
+		col.w = sin(_TotalTime) * 0.5f + 0.5f;
+		PtrDraw->SetDiffuse(col);
+
 	}
 	//-------------------------------------------------------------------------
 	///可変長スプライト

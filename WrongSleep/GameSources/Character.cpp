@@ -165,9 +165,18 @@ namespace basecross{
 	void MovingObject::OnEvent(const shared_ptr<Event>&event)
 	{
 		if (event->m_MsgStr == L"PushSwitch")
+		{			
+			//スイッチが押された!
+			_OnEventFlag = _OnEventFlag ? true : !_OnEventFlag;
+
+			//auto ECO = GetTypeStage<StageBase>()->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+			//SendEvent(GetThis<ObjectInterface>(), , L"EventStart");
+			//SendEvent(GetThis<ObjectInterface>(), GameManager::GetManager()->GetThis<ObjectInterface>(), L"EventStart");
+		}
+		else if (event->m_MsgStr == L"Start")
 		{
 			//スイッチが押された!
-			_OnEventFlag = _OnEventFlag ? true:!_OnEventFlag;
+			_OnEventFlag = _OnEventFlag ? true : !_OnEventFlag;
 		}
 	}
 
@@ -514,6 +523,74 @@ namespace basecross{
 		//ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 		//ptrDraw->SetEmissive(Flt4(0.5f, 0.5f, 1.0f, 1));
+	}
+
+	//-----------------------------------------------------------------
+	//イベントカメラマンクラス
+	//-----------------------------------------------------------------
+	void EventCameraMan::OnCreate()
+	{
+		_StateMachine.reset(new StateMachine<EventCameraMan>(GetThis<EventCameraMan>()));
+		GetStage()->SetSharedGameObject(L"EventCameraMan", GetThis<EventCameraMan>());
+		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(L"EventCamera", GetThis<ObjectInterface>());
+	}
+
+	void EventCameraMan::OnUpdate()
+	{
+		auto ActiveCamera = GetTypeStage<StageBase>()->GetCameraSelects();
+		if(ActiveCamera == SelectCamera::pEventCamera)
+			_StateMachine->Update();
+	}
+
+	void EventCameraMan::OnEvent(const shared_ptr<Event>&event)
+	{
+		if (event->m_MsgStr == L"EventStart")
+		{
+			_StateMachine->ChangeState(EventMove::Instance());
+		}
+		else if (event->m_MsgStr == L"EventEnd")
+		{
+			_StateMachine->ChangeState(EventMove::Instance());
+		}
+	}
+
+	//-------------------------------------------------------------------
+	//イベントカメラステートマシン
+	//-------------------------------------------------------------------
+	//開始
+	IMPLEMENT_SINGLETON_INSTANCE(EventMove)
+	void EventMove::Enter(const shared_ptr<EventCameraMan>&obj)
+	{
+		//行動クラスにパラメータを渡す
+	}
+	void EventMove::Execute(const shared_ptr<EventCameraMan>&obj)
+	{
+		//移動を開始する
+		if (obj->GetBehavior<EventCameraBehavior>()->Move())
+		{
+			obj->GetStateMachine()->ChangeState(EventExecute::Instance());
+		}
+	}
+	void EventMove::Exit(const shared_ptr<EventCameraMan>&obj)
+	{
+		//パラメータの値を逆順にする
+		//obj->GetBehavior<EventCameraBehavior>()->RevertParam();
+		//イベント中のステートに変える
+	}
+	//イベント中
+	IMPLEMENT_SINGLETON_INSTANCE(EventExecute)
+	void EventExecute::Enter(const shared_ptr<EventCameraMan>&obj)
+	{
+		//Managerにイベント地点についたことを知らせる
+	}
+	void EventExecute::Execute(const shared_ptr<EventCameraMan>&obj)
+	{
+		//イベント終了まで待機
+		//終了したらステートを戻す
+	}
+	void EventExecute::Exit(const shared_ptr<EventCameraMan>&obj)
+	{
+
 	}
 }
 //end basecross

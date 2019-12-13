@@ -293,6 +293,34 @@ namespace basecross {
 
 	};
 	//！
+
+	//------------------------------------------------------
+	//イベントカメラ行動クラス
+	//------------------------------------------------------
+	class EventCameraBehavior : public Behavior
+	{
+	public:
+		EventCameraBehavior(const shared_ptr<GameObject>&GameObjectPtr)
+			:Behavior(GameObjectPtr)
+		{}
+		~EventCameraBehavior(){}
+
+		bool Move();
+
+		//void RevertParam();
+
+	private:
+		bool Execute(float Time = 5.0f);
+
+		//bool NextPoint();
+
+		Vec3 _StartEyePos, _StartAtPos;
+		Vec3 _EyePos, _AtPos;
+		Vec3 _EndEyePos, _EndAtPos;
+
+		float _CurrntTime;
+		int PointIndex;
+	};
 }
 //end basecross
 
