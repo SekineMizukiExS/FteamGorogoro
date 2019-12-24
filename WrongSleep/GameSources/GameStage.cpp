@@ -13,7 +13,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void StageBase::OnCreate()
 	{
-		GameManager::CreateManager(GetThis<StageBase>());
+
 	}
 
 	void StageBase::OnUpdate()
@@ -30,7 +30,7 @@ namespace basecross {
 
 	void StageBase::OnDestroy()
 	{
-		GameManager::DeleteManager();
+
 	}
 
 	void StageBase::Effectplay(wstring Key, Vec3 hitpoint) {

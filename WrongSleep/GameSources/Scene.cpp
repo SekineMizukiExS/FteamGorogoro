@@ -22,7 +22,7 @@ namespace basecross{
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
 			//エフェクトインターフェイス生成
 			_EfkInterface = ObjectFactory::Create<EfkInterface>();
-			GameManager::CreateManager(nullptr);
+			GameManager::CreateManager();
 			SetUnionTextures();
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToMovieStage");
 		}
@@ -73,7 +73,14 @@ namespace basecross{
 	Scene::~Scene() {
 	}
 
+	void Scene::OnUpdate()
+	{
+		GameManager::GetManager()->OnUpdate();
+		SceneBase::OnUpdate();
+	}
+
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
+
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<TitleStage>();
@@ -85,22 +92,14 @@ namespace basecross{
 		else if (event->m_MsgStr == L"ToTestStage")
 		{
 			//TestStage
-			auto StagePtr = ResetActiveStage<TestStage>();
-
-			if (!GameManager::MakeCheck())
-			{
-				GameManager::CreateManager(StagePtr);
-			}
+			ResetActiveStage<TestStage>();
 		}
 		else if (event->m_MsgStr == L"ToMovieStage")
 		{
-			auto StagePtr = ResetActiveStage<MyMovieStage>();
-
-			if (!GameManager::MakeCheck())
-			{
-			}
+			ResetActiveStage<MyMovieStage>();
 		}
 
+		GameManager::GetManager()->SetTargetStage(GetActiveStage());
 	}
 }
 //end basecross
