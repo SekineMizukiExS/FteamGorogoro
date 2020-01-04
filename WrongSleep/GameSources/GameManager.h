@@ -6,6 +6,7 @@ namespace basecross {
 	//前方定義
 	class EnemyManager;
 	struct GameEvent;
+	class EventCameraMan;
 	//ゲームイベントタイプ
 	/*
 	*0標準
@@ -23,7 +24,7 @@ namespace basecross {
 		CutScene
 	};
 
-	class GameEventInterface : public std::enable_shared_from_this<GameEventInterface>
+	class GameEventInterface
 	{
 	protected:
 		//--------------------------------------------------------------------------------------
@@ -88,7 +89,7 @@ namespace basecross {
 	{
 		///	このメッセージを送ったオブジェクト
 		weak_ptr<GameEventInterface> m_Sender;
-		///	受け取るオブジェクト（nullptrの場合はアクティブステージ内すべてもしくはキーワードで識別するオブジェクト）
+		///	受け取るオブジェクト（nullptrの場合はゲームマネージャーもしくはキーワードで識別するオブジェクト）
 		weak_ptr<GameEventInterface> m_Receiver;
 		///	メッセージ文字列
 		wstring m_MsgStr;
@@ -150,6 +151,14 @@ namespace basecross {
 		void AddEventReceiverGroup(const wstring& GroupKey, const shared_ptr<GameEventInterface>& Receiver);
 		//--------------------------------------------------------------------------------------
 		/*!
+		@brief	イベントカメラマンの設定
+		@param[in]	Receiver	カメラマンオブジェクト
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void AddEventCameraMan(const shared_ptr<EventCameraMan>& Receiver);
+		//--------------------------------------------------------------------------------------
+		/*!
 		@brief	イベントのSEND（キューに入れずにそのまま送る）
 		@param[in]	Sender	送り側オブジェクト（nullptr可）
 		@param[in]	Receiver	受け手側オブジェクト
@@ -173,6 +182,14 @@ namespace basecross {
 		void SendEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
 			const wstring& MsgStr, const GameEventType Type = GameEventType::Default);
 	private:
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief Typeごとの処理分け
+		@param[in]	
+		@return	bool
+		*/
+		//--------------------------------------------------------------------------------------
+		void TypeEvent(const shared_ptr<GameEvent>& gameevent);
 		// pImplイディオム
 		struct Impl;
 		unique_ptr<Impl> pImpl;
@@ -270,15 +287,23 @@ namespace basecross {
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief イベントカメラを駆動させる
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		//void MoveEventCamera(const shared_ptr<)
+
 		void LoadStart(const StageType type);
 
 		void OnCreate()override;
 
-		void OnUpdate();
+		void OnUpdate() {}
 
 		void OnEvent(const shared_ptr<Event>&event)override;
 
-		void OnGameEvent(const shared_ptr<GameEvent>&gameevent);
+		//void OnGameEvent(const shared_ptr<GameEvent>&gameevent);
 
 		//void OnUpdate();
 
@@ -289,6 +314,8 @@ namespace basecross {
 		}
 		
 		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
+
+		const shared_ptr<Stage> GetTargetStage()const { return _TargetStage; }
 
 		//リソースの読込が終わったらTrue	
 		bool GetLoadEnd()const

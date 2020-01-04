@@ -423,14 +423,47 @@ namespace basecross {
 		return false;
 	}
 
+	//---------------------------------------------------
 	//
-	bool EventCameraBehavior::Move()
+	//---------------------------------------------------
+	//TO
+	void EventCameraBehavior::ToEventPointParam()
 	{
-		if (Execute())
+		auto ECObj = dynamic_pointer_cast<EventCameraMan>(GetGameObject());
+		if (ECObj)
 		{
-			//return NextPoint();
+			auto TargetObj = ECObj->GetTargetObject().lock();
+			if (TargetObj)
+			{
+				//開始
+				_StartEyePos = GetStage()->GetView()->GetTargetCamera()->GetEye();
+				_StartAtPos = GetStage()->GetView()->GetTargetCamera()->GetAt();
+				//終了
+				//_EndEyePos = 
+				_EndAtPos = TargetObj->GetComponent<Transform>()->GetPosition();
+				_EndEyePos = _EndAtPos;
+				_EndEyePos += _StartEyePos - _StartAtPos;
+				_CurrntTime = 0.0f;
+			}
 		}
-		return false;
+		dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
+	}
+
+	//TO
+	void EventCameraBehavior::ToStartPointParam()
+	{
+		//終了
+		auto CEye = _EndEyePos;
+		auto CAt = _EndAtPos;
+		auto Camera = dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->GetMyCamera();
+		//開始
+		_EndEyePos = Camera->GetEye();
+		_EndAtPos = Camera->GetAt();
+
+		_StartEyePos = CEye;
+		_StartAtPos = CAt;
+		
+		_CurrntTime = 0.0f;
 	}
 
 	bool EventCameraBehavior::Execute(float TotalTime)
@@ -446,7 +479,7 @@ namespace basecross {
 		auto ptrTrans = GetGameObject()->GetComponent<Transform>();
 		ptrTrans->SetPosition(TgtPos);
 
-		auto ptrEVC = GetGameObject()->GetTypeStage<StageBase>()->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+		auto ptrEVC = dynamic_pointer_cast<EventCameraMan>(GetGameObject());
 		ptrEVC->SetAtPos(_AtPos);
 		return false;
 	}

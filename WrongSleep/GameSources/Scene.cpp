@@ -75,7 +75,7 @@ namespace basecross{
 
 	void Scene::OnUpdate()
 	{
-		GameManager::GetManager()->OnUpdate();
+		//GameManager::GetManager()->OnUpdate();
 		SceneBase::OnUpdate();
 	}
 

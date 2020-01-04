@@ -8,6 +8,8 @@
 
 namespace basecross {
 
+	class MyCamera;
+
 	//--------------------------------------------------------------------------------------
 	//	ステージベースクラス（エフェクトの更新・描画）
 	//--------------------------------------------------------------------------------------
@@ -163,8 +165,6 @@ namespace basecross {
 		void CreateCommonBox();
 		void CreateStageObject();
 
-		void ToMyCamera();
-		
 		void SetCellMapCost();
 	public:
 		//構築と破棄
@@ -175,9 +175,13 @@ namespace basecross {
 
 		virtual void OnUpdate()override;
 
-		shared_ptr<MultiView>GetMultiView()const
+		void ToMyCamera();
+
+		void ToEventCamera();
+
+		shared_ptr<MyCamera>GetMyCamera()const
 		{
-			return _MView;
+			return dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
 		}
 	};
 }

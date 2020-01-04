@@ -281,6 +281,9 @@ namespace basecross
 
 	void ToyGuards::OnUpdate()
 	{
+		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera)
+			return;
+
 		m_SteteMachine->Update();
 
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();

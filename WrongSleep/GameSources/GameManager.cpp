@@ -27,6 +27,8 @@ namespace basecross
 		//イベントのキュー
 
 		map<wstring, vector<weak_ptr<GameEventInterface>>> m_EventInterfaceGroupMap;
+
+		weak_ptr<EventCameraMan> m_EventCameraMan;
 		//
 		//--------------------------------------------------------------------------------------
 		//	void Discharge(
@@ -73,13 +75,23 @@ namespace basecross
 		}
 	}
 
+	void GameEventDispatcher::AddEventCameraMan(const shared_ptr<EventCameraMan>& Receiver)
+	{
+		auto Obj = pImpl->m_EventCameraMan.lock();
+		if (!Obj)
+		{
+			pImpl->m_EventCameraMan = Receiver;
+		}
+		return;
+	}
+
 	//イベントのSEND（キューに入れずにそのまま送る）
 	void GameEventDispatcher::SendEvent(const shared_ptr<GameEventInterface>& Sender, const shared_ptr<GameEventInterface>& Receiver,
 		const wstring& MsgStr, const GameEventType Type) {
 		//イベントの作成 
 		auto Ptr = make_shared<GameEvent>(Sender, Receiver, MsgStr, Type);
 		//送信
-		pImpl->Discharge(Ptr);
+		TypeEvent(Ptr);
 	}
 
 	void GameEventDispatcher::SendEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
@@ -95,14 +107,54 @@ namespace basecross
 					//イベントの作成 
 					auto Ptr = make_shared<GameEvent>(Sender, shptr, MsgStr, Type);
 					//イベントの送出
-					pImpl->Discharge(Ptr);
+					TypeEvent(Ptr);
 				}
 			}
 		}
 		//キーが見つからなくても何もしない
 	}
 
+	void GameEventDispatcher::TypeEvent(const shared_ptr<GameEvent>& gameevent)
+	{
+		auto type = gameevent->m_Type;
+		auto ECM = pImpl->m_EventCameraMan.lock();
+		auto ER = dynamic_pointer_cast<MovingObject>(gameevent->m_Receiver.lock());
 
+		switch (type)
+		{
+			//通常イベント
+		case basecross::GameEventType::Default:
+			pImpl->Discharge(gameevent);
+			break;
+			//ギミックイベント
+		case basecross::GameEventType::Gimmick:
+			pImpl->Discharge(gameevent);
+			break;
+			//カメラ移動ギミックイベント
+		case basecross::GameEventType::GimmickAction:
+			/*
+			*カメラを移動させる
+			*移動完了した後イベント飛ばす
+			*/
+			ECM->SetTargetObject(ER);
+			//dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
+			ECM->SetGameEvent(gameevent);
+			ECM->GetStateMachine()->ChangeState(MoveToEventPoint::Instance());
+			break;
+			//ステージ移動イベント
+		case basecross::GameEventType::MoveStage:
+			break;
+			//カットシーン・イベントシーンイベント
+		case basecross::GameEventType::CutScene:
+			break;
+		default:
+			break;
+		}
+	}
+
+	//-----------------------------------------------------------------
+	///GameManagerクラス
+	//-----------------------------------------------------------------
 
 	//static変数実体
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;

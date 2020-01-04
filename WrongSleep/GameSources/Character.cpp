@@ -152,6 +152,7 @@ namespace basecross{
 
 		//イベントレシーバー登録
 		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(L"TESTEVENT", GetThis<ObjectInterface>());
+		GameManager::GetManager()->GetGameEventDispatcher()->AddEventReceiverGroup(L"TESTEVENT", GetThis<GameEventInterface>());
 	}
 
 	void MovingObject::OnUpdate()
@@ -180,11 +181,30 @@ namespace basecross{
 		}
 	}
 
+	void MovingObject::OnGameEvent(const shared_ptr<GameEvent>&event)
+	{
+		if (event->m_MsgStr == L"PushSwitch")
+		{
+			//スイッチが押された!
+			_OnEventFlag = _OnEventFlag ? true : !_OnEventFlag;
+			_EndFlag = false;
+			//auto ECO = GetTypeStage<StageBase>()->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+			//SendEvent(GetThis<ObjectInterface>(), , L"EventStart");
+			//SendEvent(GetThis<ObjectInterface>(), GameManager::GetManager()->GetThis<ObjectInterface>(), L"EventStart");
+		}
+		else if (event->m_MsgStr == L"Start")
+		{
+			//スイッチが押された!
+			_OnEventFlag = _OnEventFlag ? true : !_OnEventFlag;
+		}
+	}
+
 	bool MovingObject::TestMove(const float TotalTime)
 	{
 		_CurrntTime += App::GetApp()->GetElapsedTime();
 		if (_CurrntTime > TotalTime) 
 		{
+			_EndFlag = true;
 			return true;
 		}
 		Easing<Vec3> easing;
@@ -214,6 +234,7 @@ namespace basecross{
 			ptrTrans->SetQuaternion(NowQuat);
 			break;
 		}
+		_EndFlag = false;
 		return false;
 	}
 
@@ -281,7 +302,7 @@ namespace basecross{
 		DrawComp->SetEmissive(Col4(1, 0, 0, 1));
 
 		auto TransComp = AddComponent<Transform>();
-		TransComp->SetPosition(-30, 0.5, -40);
+		TransComp->SetPosition(40, 0.5, -6);
 		TransComp->SetScale(1, 1, 1);
 		TransComp->SetRotation(0, 0, 0);
 
@@ -292,9 +313,11 @@ namespace basecross{
 	void SwitchObject::OnCollisionEnter(shared_ptr<GameObject>& other)
 	{
 		auto Obj = dynamic_pointer_cast<Player>(other);
-		if (Obj)
+		if (Obj&&!_ActiveFlag)
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), L"TESTEVENT",L"PushSwitch");
+			//PostEvent(0.0f, GetThis<ObjectInterface>(), L"TESTEVENT",L"PushSwitch");
+			_ActiveFlag = true;
+			SendGameEvent(GetThis<GameEventInterface>(), L"TESTEVENT", L"PushSwitch",GameEventType::GimmickAction);
 		}
 	}
 
@@ -533,6 +556,7 @@ namespace basecross{
 		_StateMachine.reset(new StateMachine<EventCameraMan>(GetThis<EventCameraMan>()));
 		GetStage()->SetSharedGameObject(L"EventCameraMan", GetThis<EventCameraMan>());
 		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(L"EventCamera", GetThis<ObjectInterface>());
+		GameManager::GetManager()->GetGameEventDispatcher()->AddEventCameraMan(GetThis<EventCameraMan>());
 	}
 
 	void EventCameraMan::OnUpdate()
@@ -546,51 +570,87 @@ namespace basecross{
 	{
 		if (event->m_MsgStr == L"EventStart")
 		{
-			_StateMachine->ChangeState(EventMove::Instance());
+
 		}
 		else if (event->m_MsgStr == L"EventEnd")
 		{
-			_StateMachine->ChangeState(EventMove::Instance());
+
 		}
 	}
 
 	//-------------------------------------------------------------------
 	//イベントカメラステートマシン
 	//-------------------------------------------------------------------
+	//待機
+	IMPLEMENT_SINGLETON_INSTANCE(WaitState)
 	//開始
-	IMPLEMENT_SINGLETON_INSTANCE(EventMove)
-	void EventMove::Enter(const shared_ptr<EventCameraMan>&obj)
+	IMPLEMENT_SINGLETON_INSTANCE(MoveToEventPoint)
+	void MoveToEventPoint::Enter(const shared_ptr<EventCameraMan>&obj)
 	{
 		//行動クラスにパラメータを渡す
+		obj->GetBehavior<EventCameraBehavior>()->ToEventPointParam();
 	}
-	void EventMove::Execute(const shared_ptr<EventCameraMan>&obj)
+	void MoveToEventPoint::Execute(const shared_ptr<EventCameraMan>&obj)
 	{
 		//移動を開始する
-		if (obj->GetBehavior<EventCameraBehavior>()->Move())
+		if (obj->GetBehavior<EventCameraBehavior>()->Execute())
 		{
 			obj->GetStateMachine()->ChangeState(EventExecute::Instance());
 		}
 	}
-	void EventMove::Exit(const shared_ptr<EventCameraMan>&obj)
+	void MoveToEventPoint::Exit(const shared_ptr<EventCameraMan>&obj)
 	{
 		//パラメータの値を逆順にする
 		//obj->GetBehavior<EventCameraBehavior>()->RevertParam();
 		//イベント中のステートに変える
 	}
+
 	//イベント中
 	IMPLEMENT_SINGLETON_INSTANCE(EventExecute)
 	void EventExecute::Enter(const shared_ptr<EventCameraMan>&obj)
 	{
 		//Managerにイベント地点についたことを知らせる
+		auto Event = obj->GetGameEvent();
+		auto Receiver = Event->m_Receiver.lock();
+		if (Receiver)
+		{
+			Receiver->OnGameEvent(Event);
+		}
+
 	}
 	void EventExecute::Execute(const shared_ptr<EventCameraMan>&obj)
 	{
 		//イベント終了まで待機
 		//終了したらステートを戻す
+		if (obj->GetTargetObject().lock()->GetEventFlag())
+		{
+			obj->GetStateMachine()->ChangeState(MoveToStartPoint::Instance());
+		}
 	}
 	void EventExecute::Exit(const shared_ptr<EventCameraMan>&obj)
 	{
 
 	}
+
+	//開始
+	IMPLEMENT_SINGLETON_INSTANCE(MoveToStartPoint)
+	void MoveToStartPoint::Enter(const shared_ptr<EventCameraMan>&obj)
+	{
+		//行動クラスにパラメータを渡す
+		obj->GetBehavior<EventCameraBehavior>()->ToStartPointParam();
+	}
+	void MoveToStartPoint::Execute(const shared_ptr<EventCameraMan>&obj)
+	{
+		//移動を開始する
+		if (obj->GetBehavior<EventCameraBehavior>()->Execute())
+		{
+			obj->GetStateMachine()->ChangeState(WaitState::Instance());
+		}
+	}
+	void MoveToStartPoint::Exit(const shared_ptr<EventCameraMan>&obj)
+	{
+		obj->GetTypeStage<TestStage>()->ToMyCamera();
+	}
+
 }
 //end basecross
