@@ -442,7 +442,7 @@ namespace basecross {
 				//_EndEyePos = 
 				_EndAtPos = TargetObj->GetComponent<Transform>()->GetPosition();
 				_EndEyePos = _EndAtPos;
-				_EndEyePos += _StartEyePos - _StartAtPos;
+				_EndEyePos += (_StartEyePos - _StartAtPos)*5.0f;
 				_CurrntTime = 0.0f;
 			}
 		}

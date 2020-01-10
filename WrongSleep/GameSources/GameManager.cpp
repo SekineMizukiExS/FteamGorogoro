@@ -116,9 +116,9 @@ namespace basecross
 
 	void GameEventDispatcher::TypeEvent(const shared_ptr<GameEvent>& gameevent)
 	{
-		auto type = gameevent->m_Type;
-		auto ECM = pImpl->m_EventCameraMan.lock();
-		auto ER = dynamic_pointer_cast<MovingObject>(gameevent->m_Receiver.lock());
+		GameEventType type = gameevent->m_Type;
+		shared_ptr<EventCameraMan> ECM;
+		shared_ptr<MovingObject> ER;
 
 		switch (type)
 		{
@@ -136,8 +136,9 @@ namespace basecross
 			*カメラを移動させる
 			*移動完了した後イベント飛ばす
 			*/
+			ECM = pImpl->m_EventCameraMan.lock();
+			ER = dynamic_pointer_cast<MovingObject>(gameevent->m_Receiver.lock());
 			ECM->SetTargetObject(ER);
-			//dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
 			ECM->SetGameEvent(gameevent);
 			ECM->GetStateMachine()->ChangeState(MoveToEventPoint::Instance());
 			break;
