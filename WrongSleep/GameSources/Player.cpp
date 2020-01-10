@@ -168,7 +168,7 @@ namespace basecross{
 		RotateMove();
 		GetInFourEdge();
 		BoxExtending();
-		//DebugLine();
+		DebugLine();
 		//auto inPut = GetInputState();
 		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
 		if (KeyState.m_bPressedKeyTbl['F']) {
@@ -467,6 +467,7 @@ namespace basecross{
 				ptr->SetScale(tempVec.x, m_nowSize.y, tempVec.z);
 			}
 		}
+		GetInFourEdge();
 	}
 
 	void Player::RotateMove() {
@@ -479,10 +480,10 @@ namespace basecross{
 		float moveZ = inPut.y;
 		Vec3 nowPos = transptr->GetPosition();
 		float maxrot = 0.5f * XM_PI;
-
-		if (transptr->GetPosition().y <= 0.5) {
+		GetInFourEdge();
+		if (0.0f >= m_V3HS._yHalfSizeMin) {
 			auto temppos = transptr->GetPosition();
-			transptr->SetPosition(temppos.x,0.5f,temppos.z);
+			//transptr->SetPosition(temppos.x, m_V3HS._yHalfSizeMin + 0.3f,temppos.z);
 		}
 
 		//==========================UnityˆÚA•¶========================
@@ -515,7 +516,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(m_V3HS._xHalfSize, m_V3HS._yHalfSizeMin, 0.0f);
+			m_rotatePoint = Vec3(m_V3HS._xHalfSize, m_V3HS._yHalfSizeMin, nowPos.z);
 			m_rotateAxis = Vec3(0, 0, 1);
 			m_isRotate = true;
 
@@ -528,7 +529,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(m_V3HS._xHalfSizeMin, m_V3HS._yHalfSizeMin, 0.0f);
+			m_rotatePoint = Vec3(m_V3HS._xHalfSizeMin, m_V3HS._yHalfSizeMin, nowPos.z);
 			m_rotateAxis = Vec3(0, 0, -1);
 			m_isRotate = true;
 		}
@@ -536,7 +537,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(0.0f, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSize);
+			m_rotatePoint = Vec3(nowPos.x, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSize);
 			m_rotateAxis = Vec3(-1, 0, 0);
 			m_isRotate = true;
 		}
@@ -544,7 +545,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
-			m_rotatePoint = Vec3(0.0f, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSizeMin);
+			m_rotatePoint = Vec3(nowPos.x, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSizeMin);
 			m_rotateAxis = Vec3(1, 0, 0);
 			m_isRotate = true;
 		}

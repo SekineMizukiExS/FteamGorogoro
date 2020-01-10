@@ -1700,7 +1700,7 @@ namespace bsm {
 		@return	‰ñ“]s—ñ‚ğXMVECTOR‚Å•Ô‚·
 		*/
 		//--------------------------------------------------------------------------------------
-		inline Mat3x3 toRotMat() const;
+		inline Mat4x4 toRotMat() const;
 	};
 
 

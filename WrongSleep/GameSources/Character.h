@@ -86,7 +86,7 @@ namespace basecross{
 
 		void OnUpdate()override
 		{
-			GetComponent<Transform>()->SetPosition(40, 0.5, -6);
+			//GetComponent<Transform>()->SetPosition(40, 0.5, -6);
 		}
 
 		//void OnEvent(const shared_ptr<Event>&event)override;

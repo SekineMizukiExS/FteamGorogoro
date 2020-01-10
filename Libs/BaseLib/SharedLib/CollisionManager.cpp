@@ -46,7 +46,7 @@ namespace basecross {
 		CollisionBlocks():
 			m_CollisionCountOfTern(0)
 		{
-			AABB aabb(Vec3(-100.0f, -1000, -100.0f), Vec3(100.0f, 1000, 100.0f));
+			AABB aabb(Vec3(-1000.0f, -1000, -1000.0f), Vec3(1000.0f, 1000, 1000.0f));
 			m_RootAABB = aabb;
 			m_RootPiece.SetAABB(m_RootAABB);
 		}

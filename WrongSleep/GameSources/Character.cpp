@@ -268,11 +268,11 @@ namespace basecross{
 		//Œ`óì¬
 		auto DrawComp = AddComponent<PCTStaticDraw>();
 		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
-		DrawComp->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
+		//DrawComp->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
 		DrawComp->SetEmissive(Col4(1, 0, 0, 1));
 
 		auto TransComp = AddComponent<Transform>();
-		TransComp->SetPosition(-30, 0.5, -40);
+		TransComp->SetPosition(40, 0.5, -6);
 		TransComp->SetScale(1, 1, 1);
 		TransComp->SetRotation(0, 0, 0);
 

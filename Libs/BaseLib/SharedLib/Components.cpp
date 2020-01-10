@@ -222,7 +222,7 @@ namespace basecross {
 	//軸を変更して回転する関数
 	//引数少ないバージョン 現在の位置を取得してangle分回すので、angleを増やすと回転量がどんどん大きくなるので注意。
 	void Transform::RotateAround(const bsm::Vec3& point, const bsm::Vec3& axis, float angle) {
-		Vec3 worldPos = GetWorldPosition();
+		Vec3 worldPos = GetPosition();
 		//Vec3 worldPos = pos;
 		Quat tempq(axis, -angle);
 		//Quat q = tempq.rotation(axis, -angle);
@@ -230,13 +230,13 @@ namespace basecross {
 		Quat q = tempq;
 
 		//回転行列を算出します。
-		Mat3x3 rot = tempq.toRotMat();
+		Mat4x4 rot = tempq.toRotMat();
 		//距離ベクトル
 		Vec3 dif = worldPos - point;
 		//ベクトルを指定方向に向ける
 		dif = rot * dif;
 		worldPos = point + dif;
-		SetWorldPosition(worldPos);
+		SetPosition(worldPos);
 
 		q = tempq.rotation(axis, angle);
 		SetQuaternion(q);
@@ -256,21 +256,26 @@ namespace basecross {
 		//quat.rotation(axis, angle);
 
 		//回転行列を算出します。
-		Mat3x3 rot = q.toRotMat();
+		Mat4x4 rot = q.toRotMat();
 		//距離ベクトル
 		Vec3 dif = worldPos - point;
-		//dif = dif.normalize();
+		//計算用距離
+		float mathfdif = dif.length();
+		//距離ベクトルを一時保存
+		Vec3 tempdif = dif.normalize();
 		//ベクトルを指定方向に向ける
-		dif = rot * dif;
+		Vec3 transdif = rot * tempdif * mathfdif;
 		//回転の中心とベクトルを足して位置を算出する。
-		worldPos = point + dif;
+		worldPos = point + transdif;
 		//算出した座標に移動
-		SetPosition(worldPos);
+		SetWorldPosition(worldPos);
 
 		Quat bodyQ(axis, -angle);
 		Quat nowQ = GetQuaternion();
+
 		nowQ *= bodyQ;
 		SetQuaternion(nowQ);
+
 
 		//q = nowQ.facing(dif.normalize());
 		//nowQ.rotation(axis, angle);
@@ -288,7 +293,7 @@ namespace basecross {
 		//quat.rotation(axis, angle);
 
 		//回転行列を算出します。
-		Mat3x3 rot = q.toRotMat();
+		Mat4x4 rot = q.toRotMat();
 		//距離ベクトル
 		Vec3 dif = worldPos - point;
 		//ベクトルを指定方向に向ける
