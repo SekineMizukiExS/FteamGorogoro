@@ -24,7 +24,7 @@ namespace basecross{
 			_EfkInterface = ObjectFactory::Create<EfkInterface>();
 			GameManager::CreateManager();
 			SetUnionTextures();
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToMovieStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTestStage");
 		}
 		catch (...) {
 			throw;
@@ -57,6 +57,9 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"skyboxObj.bmf", true);
 		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Button.bmf");
+		App::GetApp()->RegisterResource(L"Switch_MD", modelMesh);
 
 		//test
 		App::GetApp()->RegisterEffect(L"TestEfk", mediaPath + L"Effects/EnemyHit.efk", _EfkInterface,10);

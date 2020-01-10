@@ -297,7 +297,7 @@ namespace basecross{
 	{
 		//Œ`óì¬
 		auto DrawComp = AddComponent<PCTStaticDraw>();
-		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
+		DrawComp->SetMeshResource(L"Switch_MD");
 		//DrawComp->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
 		DrawComp->SetEmissive(Col4(1, 0, 0, 1));
 

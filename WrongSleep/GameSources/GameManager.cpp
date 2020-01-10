@@ -256,7 +256,7 @@ namespace basecross
 	//
 	void GameManager::OnCreate()
 	{
-		_TargetStage->AddGameObject<DebugObj>();
+		//_TargetStage->AddGameObject<DebugObj>();
 	}
 
 	void GameManager::OnEvent(const shared_ptr<Event>&event)
