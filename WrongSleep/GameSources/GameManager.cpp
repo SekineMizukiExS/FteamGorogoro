@@ -3,22 +3,177 @@
 
 namespace basecross 
 {
+	//--------------------------------------------------------------------------------------
+	///	GameEventインターフェイス
+	//--------------------------------------------------------------------------------------
+	void GameEventInterface::SendGameEvent(const shared_ptr<GameEventInterface>& Sender, const shared_ptr<GameEventInterface>& Receiver,
+		const wstring& MsgStr, const GameEventType Type)
+	{
+		GameManager::GetManager()->GetGameEventDispatcher()->SendEvent(Sender, Receiver, MsgStr, Type);
+	}
+
+	void GameEventInterface::SendGameEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
+		const wstring& MsgStr, const GameEventType Type)
+	{
+		GameManager::GetManager()->GetGameEventDispatcher()->SendEvent(Sender, ReceiverKey, MsgStr, Type);
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	//	struct EventDispatcher::Impl;
+	//	用途: Impl構造体
+	//--------------------------------------------------------------------------------------
+	struct GameEventDispatcher::Impl {
+		//イベントのキュー
+
+		map<wstring, vector<weak_ptr<GameEventInterface>>> m_EventInterfaceGroupMap;
+
+		weak_ptr<EventCameraMan> m_EventCameraMan;
+		//
+		//--------------------------------------------------------------------------------------
+		//	void Discharge(
+		//	const Event& event	//イベント
+		//	);
+		//用途: イベントの送信
+		//戻り値: なし
+		//--------------------------------------------------------------------------------------
+		void Discharge(const shared_ptr<GameEvent>& event);
+		Impl() {}
+		~Impl() {}
+	};
+
+	void GameEventDispatcher::Impl::Discharge(const shared_ptr<GameEvent>& event) {
+		auto shptr = event->m_Receiver.lock();
+		if (shptr) {
+			//受け手が有効
+			shptr->OnGameEvent(event);
+		}
+	}
+
+
+
+	//--------------------------------------------------------------------------------------
+	///	イベント配送クラス
+	//--------------------------------------------------------------------------------------
+	//構築と破棄
+	GameEventDispatcher::GameEventDispatcher() :
+		pImpl(new Impl())
+	{}
+	GameEventDispatcher::~GameEventDispatcher() {}
+
+	void GameEventDispatcher::AddEventReceiverGroup(const wstring& GroupKey, const shared_ptr<GameEventInterface>& Receiver) {
+		auto it = pImpl->m_EventInterfaceGroupMap.find(GroupKey);
+		if (it != pImpl->m_EventInterfaceGroupMap.end()) {
+			//キーがあった
+			it->second.push_back(Receiver);
+		}
+		else {
+			//グループがない
+			vector<weak_ptr<GameEventInterface>> vec;
+			pImpl->m_EventInterfaceGroupMap[GroupKey] = vec;
+			pImpl->m_EventInterfaceGroupMap[GroupKey].push_back(Receiver);
+		}
+	}
+
+	void GameEventDispatcher::AddEventCameraMan(const shared_ptr<EventCameraMan>& Receiver)
+	{
+		auto Obj = pImpl->m_EventCameraMan.lock();
+		if (!Obj)
+		{
+			pImpl->m_EventCameraMan = Receiver;
+		}
+		return;
+	}
+
+	//イベントのSEND（キューに入れずにそのまま送る）
+	void GameEventDispatcher::SendEvent(const shared_ptr<GameEventInterface>& Sender, const shared_ptr<GameEventInterface>& Receiver,
+		const wstring& MsgStr, const GameEventType Type) {
+		//イベントの作成 
+		auto Ptr = make_shared<GameEvent>(Sender, Receiver, MsgStr, Type);
+		//送信
+		TypeEvent(Ptr);
+	}
+
+	void GameEventDispatcher::SendEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
+		const wstring& MsgStr, const GameEventType Type) {
+		//ReceiverKeyによる相手の特定
+		//重複キーの検査
+		auto it = pImpl->m_EventInterfaceGroupMap.find(ReceiverKey);
+		if (it != pImpl->m_EventInterfaceGroupMap.end()) {
+			//キーがあった
+			for (auto v : it->second) {
+				auto shptr = v.lock();
+				if (shptr) {
+					//イベントの作成 
+					auto Ptr = make_shared<GameEvent>(Sender, shptr, MsgStr, Type);
+					//イベントの送出
+					TypeEvent(Ptr);
+				}
+			}
+		}
+		//キーが見つからなくても何もしない
+	}
+
+	void GameEventDispatcher::TypeEvent(const shared_ptr<GameEvent>& gameevent)
+	{
+		GameEventType type = gameevent->m_Type;
+		shared_ptr<EventCameraMan> ECM;
+		shared_ptr<MovingObject> ER;
+
+		switch (type)
+		{
+			//通常イベント
+		case basecross::GameEventType::Default:
+			pImpl->Discharge(gameevent);
+			break;
+			//ギミックイベント
+		case basecross::GameEventType::Gimmick:
+			pImpl->Discharge(gameevent);
+			break;
+			//カメラ移動ギミックイベント
+		case basecross::GameEventType::GimmickAction:
+			/*
+			*カメラを移動させる
+			*移動完了した後イベント飛ばす
+			*/
+			ECM = pImpl->m_EventCameraMan.lock();
+			ER = dynamic_pointer_cast<MovingObject>(gameevent->m_Receiver.lock());
+			ECM->SetTargetObject(ER);
+			ECM->SetGameEvent(gameevent);
+			ECM->GetStateMachine()->ChangeState(MoveToEventPoint::Instance());
+			break;
+			//ステージ移動イベント
+		case basecross::GameEventType::MoveStage:
+			break;
+			//カットシーン・イベントシーンイベント
+		case basecross::GameEventType::CutScene:
+			break;
+		default:
+			break;
+		}
+	}
+
+	//-----------------------------------------------------------------
+	///GameManagerクラス
+	//-----------------------------------------------------------------
+
 	//static変数実体
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
 	//構築と破棄
-	GameManager::GameManager(const shared_ptr<StageBase>&StagePtr)
-		:_TargetStage(StagePtr)
+	GameManager::GameManager()
+		:_TargetStage(nullptr)
 	{
 		_EnemyManager = ObjectFactory::Create<EnemyManager>();
+		m_GameEventDispatcher = make_shared<GameEventDispatcher>();
 	}
 
 
 	//シングルトン構築
-	unique_ptr<GameManager, GameManager::GMDeleter>& GameManager::CreateManager(const shared_ptr<StageBase>&StagePtr) {
+	unique_ptr<GameManager, GameManager::GMDeleter>& GameManager::CreateManager() {
 		try {
 			if (m_Ins.get() == 0) {
 				//自分自身の構築
-				m_Ins.reset(new GameManager(StagePtr));
+				m_Ins.reset(new GameManager());
 				m_Ins->OnPreCreate();
 				m_Ins->OnCreate();
 			}

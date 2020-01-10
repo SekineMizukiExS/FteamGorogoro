@@ -5,6 +5,202 @@ namespace basecross {
 	
 	//前方定義
 	class EnemyManager;
+	struct GameEvent;
+	class EventCameraMan;
+	//ゲームイベントタイプ
+	/*
+	*0標準
+	*1ギミック作動
+	*2ギミック作動（カメラが動く)
+	*3ステージ遷移（ステージデータ読込）
+	*4カットシーン（未定）
+	*/
+	enum class GameEventType
+	{
+		Default,
+		Gimmick,
+		GimmickAction,
+		MoveStage,
+		CutScene
+	};
+
+	class GameEventInterface
+	{
+	protected:
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief プロテクトコンストラクタ
+		*/
+		//--------------------------------------------------------------------------------------
+		GameEventInterface() {}
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief プロテクトデストラクタ
+		*/
+		//--------------------------------------------------------------------------------------
+		virtual ~GameEventInterface() {}
+	public:
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントのSEND（キューに入れずにそのまま送る）
+		@param[in]	Sender	イベント送信者（nullptr可）
+		@param[in]	ReceiverKey	受け手側オブジェクトを判別するキー
+		@param[in]	MsgStr	メッセージ
+		@param[in,out] Type イベントタイプ
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SendGameEvent(const shared_ptr<GameEventInterface>& Sender, const shared_ptr<GameEventInterface>& Receiver,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::Default);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントのSEND（キューに入れずにそのまま送る）
+		@param[in]	Sender	イベント送信者（nullptr可）
+		@param[in]	Receiver	イベント受信者（nullptr不可）
+		@param[in]	MsgStr	メッセージ
+		@param[in,out] Type イベントタイプ
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SendGameEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::Default);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントを受け取る
+		@param[in]	event	イベント
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		virtual void OnGameEvent(const shared_ptr<GameEvent>& event) {}
+	private:
+		//コピー禁止
+		GameEventInterface(const GameEventInterface&) = delete;
+		GameEventInterface& operator=(const GameEventInterface&) = delete;
+		//ムーブ禁止
+		GameEventInterface(const GameEventInterface&&) = delete;
+		GameEventInterface& operator=(const GameEventInterface&&) = delete;
+
+	};
+
+	//-----------------------------------------
+	///ゲームイベント構造体
+	//-----------------------------------------
+	struct GameEvent
+	{
+		///	このメッセージを送ったオブジェクト
+		weak_ptr<GameEventInterface> m_Sender;
+		///	受け取るオブジェクト（nullptrの場合はゲームマネージャーもしくはキーワードで識別するオブジェクト）
+		weak_ptr<GameEventInterface> m_Receiver;
+		///	メッセージ文字列
+		wstring m_MsgStr;
+		///ゲームイベントタイプ
+		GameEventType m_Type;
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	コンストラクタ
+		@param[in]	DispatchTime	配送までの時間
+		@param[in]	Sender	送り側オブジェクト（nullptr可）
+		@param[in]	Receiver	受け手側オブジェクト
+		@param[in]	MsgStr	メッセージ文字列
+		@param[in]	Type イベントタイプ
+		*/
+		//--------------------------------------------------------------------------------------
+		GameEvent(const shared_ptr<GameEventInterface>& Sender, const shared_ptr<GameEventInterface>& Receiver,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::Default) :
+			m_Sender(Sender),
+			m_Receiver(Receiver),
+			m_MsgStr(MsgStr),
+			m_Type(Type)
+		{}
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	デストラクタ
+		*/
+		//--------------------------------------------------------------------------------------
+		~GameEvent() {}
+	};
+
+	//--------------------------------------------------------------------------------------
+	///	イベント配送クラス
+	//--------------------------------------------------------------------------------------
+	class GameEventDispatcher {
+	public:
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	コンストラクタ
+		@param[in]	SceneBasePtr	シーンベースのポインタ
+		*/
+		//--------------------------------------------------------------------------------------
+		explicit GameEventDispatcher();
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	デストラクタ
+		*/
+		//--------------------------------------------------------------------------------------
+		virtual ~GameEventDispatcher();
+
+
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントを受け取るグループに追加（グループがなければその名前で作成）
+		@param[in]	GroupKey	グループ名
+		@param[in]	Receiver	受け手側オブジェクト
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void AddEventReceiverGroup(const wstring& GroupKey, const shared_ptr<GameEventInterface>& Receiver);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントカメラマンの設定
+		@param[in]	Receiver	カメラマンオブジェクト
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void AddEventCameraMan(const shared_ptr<EventCameraMan>& Receiver);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントのSEND（キューに入れずにそのまま送る）
+		@param[in]	Sender	送り側オブジェクト（nullptr可）
+		@param[in]	Receiver	受け手側オブジェクト
+		@param[in]	MsgStr	メッセージ文字列
+		@param[in]	Info	追加情報をもつユーザーデータ
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SendEvent(const shared_ptr<GameEventInterface>& Sender, const shared_ptr<GameEventInterface>& Receiver,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::Default);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントのSEND（キューに入れずにそのまま送る）
+		@param[in]	Sender	イベント送信者（nullptr可）
+		@param[in]	Receiver	イベント受信者（nullptr不可）
+		@param[in]	MsgStr	メッセージ
+		@param[in,out]	Info	追加情報
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SendEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::Default);
+	private:
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief Typeごとの処理分け
+		@param[in]	
+		@return	bool
+		*/
+		//--------------------------------------------------------------------------------------
+		void TypeEvent(const shared_ptr<GameEvent>& gameevent);
+		// pImplイディオム
+		struct Impl;
+		unique_ptr<Impl> pImpl;
+		//コピー禁止
+		GameEventDispatcher(const GameEventDispatcher&) = delete;
+		GameEventDispatcher& operator=(const GameEventDispatcher&) = delete;
+		//ムーブ禁止
+		GameEventDispatcher(const GameEventDispatcher&&) = delete;
+		GameEventDispatcher& operator=(const GameEventDispatcher&&) = delete;
+	};
+
 
 	//ステージタイプ(データロード時に使用）
 	enum class StageType
@@ -27,15 +223,16 @@ namespace basecross {
 		};
 		static unique_ptr<GameManager, GMDeleter> m_Ins;		///< Singletonで利用する自分自身のポインタ
 
-		explicit GameManager(const shared_ptr<StageBase>&StagePtr);
+		explicit GameManager();
 
 		~GameManager(){}
 
 		shared_ptr<GameObject> _DebugObj;
 
-		shared_ptr<StageBase> _TargetStage;
+		shared_ptr<Stage> _TargetStage;
 
 		map<wstring,shared_ptr<BaseResource>> _ResMap;		///<-ステージ独自で使用するリソース 
+		shared_ptr<GameEventDispatcher> m_GameEventDispatcher;	///< イベント送信オブジェクト
 
 		std::mutex _mutex;										///<-マルチスレッド用
 		bool _LoadEnd = false;									///<<-ロード終了したらTrue
@@ -49,7 +246,7 @@ namespace basecross {
 		@return	Managerのunique_ptr
 		*/
 		//--------------------------------------------------------------------------------------
-		static unique_ptr<GameManager, GMDeleter>& CreateManager(const shared_ptr<StageBase>&StagePtr = nullptr);
+		static unique_ptr<GameManager, GMDeleter>& CreateManager();
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief シングルトンアクセサ
@@ -90,11 +287,23 @@ namespace basecross {
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief イベントカメラを駆動させる
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		//void MoveEventCamera(const shared_ptr<)
+
 		void LoadStart(const StageType type);
 
 		void OnCreate()override;
 
+		void OnUpdate() {}
+
 		void OnEvent(const shared_ptr<Event>&event)override;
+
+		//void OnGameEvent(const shared_ptr<GameEvent>&gameevent);
 
 		//void OnUpdate();
 
@@ -104,6 +313,10 @@ namespace basecross {
 			return _EnemyManager;
 		}
 		
+		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
+
+		const shared_ptr<Stage> GetTargetStage()const { return _TargetStage; }
+
 		//リソースの読込が終わったらTrue	
 		bool GetLoadEnd()const
 		{
@@ -114,6 +327,11 @@ namespace basecross {
 		void SetEnemyManager(shared_ptr<EnemyManager> &EnemyM)
 		{
 			_EnemyManager = EnemyM;
+		}
+
+		void SetTargetStage(const shared_ptr<Stage> &stage)
+		{
+			_TargetStage = stage;
 		}
 
 		void ChangeEventCamera();

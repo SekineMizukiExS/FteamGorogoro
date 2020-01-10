@@ -163,6 +163,8 @@ namespace basecross{
 	}
 
 	void Player::OnUpdate() {
+		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera)
+			return;
 		//GetMoveVector();
 		//MovePlayer();
 		RotateMove();

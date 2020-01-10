@@ -305,14 +305,13 @@ namespace basecross {
 		{}
 		~EventCameraBehavior(){}
 
-		bool Move();
-
-		//void RevertParam();
-
-	private:
 		bool Execute(float Time = 5.0f);
 
-		//bool NextPoint();
+		void ToEventPointParam();
+
+		void ToStartPointParam();
+
+	private:
 
 		Vec3 _StartEyePos, _StartAtPos;
 		Vec3 _EyePos, _AtPos;

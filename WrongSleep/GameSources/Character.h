@@ -28,7 +28,7 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	//可動オブジェクトクラス(スイッチで可動)
 	//--------------------------------------------------------------------------------------
-	class MovingObject :public GameObject
+	class MovingObject :public GameObject,public GameEventInterface 
 	{
 	public:
 		MovingObject(const shared_ptr<Stage>&StagePtr)
@@ -41,6 +41,13 @@ namespace basecross{
 		void OnUpdate()override;
 
 		void OnEvent(const shared_ptr<Event>&event)override;
+
+		void OnGameEvent(const shared_ptr<GameEvent>&event)override;
+
+		bool GetEventFlag() const
+		{
+			return _EndFlag;
+		}
 
 	private:
 		bool TestMove(const float TotalTime);
@@ -67,17 +74,18 @@ namespace basecross{
 		Vec3 _Start, _End;
 		//
 		bool _OnEventFlag;
+		bool _EndFlag = false;
 
 	};
 
 	//--------------------------------------------------------------------------------------
 	//スイッチクラス
 	//--------------------------------------------------------------------------------------
-	class SwitchObject : public GameObject
+	class SwitchObject : public GameObject,public GameEventInterface
 	{
 	public:
 		SwitchObject(const shared_ptr<Stage>&stage)
-			:GameObject(stage)
+			:GameObject(stage),_ActiveFlag(false)
 		{}
 
 		SwitchObject(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
@@ -279,7 +287,17 @@ namespace basecross{
 		}
 
 		void SetAtPos(const Vec3& Pos) {
-			_CurrntEyePos = Pos;
+			_CurrntAtPos = Pos;
+		}
+
+		void SetTargetObject(const shared_ptr<MovingObject>& Target)
+		{
+			_TargetObject = Target;
+		}
+
+		void SetGameEvent(const shared_ptr<GameEvent>& event)
+		{
+			_GameEvent = event;
 		}
 
 		const Vec3 &GetAtPos()const
@@ -287,8 +305,22 @@ namespace basecross{
 			return _CurrntAtPos;
 		}
 
+		const weak_ptr<MovingObject> &GetTargetObject()const
+		{
+			return _TargetObject;
+		}
+
+		const shared_ptr<GameEvent> &GetGameEvent()const
+		{
+			return _GameEvent;
+		}
+
 	private:
 		unique_ptr<StateMachine<EventCameraMan>> _StateMachine;
+
+		weak_ptr<MovingObject> _TargetObject;
+
+		shared_ptr<GameEvent> _GameEvent;
 
 		Vec3 _CurrntEyePos;
 		Vec3 _CurrntAtPos;
@@ -297,22 +329,45 @@ namespace basecross{
 	//-------------------------------------------------------------------
 	//イベントカメラステートマシン
 	//-------------------------------------------------------------------
-	//イベント地点へむかう
-	class EventMove :public ObjState<EventCameraMan>
+	//待機状態
+	class WaitState :public ObjState<EventCameraMan>
 	{
-		EventMove(){ }
+		WaitState() { }
 	public:
-		DECLARE_SINGLETON_INSTANCE(EventMove)
+		DECLARE_SINGLETON_INSTANCE(WaitState)
+		void Enter(const shared_ptr<EventCameraMan>&obj)override {}
+		void Execute(const shared_ptr<EventCameraMan>&obj)override {}
+		void Exit(const shared_ptr<EventCameraMan>&obj)override {}
+	};
+
+	//向かう
+	class MoveToEventPoint :public ObjState<EventCameraMan>
+	{
+		MoveToEventPoint() { }
+	public:
+		DECLARE_SINGLETON_INSTANCE(MoveToEventPoint)
 		void Enter(const shared_ptr<EventCameraMan>&obj)override;
 		void Execute(const shared_ptr<EventCameraMan>&obj)override;
 		void Exit(const shared_ptr<EventCameraMan>&obj)override;
 	};
+
 	//イベント中
 	class EventExecute :public ObjState<EventCameraMan>
 	{
 		EventExecute() { }
 	public:
 		DECLARE_SINGLETON_INSTANCE(EventExecute)
+		void Enter(const shared_ptr<EventCameraMan>&obj)override;
+		void Execute(const shared_ptr<EventCameraMan>&obj)override;
+		void Exit(const shared_ptr<EventCameraMan>&obj)override;
+	};
+
+	//戻す
+	class MoveToStartPoint :public ObjState<EventCameraMan>
+	{
+		MoveToStartPoint() { }
+	public:
+		DECLARE_SINGLETON_INSTANCE(MoveToStartPoint)
 		void Enter(const shared_ptr<EventCameraMan>&obj)override;
 		void Execute(const shared_ptr<EventCameraMan>&obj)override;
 		void Exit(const shared_ptr<EventCameraMan>&obj)override;

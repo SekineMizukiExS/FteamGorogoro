@@ -13,7 +13,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	void StageBase::OnCreate()
 	{
-		GameManager::CreateManager(GetThis<StageBase>());
+
 	}
 
 	void StageBase::OnUpdate()
@@ -30,7 +30,7 @@ namespace basecross {
 
 	void StageBase::OnDestroy()
 	{
-		GameManager::DeleteManager();
+
 	}
 
 	void StageBase::Effectplay(wstring Key, Vec3 hitpoint) {
@@ -190,7 +190,7 @@ namespace basecross {
 	{
 		auto Input = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 
-		if ((MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&GameManager::GetManager()->GetLoadEnd())
+		if (/*(MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&*/GameManager::GetManager()->GetLoadEnd())
 		{
 			PostEvent(0.0f, GetThis <ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTestStage");
 		}
@@ -570,6 +570,36 @@ namespace basecross {
 			//SendEvent(GetThis<ObjectInterface>(), GetSharedGameObject<EventCameraMan>(L"EventCameraMan"), L"EventEnd");
 		}
 		
+	}
+
+	void TestStage::ToEventCamera() {
+		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+		//ObjCameraに変更
+		auto ptrCameraman = GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
+		ptrCameraman->GetComponent<Transform>()->SetPosition(ptrMyCamera->GetEye());
+		ptrCameraman->SetAtPos(ptrMyCamera->GetAt());
+		auto ptrObjCamera = dynamic_pointer_cast<EventCamera>(_EventView->GetCamera());
+		if (ptrObjCamera) {
+			ptrObjCamera->SetCameraObject(ptrCameraman);
+			//m_ObjCameraViewを使う
+			SetView(_EventView);
+			_Camera = SelectCamera::pEventCamera;
+		}
+	}
+
+	void TestStage::ToMyCamera()
+	{
+		//auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+		//MyCameraに変更
+		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
+		if (ptrMyCamera) {
+			//ptrMyCamera->SetTargetObject(ptrPlayer);
+			//m_MyCameraViewを使う
+			SetView(_MView);
+			_Camera = SelectCamera::pMyCamera;
+		}
+
 	}
 }
 //end basecross
