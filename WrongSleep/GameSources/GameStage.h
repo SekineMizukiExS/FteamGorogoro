@@ -11,6 +11,12 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ステージベースクラス（エフェクトの更新・描画）
 	//--------------------------------------------------------------------------------------
+	enum  SelectCamera
+	{
+		pMyCamera,
+		pEventCamera
+	};
+
 	class StageBase : public Stage {
 		//ビューの作成
 		virtual void CreateViewLight() = 0;
@@ -24,13 +30,12 @@ namespace basecross {
 		};
 
 		SelectStage _Selects;
-			
 		shared_ptr<EfkPlay> m_EfkPlay[50];
 		int m_EfkCount = 0;
 
 	public:
 		//構築と破棄
-		StageBase() :Stage(),_Selects(TestStage) {}
+		StageBase() :Stage(),_Selects(TestStage), _MView(nullptr), _MyCameraIndex(NULL), _SubCametaIndex(NULL){}
 		virtual ~StageBase() {}
 		//初期化
 		virtual void OnCreate()override;
@@ -44,8 +49,19 @@ namespace basecross {
 		SelectStage GetSelects()const {
 			return _Selects;
 		}
+		SelectCamera GetCameraSelects()const {
+			return _Camera;
+		}
 
 		void Effectplay(wstring Key, Vec3 hitpoint);
+	protected:
+		shared_ptr<MultiView>_MView;
+		shared_ptr<SingleView>_EventView;
+		//
+		size_t _MyCameraIndex;
+		size_t _SubCametaIndex;
+		SelectCamera _Camera;
+
 	};
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
@@ -65,22 +81,63 @@ namespace basecross {
 	};
 
 	//--------------------------------------------------------------------------------------
-	//StartStageクラス
+	//TitleStageクラス
 	//--------------------------------------------------------------------------------------
-	class StartStage :public Stage
+	class TitleStage :public Stage
 	{
 		//ビューの作成
 		void CreateViewLight();
 	public:
 		//構築と破棄
-		StartStage():Stage(){}
-		virtual ~StartStage(){}
+		TitleStage():Stage(){}
+		virtual ~TitleStage(){}
 		//初期化
 		virtual void OnCreate()override;
 		//更新
 		virtual void OnUpdate()override;
 	};
 
+	//--------------------------------------------------------------------------------------
+	//LoadStageクラス（読み込むステージ）
+	//--------------------------------------------------------------------------------------
+	class LoadStage : public Stage {
+		//ビューの作成
+		void CreateViewLight();
+		//スプライトの作成
+		void CreateLoadSprite();
+		////リソースロード用のスレッド（スタティック関数）
+		//static void LoadResourceFunc();
+		////リソースを読み込んだことを知らせるフラグ（スタティック変数）
+		//static bool m_Loaded;
+		////ミューテックス
+		//static std::mutex mtx;
+	public:
+		//構築と破棄
+		LoadStage() :Stage() {}
+		virtual ~LoadStage() {}
+		//初期化
+		virtual void OnCreate()override;
+		//更新
+		virtual void OnUpdate()override;
+	};
+
+	//--------------------------------------------------------------------------------------
+	//SelectStageクラス（未定）
+	//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
+	//Movieクラス
+	//--------------------------------------------------------------------------------------
+	class MyMovieStage :public MovieStage
+	{
+	public:
+		//構築と破棄
+		MyMovieStage() :MovieStage() {}
+		virtual ~MyMovieStage() {}
+		//初期化
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+	};
 	//--------------------------------------------------------------------------------------
 	//	TestStageクラス
 	//--------------------------------------------------------------------------------------
@@ -109,12 +166,6 @@ namespace basecross {
 		void ToMyCamera();
 		
 		void SetCellMapCost();
-
-		shared_ptr<MultiView>_MView;
-
-		shared_ptr<Futon> _Ts;
-
-		shared_ptr<EfkPlay> m_EfkPlay;
 	public:
 		//構築と破棄
 		TestStage() :StageBase() {}

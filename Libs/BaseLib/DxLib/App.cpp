@@ -589,6 +589,7 @@ namespace basecross {
 			BOOL                    bHasVideo = FALSE;
 			HWND ChildHWnd = 0;
 			bool bAutoRepeat = true;
+			bool IsEnd = false;
 		}
 
 		//--------------------------------------------------------------------------------------
@@ -725,6 +726,10 @@ namespace basecross {
 					);
 				}
 			}
+			else
+			{
+				data::IsEnd = true;
+			}
 		}
 
 		void MediaPlayerCallback::OnMediaPlayerEvent(MFP_EVENT_HEADER * pEventHeader)
@@ -847,6 +852,12 @@ namespace basecross {
 		bool IsMovieAutoRepeat() {
 			return data::bAutoRepeat;
 		}
+
+		bool IsEndMovie()
+		{
+			return data::IsEnd;
+		}
+
 		void SetMovieAutoRepeat(bool b) {
 			data::bAutoRepeat = b;
 		}
@@ -1265,6 +1276,10 @@ namespace basecross {
 
 	bool App::IsMovieAutoRepeat() const {
 		return movie::IsMovieAutoRepeat();
+	}
+
+	bool App::IsEndMovie() const {
+		return movie::IsEndMovie();
 	}
 	void App::SetMovieAutoRepeat(bool b) {
 		movie::SetMovieAutoRepeat(b);
