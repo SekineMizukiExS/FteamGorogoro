@@ -355,35 +355,35 @@ namespace basecross {
 			//	Vec3(0.0f, -0.5f, 0.0f)
 			//},
 			{
-				Vec3(5.0f, 0.5f, 5.0f),
+				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0.0f, 0.0f, 0.0f),
 				Vec3(10.0f, 0.25f, 10.0f)
 			},
 			{
-				Vec3(5.0f, 0.5f, 5.0f),
+				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0.0f, 0.0f, 0.0f),
 				Vec3(15.0f, 0.25f, 10.0f)
 			},
 
 			{
-				Vec3(2.0f, 1.0f, 2.0f),
+				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0, 0, 0),
 				Vec3(10.0f, 0.5f, 10.0f)
 			},
 			{
-				Vec3(4.0f, 1.0f, 4.0f),
+				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(0, 0, 0),
 				Vec3(-10.0f, 0.5f, 10.0f)
 			},
 			{
-				Vec3(10.0f, 0.5f, 10.0f),
+				Vec3(1.0f, 1.0f, 1.0f),
 				Vec3(-0.5f, 0.0f, -0.5f),
 				Vec3(-10.0f, 0.25f, 10.0f)
 			},
 		};
 		//オブジェクトの作成
 		for (auto v : vec) {
-			AddGameObject<CMeshBox>(v[0], v[1], v[2], L"RedApple_TX", L"Apple_MD");
+			AddGameObject<CMeshBox>(v[0], v[1], v[2], L"RedApple_TX", L"Bridge_MD");
 		}
 	}
 
@@ -497,7 +497,7 @@ namespace basecross {
 			CreateViewLight();
 			//CreateFixedBox();
 			//CreateTilingFixedBox();
-			//CreateCMeshBox();
+			CreateCMeshBox();
 			//CreateTilingFixedBox();
 			CreateCommonBox();
 			float PieceSize = 3.0f;

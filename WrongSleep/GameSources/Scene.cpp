@@ -64,6 +64,15 @@ namespace basecross{
 
 		modelMesh = MeshResource::CreateBoneModelMesh(mediaPath + L"Models/", L"Button.bmf");
 		App::GetApp()->RegisterResource(L"Switch_MD", modelMesh);
+		
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_bridge.bmf");
+		App::GetApp()->RegisterResource(L"Bridge_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_Fence.bmf");
+		App::GetApp()->RegisterResource(L"Fence_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_Flower.bmf");
+		App::GetApp()->RegisterResource(L"Flower_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_WarpPad.bmf");
+		App::GetApp()->RegisterResource(L"WarpPad_MD", modelMesh);
 
 		//test
 		App::GetApp()->RegisterEffect(L"TestEfk", mediaPath + L"Effects/EnemyHit.efk", _EfkInterface,10);
