@@ -109,10 +109,8 @@ namespace basecross {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
-			//AddChileStage<TestStage>();
-			AddGameObject<MovingObject>();
 
-			//AddGameObject<TitleUI>(1280, 800, Vec2(0, 0), 0, L"Test_TX");
+			AddGameObject<TitleUI>(L"Title_TX",true,Vec2(1,1),Vec3(0,0,0),Vec2(1280,800));
 		}
 		catch (...) {
 			throw;

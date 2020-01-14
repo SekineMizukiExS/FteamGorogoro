@@ -236,6 +236,7 @@ namespace basecross
 		wstring TexturePath = mediaPath + L"Textures/";
 		wstring ModelPath = mediaPath + L"Models/";
 		wstring EffectPath = mediaPath + L"Effect/";
+		wstring SoundPath = mediaPath;
 
 		switch (type)
 		{

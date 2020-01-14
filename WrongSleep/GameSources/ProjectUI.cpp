@@ -16,19 +16,22 @@ namespace basecross
 		bool trace,
 		const Vec2& startScale,
 		const Vec3& startPos,
-		const float halfSize
+		const Vec2& SizeVec
 	) :
 		GameObject(stagePtr),
 		m_textureKey(textureKey),
 		m_trace(trace),
 		m_startScale(startScale),
 		m_startPos(startPos),
-		m_halfSize(halfSize)
+		m_SizeVec(SizeVec)
 	{
-		vertices.push_back(VertexPositionColorTexture(Vec3(-m_halfSize, m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
-		vertices.push_back(VertexPositionColorTexture(Vec3(m_halfSize, m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
-		vertices.push_back(VertexPositionColorTexture(Vec3(-m_halfSize, -m_halfSize, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
-		vertices.push_back(VertexPositionColorTexture(Vec3(m_halfSize, -m_halfSize, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)));
+		float Sizex = m_SizeVec.x / 2.0f;
+		float Sizey = m_SizeVec.y / 2.0f;
+
+		vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
+		vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
+		vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
+		vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)));
 	}
 
 	void Sprite::OnCreate()
@@ -45,12 +48,42 @@ namespace basecross
 		ptrDraw->SetSamplerState(SamplerState::LinearWrap);
 		ptrDraw->SetTextureResource(m_textureKey);
 	}
-	
+	//-------------------------------------------------------------------------
+	//タイトルUI
+	//-------------------------------------------------------------------------
+	TitleUI::TitleUI(const shared_ptr<Stage>&Stage, const wstring& textureKey, bool trace, const Vec2& startScale, const Vec3& startPos,
+		const Vec2& halfSize)
+		:Sprite(Stage, textureKey, trace, startScale, startPos, halfSize)
+	{
+
+	}
+
+	void TitleUI::OnCreate()
+	{
+		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
+		//頂点配列（縦横５個ずつ表示）
+		SetAlphaActive(m_trace);
+		auto ptrTransform = GetComponent<Transform>();
+		ptrTransform->SetScale(m_startScale.x, m_startScale.y, 1.0f);
+		ptrTransform->SetRotation(0, 0, 0);
+		ptrTransform->SetPosition(m_startPos.x, m_startPos.y, m_startPos.z);
+		//頂点とインデックスを指定してスプライト作成
+		auto ptrDraw = AddComponent<SPDraw>(vertices, indices);
+		ptrDraw->SetSamplerState(SamplerState::LinearWrap);
+		ptrDraw->SetTextureResource(m_textureKey);
+		ptrDraw->SetBlendMapTextureResource(L"clearmat_TX");
+	}
+
+	void TitleUI::OnUpdate()
+	{
+
+	}
+
 	//-------------------------------------------------------------------------
 	//アニメーションスプライト
 	//-------------------------------------------------------------------------
 	AnimationSprite::AnimationSprite(const shared_ptr<Stage>&Stage, const wstring& textureKey,bool trace,const Vec2& startScale,const Vec3& startPos,
-		const float halfSize,
+		const Vec2& halfSize,
 		const float AnimationSpeed,const AnimationType AnimType)
 		:Sprite(Stage,textureKey,trace,startScale,startPos,halfSize),_AnimationSpeed(AnimationSpeed), _AType(AnimType),_TotalTime(0.0f)
 	{

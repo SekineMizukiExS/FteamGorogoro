@@ -54,8 +54,15 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)FutonVS.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)SpritePS.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)SpriteVS.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)AreaShader.hlsli" />
+    <None Include="$(MSBuildThisFileDirectory)SpriteShader.hlsli" />
   </ItemGroup>
 </Project>

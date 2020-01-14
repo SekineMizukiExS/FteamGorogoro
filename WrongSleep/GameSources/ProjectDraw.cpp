@@ -140,4 +140,187 @@ namespace basecross
 
 		pD3D11DeviceContext->PSSetSamplers(StartSlot, NumViews, &pSampler);
 	}
+	
+
+
+	//--------------------------------------------------------------------------------------
+	//スプライト描画用
+	//--------------------------------------------------------------------------------------
+	SPDraw::SPDraw(const shared_ptr<GameObject>& GameObjectPtr) :
+		SpriteBaseDraw(GameObjectPtr)
+	{
+		//パイプラインステートをデフォルトの2D
+		SetBlendState(BlendState::Opaque);
+		SetDepthStencilState(DepthStencilState::None);
+		SetRasterizerState(RasterizerState::CullBack);
+		SetSamplerState(SamplerState::LinearClamp);
+	}
+
+
+	SPDraw::SPDraw(const shared_ptr<GameObject>& GameObjectPtr,
+		vector<VertexPositionColorTexture>& Vertices, vector<uint16_t>& indices) :
+		SpriteBaseDraw(GameObjectPtr)
+	{
+		//パイプラインステートをデフォルトの2D
+		SetBlendState(BlendState::Opaque);
+		SetDepthStencilState(DepthStencilState::None);
+		SetRasterizerState(RasterizerState::CullBack);
+		SetSamplerState(SamplerState::LinearClamp);
+		try {
+			CreateMesh(Vertices, indices);
+		}
+		catch (...) {
+			throw;
+		}
+	}
+
+	SPDraw::~SPDraw() {}
+
+	void SPDraw::OnCreate() {
+		auto SpriteMesh = GetMeshResource();
+		if (!SpriteMesh) {
+			//作成されてなかったら作成する
+			float HelfSize = 0.5f;
+			//頂点配列
+			vector<VertexPositionColorTexture> Vertices = {
+				{ VertexPositionColorTexture(bsm::Vec3(-HelfSize, HelfSize, 0),bsm::Col4(1.0f,1.0f,1.0f,1.0f), bsm::Vec2(0.0f, 0.0f)) },
+				{ VertexPositionColorTexture(bsm::Vec3(HelfSize, HelfSize, 0), bsm::Col4(1.0f,1.0f,1.0f,1.0f), bsm::Vec2(1.0f, 0.0f)) },
+				{ VertexPositionColorTexture(bsm::Vec3(-HelfSize, -HelfSize, 0), bsm::Col4(1.0f,1.0f,1.0f,1.0f), bsm::Vec2(0.0f, 1.0f)) },
+				{ VertexPositionColorTexture(bsm::Vec3(HelfSize, -HelfSize, 0), bsm::Col4(1.0f,1.0f,1.0f,1.0f), bsm::Vec2(1.0f, 1.0f)) },
+			};
+			//インデックス配列
+			vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
+			//メッシュの作成（変更できる）
+			CreateMesh(Vertices, indices);
+		}
+	}
+
+	void SPDraw::OnDraw() {
+		if (GetGameObject()->GetAlphaActive()) {
+			if (!(GetBlendState() == BlendState::AlphaBlend || GetBlendState() == BlendState::Additive)) {
+				SetBlendState(BlendState::AlphaBlend);
+			}
+			SetRasterizerState(RasterizerState::CullNone);
+		}
+		//メッシュリソースの取得
+		auto PtrMeshResource = GetMeshResource();
+		if (PtrMeshResource) {
+			//シェーダの設定
+			Draw(PtrMeshResource->GetMashData());
+
+			auto Dev = App::GetApp()->GetDeviceResources();
+			auto pID3D11DeviceContext = Dev->GetD3DDeviceContext();
+			auto RenderState = Dev->GetRenderState();
+
+			ID3D11Buffer* pParamBuffer = CBParam::GetPtr()->GetBuffer();
+			pID3D11DeviceContext->VSSetConstantBuffers(1, 1, &pParamBuffer);
+			pID3D11DeviceContext->PSSetConstantBuffers(1, 1, &pParamBuffer);
+		}
+		//後始末
+		auto Dev = App::GetApp()->GetDeviceResources();
+		Dev->InitializeStates();
+	}
+
+	void SPDraw::Draw(const MeshPrimData& data)
+	{
+		auto Dev = App::GetApp()->GetDeviceResources();
+		auto pD3D11DeviceContext = Dev->GetD3DDeviceContext();
+		auto RenderState = Dev->GetRenderState();
+		//NULLのシェーダリソースの準備
+		ID3D11ShaderResourceView* pNull[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = { nullptr };
+		//サンプラーの準備
+		ID3D11SamplerState* pNullSR[D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT] = { nullptr };
+		//各オブジェクト共通処理
+		//シェーダの設定
+		//頂点シェーダ
+		pD3D11DeviceContext->VSSetShader(VSSprite::GetPtr()->GetShader(), nullptr, 0);
+		//インプットレイアウトの設定
+		pD3D11DeviceContext->IASetInputLayout(VSSprite::GetPtr()->GetInputLayout());
+		//ピクセルシェーダ
+		pD3D11DeviceContext->PSSetShader(PSSprite::GetPtr()->GetShader(), nullptr, 0);
+		//個別処理
+		SpriteConstants sb;
+		//コンスタントバッファの作成
+		SetConstants(sb);
+		//テクスチャ
+		auto shTex = GetTextureResource();
+		//ブレンドテクスチャ
+		auto BTex = GetBlendMapTextureResource();
+		//コンスタントバッファの更新
+		pD3D11DeviceContext->UpdateSubresource(CBSprite::GetPtr()->GetBuffer(), 0, nullptr, &sb, 0, 0);
+		//コンスタントバッファの設定
+		ID3D11Buffer* pConstantBuffer = CBSprite::GetPtr()->GetBuffer();
+		ID3D11Buffer* pNullConstantBuffer = nullptr;
+		//頂点シェーダに渡す
+		pD3D11DeviceContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+		//ピクセルシェーダに渡す
+		pD3D11DeviceContext->PSSetConstantBuffers(0, 1, &pConstantBuffer);
+		//ストライドとオフセット
+		UINT stride = data.m_NumStride;
+		UINT offset = 0;
+		//描画方法のセット
+		pD3D11DeviceContext->IASetPrimitiveTopology(data.m_PrimitiveTopology);
+		//頂点バッファのセット
+		pD3D11DeviceContext->IASetVertexBuffers(0, 1, data.m_VertexBuffer.GetAddressOf(), &stride, &offset);
+		//インデックスバッファのセット
+		pD3D11DeviceContext->IASetIndexBuffer(data.m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+		//各レンダリングステートの設定
+		//ブレンドステート
+		RenderState->SetBlendState(pD3D11DeviceContext, GetBlendState());
+		//デプスステンシルステート
+		RenderState->SetDepthStencilState(pD3D11DeviceContext, GetDepthStencilState());
+		//テクスチャとサンプラー
+		if (shTex) {
+			pD3D11DeviceContext->PSSetShaderResources(0, 1, shTex->GetShaderResourceView().GetAddressOf());
+			//サンプラーを設定
+			RenderState->SetSamplerState(pD3D11DeviceContext, GetSamplerState(), 0);
+			if (BTex)
+			{
+				pD3D11DeviceContext->PSSetShaderResources(1, 1, BTex->GetShaderResourceView().GetAddressOf());
+				//サンプラーを設定
+				RenderState->SetSamplerState(pD3D11DeviceContext, GetSamplerState(), 0);
+			}
+		}
+		else {
+			//シェーダーリソースもクリア
+			pD3D11DeviceContext->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, pNull);
+			//サンプラーもクリア
+			RenderState->SetSamplerAllClear(pD3D11DeviceContext);
+		}
+		//ラスタライザステートと描画
+		RenderState->SetRasterizerState(pD3D11DeviceContext, GetRasterizerState());
+		//描画
+		pD3D11DeviceContext->DrawIndexed(data.m_NumIndicis, 0, 0);
+	}
+
+	void SPDraw::SetTextures(UINT StartSlot, UINT NumViews, const wstring&Key)
+	{
+		//デバイスの取得
+		auto pD3D11DeviceContext = App::GetApp()->GetDeviceResources()->GetD3DDeviceContext();
+		auto Res = App::GetApp()->GetResource<TextureResource>(Key);
+		pD3D11DeviceContext->PSSetShaderResources(StartSlot, NumViews, Res->GetShaderResourceView().GetAddressOf());
+		auto pSampler = App::GetApp()->GetDeviceResources()->GetRenderState()->GetLinearClamp();
+
+		pD3D11DeviceContext->PSSetSamplers(StartSlot, NumViews, &pSampler);
+	}
+
+	void SPDraw::SetBlendMapTextureResource(const shared_ptr<TextureResource>& TextureRes) {
+		m_BlendMapTextureResource = TextureRes;
+
+	}
+
+	void SPDraw::SetBlendMapTextureResource(const wstring& TextureKey) {
+		this->SetBlendMapTextureResource(App::GetApp()->GetResource<TextureResource>(TextureKey));
+	}
+
+	shared_ptr<TextureResource> SPDraw::GetBlendMapTextureResource() const {
+		//テクスチャがなければnullを返す
+		auto shptr = m_BlendMapTextureResource.lock();
+		if (shptr) {
+			return shptr;
+		}
+		return nullptr;
+
+	}
+
 }

@@ -24,7 +24,7 @@ namespace basecross{
 			_EfkInterface = ObjectFactory::Create<EfkInterface>();
 			GameManager::CreateManager();
 			SetUnionTextures();
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTestStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 		}
 		catch (...) {
 			throw;
@@ -44,6 +44,10 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"clearG_TX", mediaPath + L"Textures/" + L"clearGreen.png");
 		App::GetApp()->RegisterTexture(L"clearmat_TX", mediaPath + L"Textures/" + L"clearmat.png");
 		App::GetApp()->RegisterTexture(L"skybox_TX", mediaPath + L"Textures/" + L"skybox_tx.png");
+		App::GetApp()->RegisterTexture(L"Title_TX", mediaPath + L"Textures/" + L"Title.png");
+
+		//モデルテクスチャ
+		App::GetApp()->RegisterTexture(L"Button_TX", mediaPath + L"Models/" + L"Tx_Button.png");
 
 		auto modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"MatTest.bmf",true);
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
@@ -58,7 +62,7 @@ namespace basecross{
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"skyboxObj.bmf", true);
 		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
 
-		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Button.bmf");
+		modelMesh = MeshResource::CreateBoneModelMesh(mediaPath + L"Models/", L"Button.bmf");
 		App::GetApp()->RegisterResource(L"Switch_MD", modelMesh);
 
 		//test

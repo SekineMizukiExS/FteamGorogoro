@@ -29,11 +29,12 @@ namespace basecross{
 	struct ParamCB
 	{
 		Vec4 param_f;
-
+		XMUINT4 Flags;
 		ParamCB()
 		{
 			memset(this, 0, sizeof(ParamCB));
 			param_f = Vec4();
+			Flags = XMUINT4();
 		}
 	};
 
@@ -41,6 +42,10 @@ namespace basecross{
 	DECLARE_DX11_CONSTANT_BUFFER(CBParam,ParamCB)
 	DECLARE_DX11_VERTEX_SHADER(VSFuton,VertexPositionNormalTexture)
 	DECLARE_DX11_PIXEL_SHADER(PSFuton)
+
+	//スプライト描画用
+	DECLARE_DX11_VERTEX_SHADER(VSSprite,VertexPositionColorTexture)
+	DECLARE_DX11_PIXEL_SHADER(PSSprite)
 }
 //end basecross
 

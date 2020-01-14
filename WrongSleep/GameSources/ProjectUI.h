@@ -9,6 +9,7 @@ namespace basecross
 	//------------------------------------------
 	//UIクラス
 	//------------------------------------------
+
 	//-------------------------------------------------------------------------
 	///スプライト
 	//-------------------------------------------------------------------------
@@ -18,7 +19,7 @@ namespace basecross
 		Vec2 m_startScale;
 		Vec3 m_startPos;
 		wstring m_textureKey;
-		float m_halfSize;
+		Vec2 m_SizeVec;
 		//バックアップ頂点データ
 		vector<VertexPositionColorTexture>  vertices;
 	public:
@@ -28,11 +29,31 @@ namespace basecross
 			bool trace,
 			const Vec2& startScale,
 			const Vec3& startPos,
-			const float halfSize
+			const Vec2& SizeVec
 		);
 		virtual	~Sprite() {}
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override = 0;
+	};
+
+	//------------------------------------------
+	//タイトルUI	
+	//------------------------------------------
+	class TitleUI :public Sprite
+	{
+	public:
+		TitleUI(const shared_ptr<Stage>&Stage, const wstring& textureKey,
+			bool trace,
+			const Vec2& startScale,
+			const Vec3& startPos,
+			const Vec2& halfSize
+		);
+
+		~TitleUI() {}
+
+		void OnCreate()override;
+
+		void OnUpdate()override;
 	};
 	//---------------------------------------------------
 	//アニメーションスプライト
@@ -49,7 +70,7 @@ namespace basecross
 			bool trace,
 			const Vec2& startScale,
 			const Vec3& startPos,
-			const float halfSize,
+			const Vec2& halfSize,
 			const float AnimationSpeed,
 			const AnimationType AnimType = AnimationType::Flashing
 		);

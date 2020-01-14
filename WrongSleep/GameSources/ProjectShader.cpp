@@ -18,6 +18,10 @@ namespace basecross{
 	//ピクセルシェーダ
 	IMPLEMENT_DX11_PIXEL_SHADER(PSFuton,App::GetApp()->GetShadersPath()+L"FutonPS.cso")
 
+
+	//スプライト描画用
+	IMPLEMENT_DX11_VERTEX_SHADER(VSSprite,App::GetApp()->GetShadersPath()+L"SpriteVS.cso")
+	IMPLEMENT_DX11_PIXEL_SHADER(PSSprite, App::GetApp()->GetShadersPath() + L"SpritePS.cso")
 }
 //end basecross
 

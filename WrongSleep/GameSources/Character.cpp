@@ -296,10 +296,9 @@ namespace basecross{
 	void SwitchObject::OnCreate()
 	{
 		//å`èÛçÏê¨
-		auto DrawComp = AddComponent<PCTStaticDraw>();
+		auto DrawComp = AddComponent<PNTStaticDraw>();
 		DrawComp->SetMeshResource(L"Switch_MD");
-		//DrawComp->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
-		DrawComp->SetEmissive(Col4(1, 0, 0, 1));
+		DrawComp->SetTextureResource(L"Button_TX");
 
 		auto TransComp = AddComponent<Transform>();
 		TransComp->SetPosition(40, 0.5, -6);
