@@ -40,6 +40,7 @@ namespace basecross{
 
 		//座標
 		Vec3 m_nowPos = Vec3(0, 0, 0);
+		Vec3 m_beforePos = Vec3(0, 0, 0);
 
 		//ステートマシン
 		unique_ptr<StateMachine<Player>> m_stateMachine;

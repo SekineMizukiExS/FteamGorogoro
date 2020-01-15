@@ -182,7 +182,7 @@ namespace basecross{
 			m_nowSize.y -= 1.0f;
 		}
 
-		if (m_nowSize.y <= 1) {
+		if (m_nowSize.y <= -5.0f) {
 			m_nowSize.y = 1.0f;
 		}
 
@@ -194,9 +194,10 @@ namespace basecross{
 		//nowPos.z = round(nowPos.z);
 		//transPtr->SetPosition(nowPos);
 
-		/*if (nowPos.y < 0.5f) {
-			transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
-		}*/
+		if (nowPos.y < -0.5f) {
+			//transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
+			transPtr->SetPosition(m_beforePos.x,5.0f, m_beforePos.z);
+		}
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
 		//auto ptrString = GetComponent<StringSprite>();
@@ -472,6 +473,7 @@ namespace basecross{
 		GetInFourEdge();
 	}
 
+	//âÒì]à⁄ìÆèàóù
 	void Player::RotateMove() {
 
 		auto transptr = GetComponent<Transform>();
@@ -518,6 +520,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
+			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(m_V3HS._xHalfSize, m_V3HS._yHalfSizeMin, nowPos.z);
 			m_rotateAxis = Vec3(0, 0, 1);
 			m_isRotate = true;
@@ -531,6 +534,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
+			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(m_V3HS._xHalfSizeMin, m_V3HS._yHalfSizeMin, nowPos.z);
 			m_rotateAxis = Vec3(0, 0, -1);
 			m_isRotate = true;
@@ -539,6 +543,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
+			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(nowPos.x, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSize);
 			m_rotateAxis = Vec3(-1, 0, 0);
 			m_isRotate = true;
@@ -547,6 +552,7 @@ namespace basecross{
 		{
 			GetInFourEdge();
 			nowPos = transptr->GetPosition();
+			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(nowPos.x, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSizeMin);
 			m_rotateAxis = Vec3(1, 0, 0);
 			m_isRotate = true;
