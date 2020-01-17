@@ -20,24 +20,12 @@ namespace basecross {
 	};
 
 	class StageBase : public Stage {
-		//ビューの作成
-		virtual void CreateViewLight() = 0;
-
-		enum SelectStage
-		{
-			Stage1,
-			Stage2,
-			Stage3,
-			TestStage,
-		};
-
-		SelectStage _Selects;
 		shared_ptr<EfkPlay> m_EfkPlay[50];
 		int m_EfkCount = 0;
 
 	public:
 		//構築と破棄
-		StageBase() :Stage(),_Selects(TestStage), _MView(nullptr), _MyCameraIndex(NULL), _SubCametaIndex(NULL){}
+		StageBase() :Stage(), _MView(nullptr), _MyCameraIndex(NULL), _SubCametaIndex(NULL){}
 		virtual ~StageBase() {}
 		//初期化
 		virtual void OnCreate()override;
@@ -48,15 +36,15 @@ namespace basecross {
 
 		void OnDestroy()override;
 
-		SelectStage GetSelects()const {
-			return _Selects;
-		}
 		SelectCamera GetCameraSelects()const {
 			return _Camera;
 		}
 
 		void Effectplay(wstring Key, Vec3 hitpoint);
 	protected:
+		//ビューの作成
+		virtual void CreateViewLight() = 0;
+
 		shared_ptr<MultiView>_MView;
 		shared_ptr<SingleView>_EventView;
 		//
@@ -126,6 +114,24 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//SelectStageクラス（未定）
 	//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------
+	//MainGameStageクラス
+	//--------------------------------------------------------------------------------------
+	class MainGameStage :public StageBase
+	{
+		void CreateViewLight()override;
+
+	public:
+		//構築と破棄
+		MainGameStage();
+		~MainGameStage();
+		//初期化
+		void OnCreate()override;
+		//更新
+		void OnUpdate()override;
+		//描画
+		void OnDraw()override;
+	};
 	//--------------------------------------------------------------------------------------
 	//Movieクラス
 	//--------------------------------------------------------------------------------------

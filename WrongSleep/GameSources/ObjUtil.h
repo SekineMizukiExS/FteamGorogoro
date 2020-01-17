@@ -15,7 +15,6 @@ namespace basecross {
 
 	Vec3HalfSizes GetFourEdge(shared_ptr <Transform> trans, shared_ptr<BcPNTStaticDraw> draw);
 
-	bool IsNearVecCheck(const Vec3& v1, const Vec3& v2);
-
+	bool IsNearVecCheck(const Vec3& v1, const Vec3& v2);	
 
 }
