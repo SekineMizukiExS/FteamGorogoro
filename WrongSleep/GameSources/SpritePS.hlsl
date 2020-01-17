@@ -12,6 +12,6 @@ float4 main(SpritePS input) : SV_TARGET
     Light.a = Diffuse.a;
     float4 Tex = g_texture.Sample(g_sampler, input.tex);
     float4 BackTex = g_BackTex.Sample(g_BackSamp, input.tex);
-    Light = lerp(Tex, BackTex, BackTex) * Light;
+    Light = lerp(Tex, BackTex, BackTex.a) * Light;
     return Light;
 }

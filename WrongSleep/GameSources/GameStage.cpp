@@ -168,6 +168,60 @@ namespace basecross {
 	}
 
 	//--------------------------------------------------------------------------------------
+	//MainGameStageクラス
+	//--------------------------------------------------------------------------------------
+	MainGameStage::MainGameStage()
+		:StageBase()
+	{
+		float Sizex = App::GetApp()->GetGameWidth() / 2.0f;
+		float Sizey = App::GetApp()->GetGameHeight() / 2.0f;
+
+		vector<VertexPositionColorTexture> _vertices;
+
+		_vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
+		_vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
+		_vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
+		_vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)));
+
+		vector<uint16_t> _indices = { 0, 1, 2, 1, 3, 2 };
+	}
+
+	MainGameStage::~MainGameStage(){}
+
+	void MainGameStage::CreateViewLight() {
+		auto PtrView = CreateView<SingleView>();
+		//ビューのカメラの設定
+		auto PtrCamera = ObjectFactory::Create<Camera>();
+		PtrView->SetCamera(PtrCamera);
+		PtrCamera->SetEye(Vec3(0.0f, 2.0f, -3.0f));
+		PtrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		//マルチライトの作成
+		auto PtrMultiLight = CreateLight<MultiLight>();
+		//デフォルトのライティングを指定
+		PtrMultiLight->SetDefaultLighting();
+
+	}
+
+	//初期化
+	void MainGameStage::OnCreate()
+	{
+
+	}
+
+	//更新
+	void MainGameStage::OnUpdate()
+	{
+
+	}
+
+	//描画
+	void MainGameStage::OnDraw()
+	{
+		//基底クラス
+		StageBase::OnDraw();
+	}
+
+	//--------------------------------------------------------------------------------------
 	//Movieクラス
 	//--------------------------------------------------------------------------------------
 	//初期化

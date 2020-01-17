@@ -12,25 +12,21 @@ namespace basecross{
 	StageObjects::StageObjects(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
 		:GameObject(stage)
 	{
-		//auto MeshStr = XmlDocReader::GetAttribute(pNode, L"Mesh");
-		//auto TexStr = XmlDocReader::GetAttribute(pNode, L"Tex");
-		auto PositionNode = XmlDocReader::GetSelectSingleNode(pNode, L"Pos");
-		auto ScaleNode = XmlDocReader::GetSelectSingleNode(pNode, L"Scale");
-		auto RotetaNode = XmlDocReader::GetSelectSingleNode(pNode, L"Rot");
-
-		wstring PositionStr = XmlDocReader::GetText(PositionNode);
-		wstring ScaleStr = XmlDocReader::GetText(ScaleNode);
-		wstring RotetaStr = XmlDocReader::GetText(RotetaNode);
+		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
+		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
+		auto PosStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 
 		//メッシュ
-		//_MeshKey = MeshStr;
+		_MeshKey = MeshStr;
 
 		//トークン（カラム）の配列
 		vector<wstring> Tokens;
 		//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
 		//Position
 		Tokens.clear();
-		Util::WStrToTokenVector(Tokens, PositionStr, L',');
+		Util::WStrToTokenVector(Tokens, PosStr, L',');
 		//各トークン（カラム）をスケール、回転、位置に読み込む
 		_Pos = Vec3(
 			(float)_wtof(Tokens[0].c_str()),
@@ -47,13 +43,13 @@ namespace basecross{
 		);
 		//Rot
 		Tokens.clear();
-		Util::WStrToTokenVector(Tokens, RotetaStr, L',');
+		Util::WStrToTokenVector(Tokens, RotStr, L',');
 		//回転は「XM_PIDIV2」の文字列になっている場合がある
 		_Rot.x = (Tokens[0] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[0].c_str());
 		_Rot.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
 		_Rot.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
 
-		//_TexKey = TexStr;
+		_TexKey = TexStr;
 	}
 
 	void StageObjects::OnCreate()
@@ -61,8 +57,8 @@ namespace basecross{
 		auto DrawComp = AddComponent<AreaDraw>();
 		auto TransComp = AddComponent<Transform>();
 
-		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
-		DrawComp->SetTextureResource(L"LeafMatB_TX");
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
 		//DrawComp->SetDrawActive(false);
 
 		TransComp->SetPosition(_Pos);
@@ -547,6 +543,39 @@ namespace basecross{
 		//ptrDraw->SetEmissive(Flt4(0.5f, 0.5f, 1.0f, 1));
 	}
 
+	//-----------------------------------------------------------------
+	//GameMaskObject
+	//-----------------------------------------------------------------
+	struct GameMaskObject::Impl
+	{
+		Impl()
+		{
+
+		}
+	};
+
+	//構築と破棄
+	GameMaskObject::GameMaskObject(const shared_ptr<Stage>&StagePtr)
+		:GameObject(StagePtr)
+	{}
+
+	GameMaskObject::~GameMaskObject()
+	{}
+
+	void GameMaskObject::OnCreate()
+	{
+
+	}
+
+	void GameMaskObject::OnUpdate()
+	{
+
+	}
+
+	void GameMaskObject::OnDraw()
+	{
+
+	}
 	//-----------------------------------------------------------------
 	//イベントカメラマンクラス
 	//-----------------------------------------------------------------
