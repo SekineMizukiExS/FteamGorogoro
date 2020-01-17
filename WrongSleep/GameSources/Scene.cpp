@@ -46,6 +46,13 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"skybox_TX", mediaPath + L"Textures/" + L"skybox_tx.png");
 		App::GetApp()->RegisterTexture(L"Title_TX", mediaPath + L"Textures/" + L"Title.png");
 
+		App::GetApp()->RegisterTexture(L"Bridge_TX", mediaPath + L"Textures/" + L"Tx_Bridge.png");
+		App::GetApp()->RegisterTexture(L"Fence_TX", mediaPath + L"Textures/" + L"Tx_Fence.png");
+		App::GetApp()->RegisterTexture(L"Flower_TX", mediaPath + L"Textures/" + L"Tx_Flower.png");
+		App::GetApp()->RegisterTexture(L"WarpPad_TX", mediaPath + L"Textures/" + L"Tx_WarpPad.png");
+		App::GetApp()->RegisterTexture(L"Tree_TX", mediaPath + L"Textures/" + L"Tx_Tree.png");
+		App::GetApp()->RegisterTexture(L"Pedestal_TX", mediaPath + L"Textures/" + L"Tx_Pedestal.png");
+
 		//モデルテクスチャ
 		App::GetApp()->RegisterTexture(L"Button_TX", mediaPath + L"Models/" + L"Tx_Button.png");
 
