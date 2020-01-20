@@ -234,6 +234,8 @@ namespace basecross {
 		map<wstring,shared_ptr<BaseResource>> _ResMap;		///<-ステージ独自で使用するリソース 
 		shared_ptr<GameEventDispatcher> m_GameEventDispatcher;	///< イベント送信オブジェクト
 
+		map<wstring, Vec3> _SettingPosData; ///<-初期配置データ群
+
 		std::mutex _mutex;										///<-マルチスレッド用
 		bool _LoadEnd = false;									///<<-ロード終了したらTrue
 
@@ -283,18 +285,17 @@ namespace basecross {
 		//--------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------
 		/*!
+		@brief ステージの配置
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SetStageObject(const wstring &MapFile);
+		//--------------------------------------------------------------------------------------
+		/*!
 		@brief 強制破棄
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
-		//--------------------------------------------------------------------------------------
-		/*!
-		@brief イベントカメラを駆動させる
-		@return	なし
-		*/
-		//--------------------------------------------------------------------------------------
-		//void MoveEventCamera(const shared_ptr<)
-
 		void LoadStart(const StageType type);
 
 		void OnCreate()override;
@@ -316,6 +317,8 @@ namespace basecross {
 		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
 
 		const shared_ptr<Stage> GetTargetStage()const { return _TargetStage; }
+
+		const Vec3 GetSettingPosData(const wstring& PosKey) { return _SettingPosData[PosKey]; }
 
 		//リソースの読込が終わったらTrue	
 		bool GetLoadEnd()const

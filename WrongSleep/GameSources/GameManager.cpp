@@ -255,6 +255,55 @@ namespace basecross
 		_mutex.unlock();
 	}
 	//
+
+	void GameManager::SetStageObject(const wstring &MapFile)
+	{
+		_SettingPosData.clear();
+		_TargetStage->CreateSharedObjectGroup(L"StageObjects");
+		//ゲームオブジェクトビルダー
+		GameObjecttXMLBuilder Builder;
+		//ゲームオブジェクトの登録
+		Builder.Register<StageObjects>(L"FixedObject");
+		Builder.Register<StageObjects>(L"BridgeObj");
+		Builder.Register<StageObjects>(L"WarpObj");
+		Builder.Register<ToyGuards>(L"Test");
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		//XMLからゲームオブジェクトの構築
+		wstring XMLStr = DataDir + L"ObjectData/" + MapFile;
+		XMLStr += L".xml";
+		Builder.Build(_TargetStage->GetThis<Stage>(), XMLStr, L"root/Stage/StageObjects/Object");
+		Builder.Build(_TargetStage->GetThis<Stage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
+
+		auto XMLRead = new XmlDocReader(XMLStr);
+		auto SDataNodes = XMLRead->GetSelectNodes(L"root/settingData/posDatas/SetPosData");
+
+		long NodeCount = XmlDocReader::GetLength(SDataNodes);
+		//トークン（カラム）の配列
+		vector<wstring> Tokens;
+		for (long i = 0; i < NodeCount; i++)
+		{
+			auto Node = XmlDocReader::GetItem(SDataNodes, i);
+			auto PosStr = XmlDocReader::GetAttribute(Node, L"Position");
+			auto PosKey = XmlDocReader::GetAttribute(Node, L"PosKey");
+
+			//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+			//Position
+			Tokens.clear();
+			Util::WStrToTokenVector(Tokens, PosStr, L',');
+			//各トークン（カラム）をスケール、回転、位置に読み込む
+			Vec3 Pos = Vec3(
+				(float)_wtof(Tokens[0].c_str()),
+				(float)_wtof(Tokens[1].c_str()),
+				(float)_wtof(Tokens[2].c_str())
+			);
+
+			_SettingPosData[PosKey] = Pos;
+		}
+
+		_TargetStage->GetSharedGameObject<Player>(L"Player")->GetComponent<Transform>()->SetPosition(_SettingPosData[L"PlayerStart"]);
+	}
+
 	void GameManager::OnCreate()
 	{
 		//_TargetStage->AddGameObject<DebugObj>();

@@ -111,10 +111,11 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<TitleStage>();
+			return;
 		}
-		else if (event->m_MsgStr == L"ToGameStage")
+		else if (event->m_MsgStr == L"ToMainGameStage")
 		{
-			ResetActiveStage<GameStage>();
+			ResetActiveStage<MainGameStage>();
 		}
 		else if (event->m_MsgStr == L"ToTestStage")
 		{
@@ -124,9 +125,11 @@ namespace basecross{
 		else if (event->m_MsgStr == L"ToMovieStage")
 		{
 			ResetActiveStage<MyMovieStage>();
+			return;
 		}
 
 		GameManager::GetManager()->SetTargetStage(GetActiveStage());
+		GameManager::GetManager()->SetStageObject(L"TStageMap");
 	}
 }
 //end basecross

@@ -122,7 +122,7 @@ namespace basecross {
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
 		if (Dev.m_bLastKeyTbl['S'])
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTestStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 		}
 	}
 
@@ -173,38 +173,94 @@ namespace basecross {
 	MainGameStage::MainGameStage()
 		:StageBase()
 	{
-		float Sizex = App::GetApp()->GetGameWidth() / 2.0f;
-		float Sizey = App::GetApp()->GetGameHeight() / 2.0f;
-
-		vector<VertexPositionColorTexture> _vertices;
-
-		_vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
-		_vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
-		_vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
-		_vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)));
-
-		vector<uint16_t> _indices = { 0, 1, 2, 1, 3, 2 };
 	}
 
 	MainGameStage::~MainGameStage(){}
 
 	void MainGameStage::CreateViewLight() {
-		auto PtrView = CreateView<SingleView>();
+		const Vec3 eye[7] = { Vec3(0.0f, 5.0f, -5.0f),//標準位置
+							  Vec3(0.0f, 0.0f, -30.0f),
+							  Vec3(0.0f, 20.0f, 00.1f),
+							  Vec3(0.0f, 110.0f, -75.0f),
+							  Vec3(0.0f,15.0f,50.0f),
+							  Vec3(10.0f, 0.0f, -10.0f),
+								Vec3(0.0f,15.0f,-10.0f) };
+		const Vec3 at(0.0f);
+		//viewポート設定
+		Viewport Main, Sub;
+		Main.TopLeftX = 0;
+		Main.TopLeftY = 0;
+		Main.Width = (float)App::GetApp()->GetGameWidth();
+		Main.Height = (float)App::GetApp()->GetGameHeight();
+		Main.MaxDepth = 1.0f;
+		Main.MinDepth = 0.0f;
+
+		Sub.TopLeftX = 1000;
+		Sub.TopLeftY = 700;
+		Sub.Width = 280;
+		Sub.Height = 100;
+		Sub.MaxDepth = 1.0f;
+		Sub.MinDepth = 0.0f;
+
+		_MView = CreateView <MultiView>();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<Camera>();
-		PtrView->SetCamera(PtrCamera);
-		PtrCamera->SetEye(Vec3(0.0f, 2.0f, -3.0f));
-		PtrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
+		auto PtrCamera = ObjectFactory::Create<MyCamera>();
+		//カメラインデックス
+		_MyCameraIndex = _MView->AddView(Main, PtrCamera);
+		PtrCamera->SetEye(eye[4]);
+		PtrCamera->SetAt(at);
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
 		PtrMultiLight->SetDefaultLighting();
+		//プレイヤーの情報を渡す
+		auto ptrPlayer = GetSharedGameObject<PlayerMarker>(L"PlayerMarker");
+		PtrCamera->SetTargetObject(ptrPlayer);
+		PtrCamera->SetMinArm(1.0f);
+		PtrCamera->SetMaxArm(50.0f);
 
+		auto SubCamera = ObjectFactory::Create<Camera>();
+		_SubCametaIndex = _MView->AddView(Sub, SubCamera);
+		SubCamera->SetEye(eye[3]);
+		SubCamera->SetAt(at);
+
+		//イベントカメラのView作成
+		_EventView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
+		auto EventCameraPtr = ObjectFactory::Create<EventCamera>();
+		_EventView->SetCamera(EventCameraPtr);
+		EventCameraPtr->SetEye(eye[3]);
+		EventCameraPtr->SetAt(at);
+
+	}
+
+	//プレーヤーの作成
+	void MainGameStage::CreatePlayer() 
+	{
+		auto ptrPlayer = AddGameObject<Player>();
+		//シェア配列にプレイヤーを追加
+		SetSharedGameObject(L"Player", ptrPlayer);
+		ptrPlayer->AddTag(L"Player");
+
+		auto ptrPlayerMarker = AddGameObject<PlayerMarker>();
+		ptrPlayerMarker->SetTargetObject(ptrPlayer);
+		SetSharedGameObject(L"PlayerMarker", ptrPlayerMarker);
+
+		auto ptrPlayerModel = AddGameObject<PlayerModel>();
+		ptrPlayerModel->SetTargetObject(ptrPlayer);
+		SetSharedGameObject(L"PlayerModel", ptrPlayerModel);
 	}
 
 	//初期化
 	void MainGameStage::OnCreate()
 	{
+		try {
+			CreatePlayer();
+			//ビューとライトの作成
+			CreateViewLight();
+		}
+		catch (...) {
+			throw;
+		}
 
 	}
 
@@ -494,7 +550,7 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"NewMapTest";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"TStageMap";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
@@ -569,29 +625,12 @@ namespace basecross {
 			AddGameObject<MovingObject>();
 			AddGameObject<SwitchObject>();
 			AddGameObject<EventCameraMan>();
-			//m_EfkPlay = ObjectFactory::Create<EfkPlay>(L"Splash_EF");
 
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
 
 
 			//AddGameObject<CBoneMeshBox>(Vec3(1, 1, 1), Vec3(0, 0, 0), Vec3(0, 0, 0),L"MITAGTV_MD");
-
-			//_Ts= AddGameObject<Futon>();
-			//AddGameObject<Futon>();
-			//Test
-			//GameObjecttXMLBuilder Builder;
-			////ゲームオブジェクトの登録
-			//Builder.Register<ToyGuards>(L"Test");
-			//wstring DataDir;
-			//App::GetApp()->GetDataDirectory(DataDir);
-			////XMLからゲームオブジェクトの構築
-			//wstring XMLStr = DataDir + L"ObjectData/" + L"TestEnemy";
-			//XMLStr += L".xml";
-			//shared_ptr<EnemyManager> test;
-			//Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage1/InitObject/GameObject");			 
-
-			//ToMyCamera();
 		}
 		catch (...) {
 			throw;

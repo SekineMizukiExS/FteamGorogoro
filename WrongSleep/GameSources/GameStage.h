@@ -40,6 +40,11 @@ namespace basecross {
 			return _Camera;
 		}
 
+		shared_ptr<MyCamera>GetMyCamera()const
+		{
+			return dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
+		}
+
 		void Effectplay(wstring Key, Vec3 hitpoint);
 	protected:
 		//ビューの作成
@@ -121,6 +126,9 @@ namespace basecross {
 	{
 		void CreateViewLight()override;
 
+		//プレイヤーの作成
+		void CreatePlayer();
+
 	public:
 		//構築と破棄
 		MainGameStage();
@@ -185,10 +193,6 @@ namespace basecross {
 
 		void ToEventCamera();
 
-		shared_ptr<MyCamera>GetMyCamera()const
-		{
-			return dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
-		}
 	};
 }
 //end basecross
