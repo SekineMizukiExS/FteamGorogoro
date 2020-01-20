@@ -55,6 +55,28 @@ namespace basecross
 
 		void OnUpdate()override;
 	};
+
+	//-----------------------------------------------------------------
+	//GameMaskObject
+	//-----------------------------------------------------------------
+	class GameMaskSprite :public GameObject
+	{
+	public:
+		GameMaskSprite(const shared_ptr<Stage>&StagePtr,const wstring MaskTexture,const wstring FadeTexture, bool trace);
+		~GameMaskSprite();
+
+		//初期化
+		void OnCreate()override;
+		//更新
+		void OnUpdate()override;
+		//描画
+		//void OnDraw()override;
+
+	private:
+		struct Impl;
+		unique_ptr<Impl> pImpl;
+	};
+
 	//---------------------------------------------------
 	//アニメーションスプライト
 	//---------------------------------------------------

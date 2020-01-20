@@ -115,13 +115,25 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)FutonPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="$(MSBuildThisFileDirectory)SpritePS.hlsl" />
-    <FxCompile Include="$(MSBuildThisFileDirectory)SpriteVS.hlsl" />
+    <FxCompile Include="$(MSBuildThisFileDirectory)SpritePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)SpriteVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)MaskVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)MaskPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)AreaShader.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="$(MSBuildThisFileDirectory)SpriteShader.hlsli" />
+    <None Include="$(MSBuildThisFileDirectory)SpriteShader.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

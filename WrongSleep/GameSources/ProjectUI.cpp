@@ -79,6 +79,70 @@ namespace basecross
 
 	}
 
+	//-----------------------------------------------------------------
+	//GameMaskObject
+	//-----------------------------------------------------------------
+	struct GameMaskSprite::Impl
+	{
+		//Mesh
+		vector<VertexPositionColorTexture> vertices;
+		vector<uint16_t> indices;
+		wstring MaskTexture;
+		wstring FadeTexture;
+		const bool trance;
+		bool ActiveFade;
+		Impl(const wstring MaskTX,const wstring FadeTX,const bool Trance)
+			:MaskTexture(MaskTX),FadeTexture(FadeTX),trance(Trance),ActiveFade(false)
+		{
+			float Sizex = (float)App::GetApp()->GetGameWidth() / 2.0f;
+			float Sizey = (float)App::GetApp()->GetGameHeight() / 2.0f;
+
+			vertices.clear();
+			indices.clear();
+			vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 0.0f)));
+			vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)));
+			vertices.push_back(VertexPositionColorTexture(Vec3(-Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)));
+			vertices.push_back(VertexPositionColorTexture(Vec3(Sizex, -Sizey, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)));
+
+			indices = { 0, 1, 2, 1, 3, 2 };
+
+		}
+	};
+
+	//構築と破棄
+	GameMaskSprite::GameMaskSprite(const shared_ptr<Stage>&StagePtr, const wstring MaskTexture, const wstring FadeTexture,bool trance)
+		:GameObject(StagePtr),pImpl(make_unique<Impl>(MaskTexture, FadeTexture, trance))
+	{}
+
+	GameMaskSprite::~GameMaskSprite()
+	{}
+
+	void GameMaskSprite::OnCreate()
+	{
+		//頂点配列（縦横５個ずつ表示）
+		SetAlphaActive(pImpl->trance);
+		auto ptrTransform = GetComponent<Transform>();
+		ptrTransform->SetPosition(0,0,0);
+		//頂点とインデックスを指定してスプライト作成
+		auto ptrDraw = AddComponent<MaskDraw>(pImpl->vertices, pImpl->indices);
+		ptrDraw->SetSamplerState(SamplerState::LinearWrap);
+		ptrDraw->SetTextureResource(pImpl->MaskTexture);
+		//ptrDraw->SetFadeTextureResource(pImpl->FadeTexture);
+	}
+
+	void GameMaskSprite::OnUpdate()
+	{
+		auto DrawComp = GetComponent<MaskDraw>();
+		MaskParamB MK;
+		MK.param_f.x = 0.0f;
+		DrawComp->UpdateParam(MK);
+	}
+
+	//void GameMaskSprite::OnDraw()
+	//{
+
+	//}
+
 	//-------------------------------------------------------------------------
 	//アニメーションスプライト
 	//-------------------------------------------------------------------------

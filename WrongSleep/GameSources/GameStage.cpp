@@ -488,11 +488,13 @@ namespace basecross {
 		GameObjecttXMLBuilder Builder;
 		//ゲームオブジェクトの登録
 		Builder.Register<StageObjects>(L"FixedObject");
+		Builder.Register<StageObjects>(L"BridgeObj");
+		Builder.Register<StageObjects>(L"WarpObj");
 		Builder.Register<ToyGuards>(L"Test");
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"Stage2_2";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"NewMapTest";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
@@ -563,6 +565,7 @@ namespace basecross {
 			SetCellMapCost();
 			//AddGameObject<DebugObj>();
 			
+			//AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
 			AddGameObject<MovingObject>();
 			AddGameObject<SwitchObject>();
 			AddGameObject<EventCameraMan>();

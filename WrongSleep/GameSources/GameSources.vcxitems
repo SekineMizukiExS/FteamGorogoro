@@ -54,6 +54,12 @@
     <FxCompile Include="$(MSBuildThisFileDirectory)FutonVS.hlsl">
       <ShaderType>Vertex</ShaderType>
     </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)MaskPS.hlsl">
+      <ShaderType>Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="$(MSBuildThisFileDirectory)MaskVS.hlsl">
+      <ShaderType>Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="$(MSBuildThisFileDirectory)SpritePS.hlsl">
       <ShaderType>Pixel</ShaderType>
     </FxCompile>

@@ -544,39 +544,6 @@ namespace basecross{
 	}
 
 	//-----------------------------------------------------------------
-	//GameMaskObject
-	//-----------------------------------------------------------------
-	struct GameMaskObject::Impl
-	{
-		Impl()
-		{
-
-		}
-	};
-
-	//構築と破棄
-	GameMaskObject::GameMaskObject(const shared_ptr<Stage>&StagePtr)
-		:GameObject(StagePtr)
-	{}
-
-	GameMaskObject::~GameMaskObject()
-	{}
-
-	void GameMaskObject::OnCreate()
-	{
-
-	}
-
-	void GameMaskObject::OnUpdate()
-	{
-
-	}
-
-	void GameMaskObject::OnDraw()
-	{
-
-	}
-	//-----------------------------------------------------------------
 	//イベントカメラマンクラス
 	//-----------------------------------------------------------------
 	void EventCameraMan::OnCreate()

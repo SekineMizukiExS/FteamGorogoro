@@ -244,26 +244,6 @@ namespace basecross{
 	};
 
 	//-----------------------------------------------------------------
-	//GameMaskObject
-	//-----------------------------------------------------------------
-	class GameMaskObject :public GameObject
-	{
-	public:
-		GameMaskObject(const shared_ptr<Stage>&StagePtr);
-		~GameMaskObject();
-
-		//初期化
-		void OnCreate()override;
-		//更新
-		void OnUpdate()override;
-		//描画
-		void OnDraw()override;
-
-	private:
-		struct Impl;
-		unique_ptr<Impl> pImpl;
-	};
-	//-----------------------------------------------------------------
 	//イベント関係オブジェクト宣言
 	//-----------------------------------------------------------------
 	//-----------------------------------------------------------------

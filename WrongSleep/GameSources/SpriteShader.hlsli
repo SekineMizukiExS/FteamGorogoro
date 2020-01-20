@@ -4,12 +4,16 @@ cbuffer ConstantBuffer : register(b0)
     row_major float4x4 MatrixTransform : packoffset(c0);
     float4 Emissive : packoffset(c4);
     float4 Diffuse : packoffset(c5);
+    uint4 FlagKeys : packoffset(c6);
 };
 
-cbuffer SpriteParam : register(b1)
+cbuffer MaskParam : register(b1)
 {
-    uint4 flags : packoffset(c0);
-};
+    //シェーダー制御用パラメータ
+    //param.x = フェード補間係数（0～1）
+    float4 paramf : packoffset(c0);
+    
+}
 
 struct SpriteVS
 {
