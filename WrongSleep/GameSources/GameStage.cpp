@@ -173,6 +173,7 @@ namespace basecross {
 	MainGameStage::MainGameStage()
 		:StageBase()
 	{
+		CreateSharedObjectGroup(L"ResetObj");
 	}
 
 	MainGameStage::~MainGameStage(){}
@@ -196,13 +197,20 @@ namespace basecross {
 		Main.MinDepth = 0.0f;
 
 		Sub.TopLeftX = 1000;
-		Sub.TopLeftY = 700;
+		Sub.TopLeftY = 0;
 		Sub.Width = 280;
 		Sub.Height = 100;
 		Sub.MaxDepth = 1.0f;
 		Sub.MinDepth = 0.0f;
 
 		_MView = CreateView <MultiView>();
+
+		//サブカメラ
+		auto SubCamera = ObjectFactory::Create<Camera>();
+		_SubCametaIndex = _MView->AddView(Sub, SubCamera);
+		SubCamera->SetEye(eye[3]);
+		SubCamera->SetAt(at);
+
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>();
 		//カメラインデックス
@@ -219,11 +227,6 @@ namespace basecross {
 		PtrCamera->SetMinArm(1.0f);
 		PtrCamera->SetMaxArm(50.0f);
 
-		auto SubCamera = ObjectFactory::Create<Camera>();
-		_SubCametaIndex = _MView->AddView(Sub, SubCamera);
-		SubCamera->SetEye(eye[3]);
-		SubCamera->SetAt(at);
-
 		//イベントカメラのView作成
 		_EventView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
 		auto EventCameraPtr = ObjectFactory::Create<EventCamera>();
@@ -231,6 +234,7 @@ namespace basecross {
 		EventCameraPtr->SetEye(eye[3]);
 		EventCameraPtr->SetAt(at);
 
+		CreateSharedObjectGroup(L"StageObjects");
 	}
 
 	//プレーヤーの作成
@@ -250,6 +254,30 @@ namespace basecross {
 		SetSharedGameObject(L"PlayerModel", ptrPlayerModel);
 	}
 
+	void MainGameStage::SettingObject()
+	{
+		auto MapFile = GameManager::GetManager()->GetXMLFilePath();
+		//ゲームオブジェクトビルダー
+		GameObjecttXMLBuilder Builder;
+		//ゲームオブジェクトの登録
+		Builder.Register<StageObjects>(L"FixedObject");
+		Builder.Register<StageObjects>(L"BridgeObj");
+		Builder.Register<StageObjects>(L"WarpObj");
+		Builder.Register<LoadBlock>(L"LoadBlock");
+		//Builder.Register<ToyGuards>(L"Test");
+		wstring DataDir;
+		App::GetApp()->GetDataDirectory(DataDir);
+		//XMLからゲームオブジェクトの構築
+		wstring XMLStr = DataDir + L"ObjectData/" + MapFile;
+		XMLStr += L".xml";
+		Builder.Build(GetThis<Stage>(), XMLStr, L"root/Stage/StageObjects/Object");
+		Builder.Build(GetThis<Stage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
+
+		GameManager::GetManager()->SetSettingPosData(XMLStr);
+		auto PlayerStart = GameManager::GetManager()->GetSettingPosData(L"PlayerStart");
+		GetSharedGameObject<Player>(L"Player")->GetComponent<Transform>()->SetPosition(PlayerStart);
+	}
+
 	//初期化
 	void MainGameStage::OnCreate()
 	{
@@ -257,6 +285,9 @@ namespace basecross {
 			CreatePlayer();
 			//ビューとライトの作成
 			CreateViewLight();
+			SettingObject();
+			//スカイボックス作成
+			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
 		}
 		catch (...) {
 			throw;
@@ -300,7 +331,7 @@ namespace basecross {
 
 		if (/*(MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&*/GameManager::GetManager()->GetLoadEnd())
 		{
-			PostEvent(0.0f, GetThis <ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTestStage");
+			PostEvent(0.0f, GetThis <ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 		}
 	}
 
@@ -550,24 +581,11 @@ namespace basecross {
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir+L"ObjectData/" + L"TStageMap";
+		wstring XMLStr = DataDir+L"ObjectData/" + L"NewMapTest";
 		XMLStr += L".xml";
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/StageObjects/Object");
 		Builder.Build(GetThis<TestStage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
 	}
-
-	//void TestStage::ToMyCamera() {
-	//	auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
-	//	//MyCameraに変更
-	//	auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(m_MyCameraView->GetCamera());
-	//	if (ptrMyCamera) {
-	//		ptrMyCamera->SetTargetObject(ptrPlayer);
-	//		//m_MyCameraViewを使う
-	//		//SetView(m_MyCameraView);
-	//		//m_CameraSelect = CameraSelect::myCamera;
-
-	//	}
-	//}
 
 	void TestStage::SetCellMapCost() {
 		//セルマップ内にFixedBoxの情報をセット
@@ -629,8 +647,9 @@ namespace basecross {
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10,10,10), Vec3(0,0,0), Vec3(0,0,0), L"skybox_TX", L"SkyBox_MD");
 
-
 			//AddGameObject<CBoneMeshBox>(Vec3(1, 1, 1), Vec3(0, 0, 0), Vec3(0, 0, 0),L"MITAGTV_MD");
+
+
 		}
 		catch (...) {
 			throw;
@@ -640,30 +659,6 @@ namespace basecross {
 	void TestStage::OnUpdate()
 	{
 		StageBase::OnUpdate();
-
-		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
-		if (Dev.m_bLastKeyTbl['L'])
-		{
-			auto ptrEventCamera = dynamic_pointer_cast<EventCamera>(_EventView->GetCamera());
-			if (ptrEventCamera)
-			{
-				//m_MyCameraView
-				this->SetView(_EventView);
-			}
-			else
-			{
-				throw BaseException
-				(L"カメラの切り替えに失敗した",
-					L"GameStage.cpp",
-					L"Line:198");
-			}
-
-		}
-		if (Dev.m_bLastKeyTbl['W'])
-		{
-			//SendEvent(GetThis<ObjectInterface>(), GetSharedGameObject<EventCameraMan>(L"EventCameraMan"), L"EventEnd");
-		}
-		
 	}
 
 	void TestStage::ToEventCamera() {
@@ -684,11 +679,9 @@ namespace basecross {
 
 	void TestStage::ToMyCamera()
 	{
-		//auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
 		//MyCameraに変更
 		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
 		if (ptrMyCamera) {
-			//ptrMyCamera->SetTargetObject(ptrPlayer);
 			//m_MyCameraViewを使う
 			SetView(_MView);
 			_Camera = SelectCamera::pMyCamera;

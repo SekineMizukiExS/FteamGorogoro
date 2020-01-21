@@ -12,6 +12,12 @@ namespace basecross
 		GameManager::GetManager()->GetGameEventDispatcher()->SendEvent(Sender, Receiver, MsgStr, Type);
 	}
 
+	void GameEventInterface::SendGameEvent(const shared_ptr<GameEventInterface>& Sender,
+		const wstring& MsgStr, const GameEventType Type)
+	{
+		GameManager::GetManager()->GetGameEventDispatcher()->SendEvent(Sender, MsgStr, Type);
+	}
+
 	void GameEventInterface::SendGameEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
 		const wstring& MsgStr, const GameEventType Type)
 	{
@@ -94,6 +100,15 @@ namespace basecross
 		TypeEvent(Ptr);
 	}
 
+	//イベントのSEND（キューに入れずにそのまま送る）
+	void GameEventDispatcher::SendEvent(const shared_ptr<GameEventInterface>& Sender,
+		const wstring& MsgStr, const GameEventType Type) {
+		//イベントの作成 
+		auto Ptr = make_shared<GameEvent>(Sender, nullptr, MsgStr, Type);
+		//送信
+		TypeEvent(Ptr);
+	}
+
 	void GameEventDispatcher::SendEvent(const shared_ptr<GameEventInterface>& Sender, const wstring& ReceiverKey,
 		const wstring& MsgStr, const GameEventType Type) {
 		//ReceiverKeyによる相手の特定
@@ -144,6 +159,8 @@ namespace basecross
 			break;
 			//ステージ移動イベント
 		case basecross::GameEventType::MoveStage:
+			GameManager::GetManager()->SetXMLFilePath(gameevent->m_MsgStr);
+			GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 			break;
 			//カットシーン・イベントシーンイベント
 		case basecross::GameEventType::CutScene:
@@ -161,7 +178,7 @@ namespace basecross
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
 	//構築と破棄
 	GameManager::GameManager()
-		:_TargetStage(nullptr)
+		:_TargetStage(nullptr),_XMLFileName(L"TStageMap")
 	{
 		_EnemyManager = ObjectFactory::Create<EnemyManager>();
 		m_GameEventDispatcher = make_shared<GameEventDispatcher>();
@@ -256,26 +273,10 @@ namespace basecross
 	}
 	//
 
-	void GameManager::SetStageObject(const wstring &MapFile)
+	void GameManager::SetSettingPosData(const wstring& FilePath)
 	{
 		_SettingPosData.clear();
-		_TargetStage->CreateSharedObjectGroup(L"StageObjects");
-		//ゲームオブジェクトビルダー
-		GameObjecttXMLBuilder Builder;
-		//ゲームオブジェクトの登録
-		Builder.Register<StageObjects>(L"FixedObject");
-		Builder.Register<StageObjects>(L"BridgeObj");
-		Builder.Register<StageObjects>(L"WarpObj");
-		Builder.Register<ToyGuards>(L"Test");
-		wstring DataDir;
-		App::GetApp()->GetDataDirectory(DataDir);
-		//XMLからゲームオブジェクトの構築
-		wstring XMLStr = DataDir + L"ObjectData/" + MapFile;
-		XMLStr += L".xml";
-		Builder.Build(_TargetStage->GetThis<Stage>(), XMLStr, L"root/Stage/StageObjects/Object");
-		Builder.Build(_TargetStage->GetThis<Stage>(), XMLStr, L"root/Stage/EnemyDatas/EnemyData");
-
-		auto XMLRead = new XmlDocReader(XMLStr);
+		auto XMLRead = new XmlDocReader(FilePath);
 		auto SDataNodes = XMLRead->GetSelectNodes(L"root/settingData/posDatas/SetPosData");
 
 		long NodeCount = XmlDocReader::GetLength(SDataNodes);
@@ -300,8 +301,6 @@ namespace basecross
 
 			_SettingPosData[PosKey] = Pos;
 		}
-
-		_TargetStage->GetSharedGameObject<Player>(L"Player")->GetComponent<Transform>()->SetPosition(_SettingPosData[L"PlayerStart"]);
 	}
 
 	void GameManager::OnCreate()

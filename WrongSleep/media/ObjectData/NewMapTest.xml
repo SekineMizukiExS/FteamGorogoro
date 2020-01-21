@@ -37,4 +37,9 @@
       </EnemyData>
     </EnemyDatas>
   </Stage>
+    <settingData>
+    <posDatas>
+      <SetPosData Type="PlayerStart" PosKey="PlayerStart" Position="-45, 5, -40"/>
+    </posDatas>
+  </settingData>
 </root>

@@ -129,7 +129,6 @@ namespace basecross{
 		}
 
 		GameManager::GetManager()->SetTargetStage(GetActiveStage());
-		GameManager::GetManager()->SetStageObject(L"TStageMap");
 	}
 }
 //end basecross

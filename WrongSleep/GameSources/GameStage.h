@@ -129,6 +129,8 @@ namespace basecross {
 		//プレイヤーの作成
 		void CreatePlayer();
 
+		void SettingObject();
+
 	public:
 		//構築と破棄
 		MainGameStage();
