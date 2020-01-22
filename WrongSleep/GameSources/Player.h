@@ -30,7 +30,8 @@ namespace basecross{
 		//時
 		float m_time = 0;
 		//スピード
-		float m_Speed = 1;
+		float m_speed = 0.25f;
+		float m_inputCooltime = 0.15f;//再入力までの待機時間
 		//入力ハンドラー
 		InputHandler<Player> m_inputHandler;
 		wstring m_sharedName;

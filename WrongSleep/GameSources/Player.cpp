@@ -42,7 +42,7 @@ namespace basecross{
 		//GetStage()->SetDrawPerformanceActive(true);
 
 		//重力をつける
-		auto ptrGra = AddComponent<Gravity>();
+		//auto ptrGra = AddComponent<Gravity>();
 
 		//GetStage()->SetCollisionPerformanceActive(true);
 		//GetStage()->SetUpdatePerformanceActive(true);
@@ -54,6 +54,7 @@ namespace basecross{
 		//ptr->SetPivot(Vec3(0, 0, 0));
 		ptr->SetQuaternion(Quat());
 
+		
 		
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
@@ -493,9 +494,10 @@ namespace basecross{
 		//==========================Unity移植文========================
 			//Debug.Log("hol:" + Input.GetAxis("Horizontal"));
 			//回転中は入力を受け付けない
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
 		if (m_isRotate == true) {
-			if (m_count < 5) {
-				transptr->RotateAround(m_rotatePoint, m_rotateAxis, 0.1f * XM_PI, nowPos);
+			if (m_count < 5 * (1/m_speed)) {
+				transptr->RotateAround(m_rotatePoint, m_rotateAxis, 0.1f * XM_PI * m_speed, nowPos);
 				m_count += 1;
 			}
 			else {

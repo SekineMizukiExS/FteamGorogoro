@@ -229,7 +229,7 @@ namespace basecross {
 		auto angle = GetMoveVector();
 		if (angle.length() > 0.0f) {
 			auto pos = GetComponent<Transform>()->GetPosition();
-			pos += angle * elapsedTime * m_Speed;
+			pos += angle  * m_speed * elapsedTime;
 			GetComponent<Transform>()->SetPosition(pos);
 		}
 		//‰ñ“]‚ÌŒvŽZ
