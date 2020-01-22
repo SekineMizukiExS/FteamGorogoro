@@ -171,6 +171,7 @@ namespace basecross{
 		RotateMove();
 		GetInFourEdge();
 		BoxExtending();
+		Gravity();
 		DebugLine();
 		//auto inPut = GetInputState();
 		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
@@ -566,6 +567,14 @@ namespace basecross{
 		}
 	}
 
+	void Player::Gravity() {
+		float length = m_V3HS._yHalfSizeMin - 0.5f;
+
+		auto transptr = GetComponent<Transform>();
+		Vec3 nowPos = transptr->GetWorldPosition();
+		nowPos.y -= length;
+		transptr->SetWorldPosition(nowPos);
+	}
 
 
 	//=======================================================================
@@ -600,6 +609,7 @@ namespace basecross{
 			ptrTrans->SetPosition(tempPos.x,3,tempPos.z);
 		}
 	}
+
 
 
 //=======================================================================

@@ -58,6 +58,8 @@ namespace basecross{
 		Vec3 m_Buttom = Vec3(0,0,0);
 		vector<VertexPosition> m_ButtomVertexs;
 
+		float m_groundLine = 0;
+
 		Vec3 m_nowSize = Vec3(1, 1, 1);
 
 		int m_count = 0;
@@ -96,6 +98,9 @@ namespace basecross{
 		Vec3 GetExtendingAngle();
 		//回転先を取得する関数
 		Vec3 GetRotateVector();
+
+		//重力処理
+		void Gravity();
 
 		//プレイヤーの最初の底面を取得する関数
 		
