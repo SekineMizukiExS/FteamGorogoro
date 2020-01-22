@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Stage>
+    <StageObjects>
+      <Object Type="FixedObject" Pos="30.9,5.77,-12" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-35.1,5.77,6" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,15" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="33.9,5.77,9" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-50.2,5.77,36" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-32.1,5.77,45" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-26.2,5.77,42" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-27,1.52,-39.54" Scale="5,5,5" Rot="0,0,0" MeshKey="Pedestal_MD" TexKey="Pedestal_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,27" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,9" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-35.1,5.77,0" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,21" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="24.9,5.77,-12" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="41.7,1.507,40.9" Scale="5,1,5" Rot="0,0,0" MeshKey="WarpPad_MD" TexKey="WarpPad_TX" />
+      <Object Type="FixedObject" Pos="24.9,5.77,-6" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="42.85,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="36.9,5.77,-12" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-38.1,5.77,45" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="30.85,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-50.2,5.77,30" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-47.1,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="36.9,5.77,-6" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="48.85,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="30,0,3" Scale="45,3,93" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="LeafMat_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,39" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-36,0,3" Scale="45,3,93" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="LeafMat_TX" />
+      <Object Type="FixedObject" Pos="21.9,5.77,9" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="36.85,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-41.1,5.77,0" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-26.2,5.77,30" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,33" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-29.1,5.77,6" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-27,1.52,-15" Scale="5,5,5" Rot="0,0,0" MeshKey="Pedestal_MD" TexKey="Pedestal_TX" />
+      <Object Type="FixedObject" Pos="-26.2,5.77,36" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="15.8,5.77,45" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-44.1,5.77,45" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-29.1,5.77,0" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="30.9,5.77,-6" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-50.2,5.77,42" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-29.1,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-41.1,5.77,6" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="27.9,5.77,9" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="-16.86,1.94,5.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+      <Object Type="FixedObject" Pos="10.7,1.94,5.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
+    </StageObjects>
+    <EnemyDatas />
+  </Stage>
+  <settingData>
+    <posDatas>
+      <SetPosData Type="PlayerStart" PosKey="PlayerStart" Position="-39.2,0,34.8" />
+    </posDatas>
+  </settingData>
+</root>
