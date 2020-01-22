@@ -178,7 +178,7 @@ namespace basecross
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
 	//\’z‚Æ”jŠü
 	GameManager::GameManager()
-		:_TargetStage(nullptr),_XMLFileName(L"TStageMap")
+		:_TargetStage(nullptr),_XMLFileName(L"NewMapTest")
 	{
 		_EnemyManager = ObjectFactory::Create<EnemyManager>();
 		m_GameEventDispatcher = make_shared<GameEventDispatcher>();

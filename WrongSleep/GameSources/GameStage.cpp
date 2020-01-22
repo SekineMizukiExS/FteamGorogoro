@@ -260,9 +260,9 @@ namespace basecross {
 		//ゲームオブジェクトビルダー
 		GameObjecttXMLBuilder Builder;
 		//ゲームオブジェクトの登録
-		Builder.Register<StageObjects>(L"FixedObject");
-		Builder.Register<StageObjects>(L"BridgeObj");
-		Builder.Register<StageObjects>(L"WarpObj");
+		Builder.Register<StageObjectsLoopTex>(L"FixedObject");
+		//Builder.Register<StageObjects>(L"BridgeObj");
+		//Builder.Register<StageObjects>(L"WarpObj");
 		Builder.Register<LoadBlock>(L"LoadBlock");
 		//Builder.Register<ToyGuards>(L"Test");
 		wstring DataDir;
@@ -483,7 +483,7 @@ namespace basecross {
 		};
 		//オブジェクトの作成
 		for (auto v : vec) {
-			AddGameObject<FixedBox>(v[0], v[1], v[2]);
+			AddGameObject<LoopTextureBox>(v[0],v[1], v[2], L"LeafMatB_TX", L"DEFAULT_CUBE");
 		}
 	}
 

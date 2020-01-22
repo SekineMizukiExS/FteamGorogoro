@@ -85,6 +85,8 @@ namespace basecross{
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Pedestal.bmf");
 		App::GetApp()->RegisterResource(L"Pedestal_MD", modelMesh);
 
+		App::GetApp()->RegisterResource(L"TestCube", MeshResource::CreateCube(1.0f, true));
+
 		//test
 		App::GetApp()->RegisterEffect(L"TestEfk", mediaPath + L"Effects/EnemyHit.efk", _EfkInterface,10);
 		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"MitaGTmodels/", L"ValkylyeModel_TypeC_Valkylye.bmf", true);

@@ -25,6 +25,20 @@ namespace basecross{
 		wstring _TexKey;
 	};
 
+	class StageObjectsLoopTex : public StageObjects
+	{
+	public:
+		StageObjectsLoopTex(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
+		virtual void OnCreate() override;
+
+	private:
+		wstring _MeshKey;
+		Vec3 _Pos;
+		Vec3 _Scal;
+		Vec3 _Rot;
+		wstring _TexKey;
+	};
+
 	//ロードブロック
 	class LoadBlock :public GameObject,public GameEventInterface
 	{
@@ -265,6 +279,31 @@ namespace basecross{
 		virtual void OnCreate() override;
 		//操作
 	};
+
+	//--------------------------------------------------------------------------------------
+	//	class LoopTextureBox : public GameObject;
+	//--------------------------------------------------------------------------------------
+	class LoopTextureBox : public GameObject {
+	protected:
+		Vec3 m_Scale;
+		Vec3 m_Rotation;
+		Vec3 m_Position;
+		wstring _TexKey;
+		wstring _MeshKey;
+	public:
+		LoopTextureBox(const shared_ptr<Stage>& StagePtr,
+			const Vec3& Scale,
+			const Vec3& Rotation,
+			const Vec3& Position,
+			const wstring TexKey,
+			const wstring MeshKey
+		);
+		virtual	~LoopTextureBox() {}
+		virtual void OnCreate() override;
+		virtual void OnUpdate() override {}
+	};
+
+
 
 	//-----------------------------------------------------------------
 	//イベント関係オブジェクト宣言

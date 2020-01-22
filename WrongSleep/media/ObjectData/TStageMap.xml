@@ -41,10 +41,10 @@
       <Object Type="FixedObject" Pos="-44.1,5.77,45" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
       <Object Type="FixedObject" Pos="-29.1,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
       <Object Type="FixedObject" Pos="-47.1,5.77,24" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
-      <Object Type="FixedObject" Pos="30,0,3" Scale="45,3,93" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="LeafMat_TX" />
-      <Object Type="FixedObject" Pos="-36,0,3" Scale="45,3,93" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="LeafMat_TX" />
+      <Object Type="FixedObject" Pos="30,0,3" Scale="45,3,93" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" />
+      <Object Type="FixedObject" Pos="-36,0,3" Scale="45,3,93" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" />
       <Object Type="FixedObject" Pos="15.8,5.77,21" Scale="3,3,3" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" />
-      <Object Type="LoadBlock" Pos="-39.2,1.0,30" Scale="3,3,3" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" MapStr ="NewMapTest"/>
+      <Object Type="LoadBlock" Pos="-39.2,1.0,30" Scale="3,3,3" Rot="0,0,0" MeshKey="TestCube" TexKey="clearmat_TX" MapStr ="NewMapTest"/>
     </StageObjects>
     <EnemyDatas />
   </Stage>

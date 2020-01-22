@@ -58,6 +58,8 @@ namespace basecross{
 
 		DrawComp->SetMeshResource(_MeshKey);
 		DrawComp->SetTextureResource(_TexKey);
+		auto MeshComp = DrawComp->GetMeshResource();
+		//vector<VertexPositionColorTexture>& verteces = {};
 		//DrawComp->SetDrawActive(false);
 
 		TransComp->SetPosition(_Pos);
@@ -71,6 +73,88 @@ namespace basecross{
 		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
 		Group->IntoGroup(GetThis<StageObjects>());
 	}
+
+	//
+	StageObjectsLoopTex::StageObjectsLoopTex(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
+		:StageObjects(stage, pNode)
+	{
+		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
+		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
+		auto PosStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
+
+		//メッシュ
+		_MeshKey = MeshStr;
+
+		//トークン（カラム）の配列
+		vector<wstring> Tokens;
+		//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+		//Position
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, PosStr, L',');
+		//各トークン（カラム）をスケール、回転、位置に読み込む
+		_Pos = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+		//Scale
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, ScaleStr, L',');
+		_Scal = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+		//Rot
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, RotStr, L',');
+		//回転は「XM_PIDIV2」の文字列になっている場合がある
+		_Rot.x = (Tokens[0] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[0].c_str());
+		_Rot.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
+		_Rot.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
+
+		_TexKey = TexStr;
+	}
+
+	void StageObjectsLoopTex::OnCreate()
+	{
+		auto DrawComp = AddComponent<AreaDraw>();
+		auto TransComp = AddComponent<Transform>();
+
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+		auto MeshComp = DrawComp->GetMeshResource();
+		//vector<VertexPositionColorTexture>& verteces = {};
+		//DrawComp->SetDrawActive(false);
+
+		TransComp->SetPosition(_Pos);
+		TransComp->SetScale(_Scal);
+		TransComp->SetRotation(_Rot);
+
+
+		auto vert = MeshComp->GetBackupVerteces<VertexPositionNormalTexture>();
+		for (int i = 0; i < vert.size(); i++)
+		{
+			auto v = vert[i].textureCoordinate;
+			v.x *= _Scal.z;
+			v.y *= _Scal.x;
+			//v.y = PALSE * sinf((i + _cnt) / 20.0f);
+			vert[i].textureCoordinate = v;
+		}
+		DrawComp->SetSamplerState(SamplerState::PointWrap);
+		//_cnt++;
+		DrawComp->UpdateVertices(vert);
+
+		//CollisionSphere衝突判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
+		//ptrColl->SetDrawActive(true);
+		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
+		Group->IntoGroup(GetThis<StageObjects>());
+	}
+
 
 	//
 	LoadBlock::LoadBlock(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
@@ -616,6 +700,57 @@ namespace basecross{
 		//ptrDraw->SetFogEnabled(true);
 		ptrDraw->SetOwnShadowActive(true);
 		//ptrDraw->SetEmissive(Flt4(0.5f, 0.5f, 1.0f, 1));
+	}
+
+	//--------------------------------------------------------------------------------------
+	//	class LoopTextureBox : public GameObject;
+	//--------------------------------------------------------------------------------------
+	LoopTextureBox::LoopTextureBox(const shared_ptr<Stage>& StagePtr,
+		const Vec3& Scale,
+		const Vec3& Rotation,
+		const Vec3& Position,
+		const wstring TexKey,
+		const wstring MeshKey
+
+	) :
+		GameObject(StagePtr),
+		m_Scale(Scale),
+		m_Rotation(Rotation),
+		m_Position(Position),
+		_TexKey(TexKey),
+		_MeshKey(MeshKey)
+	{}
+	void LoopTextureBox::OnCreate()
+	{
+
+
+		auto DrawComp = AddComponent<AreaDraw>();
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+		DrawComp->SetDrawActive(true);
+
+		auto ptrTransform = GetComponent<Transform>();
+		ptrTransform->SetScale(m_Scale);
+		ptrTransform->SetRotation(m_Rotation);
+		ptrTransform->SetPosition(m_Position);
+
+		//OBB衝突j判定を付ける
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(true);
+
+		auto mesh = DrawComp->GetMeshResource();
+		auto vert = mesh->GetBackupVerteces<VertexPositionNormalTexture>();
+		for (int i = 0; i < vert.size(); i++)
+		{
+			auto v = vert[i].position;
+			v.x *= m_Scale.x;
+			v.y *= m_Scale.z;
+			//v.y = PALSE * sinf((i + _cnt) / 20.0f);
+			vert[i].position = v;
+		}
+		//_cnt++;
+		DrawComp->UpdateVertices(vert);
+
 	}
 
 	//-----------------------------------------------------------------
