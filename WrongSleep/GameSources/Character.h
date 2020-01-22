@@ -25,6 +25,29 @@ namespace basecross{
 		wstring _TexKey;
 	};
 
+	//ロードブロック
+	class LoadBlock :public GameObject,public GameEventInterface
+	{
+	public:
+		LoadBlock(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
+
+		virtual void OnCreate() override;
+
+		virtual void OnUpdate()override;
+
+	private:
+		Vec3 _Pos;
+		Vec3 _Scal;
+		Vec3 _Rot;
+		wstring _MeshKey;
+		wstring _TexKey;
+
+		//マップファイル名
+		wstring _MapStr;
+
+		AABB _SensingArea;
+	};
+
 	//--------------------------------------------------------------------------------------
 	//可動オブジェクトクラス(スイッチで可動)
 	//--------------------------------------------------------------------------------------

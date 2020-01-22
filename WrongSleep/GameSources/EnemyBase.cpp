@@ -292,5 +292,8 @@ namespace basecross
 			m_SteteMachine->ChangeState(TrackingState::Instance());
 		}
 
+		//—‰º‚µ‚½‚çíœ
+
+
 	}
 }

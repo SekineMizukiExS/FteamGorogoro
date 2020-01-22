@@ -56,6 +56,18 @@ namespace basecross {
 		/*!
 		@brief	イベントのSEND（キューに入れずにそのまま送る）
 		@param[in]	Sender	イベント送信者（nullptr可）
+		@param[in]	ReceiverKey	受け手側オブジェクトを判別するキー
+		@param[in]	MsgStr	メッセージ
+		@param[in,out] Type イベントタイプ
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SendGameEvent(const shared_ptr<GameEventInterface>& Sender,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::MoveStage);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントのSEND（キューに入れずにそのまま送る）
+		@param[in]	Sender	イベント送信者（nullptr可）
 		@param[in]	Receiver	イベント受信者（nullptr不可）
 		@param[in]	MsgStr	メッセージ
 		@param[in,out] Type イベントタイプ
@@ -172,6 +184,18 @@ namespace basecross {
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief	イベントのSEND（キューに入れずにそのまま送る）
+		@param[in]	Sender	送り側オブジェクト（nullptr可）
+		@param[in]	Receiver	受け手側オブジェクト
+		@param[in]	MsgStr	メッセージ文字列
+		@param[in]	Info	追加情報をもつユーザーデータ
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		void SendEvent(const shared_ptr<GameEventInterface>& Sender,
+			const wstring& MsgStr, const GameEventType Type = GameEventType::Default);
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief	イベントのSEND（キューに入れずにそのまま送る）
 		@param[in]	Sender	イベント送信者（nullptr可）
 		@param[in]	Receiver	イベント受信者（nullptr不可）
 		@param[in]	MsgStr	メッセージ
@@ -236,6 +260,8 @@ namespace basecross {
 
 		map<wstring, Vec3> _SettingPosData; ///<-初期配置データ群
 
+		wstring _XMLFileName;
+
 		std::mutex _mutex;										///<-マルチスレッド用
 		bool _LoadEnd = false;									///<<-ロード終了したらTrue
 
@@ -289,7 +315,6 @@ namespace basecross {
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
-		void SetStageObject(const wstring &MapFile);
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief 強制破棄
@@ -314,6 +339,8 @@ namespace basecross {
 			return _EnemyManager;
 		}
 		
+		const wstring GetXMLFilePath()const { return _XMLFileName; }
+
 		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
 
 		const shared_ptr<Stage> GetTargetStage()const { return _TargetStage; }
@@ -336,6 +363,13 @@ namespace basecross {
 		{
 			_TargetStage = stage;
 		}
+
+		void SetXMLFilePath(const wstring& FilePath)
+		{
+			_XMLFileName = FilePath;
+		}
+
+		void SetSettingPosData(const wstring& FilePath);
 
 		void ChangeEventCamera();
 

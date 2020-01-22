@@ -8,7 +8,6 @@
 
 namespace basecross{
 	//ステージ作成用クラス
-
 	StageObjects::StageObjects(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
 		:GameObject(stage)
 	{
@@ -71,6 +70,82 @@ namespace basecross{
 		//ptrColl->SetDrawActive(true);
 		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
 		Group->IntoGroup(GetThis<StageObjects>());
+	}
+
+	//
+	LoadBlock::LoadBlock(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
+		:GameObject(stage)
+	{
+		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
+		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
+		auto PosStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
+
+		auto MapStr = XmlDocReader::GetAttribute(pNode, L"MapStr");
+		//メッシュ
+		_MeshKey = MeshStr;
+
+		//トークン（カラム）の配列
+		vector<wstring> Tokens;
+		//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+		//Position
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, PosStr, L',');
+		//各トークン（カラム）をスケール、回転、位置に読み込む
+		_Pos = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+		//Scale
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, ScaleStr, L',');
+		_Scal = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+		//Rot
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, RotStr, L',');
+		//回転は「XM_PIDIV2」の文字列になっている場合がある
+		_Rot.x = (Tokens[0] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[0].c_str());
+		_Rot.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
+		_Rot.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
+
+		_TexKey = TexStr;
+
+		_MapStr = MapStr;
+	}
+
+	void LoadBlock::OnCreate()
+	{
+		auto DrawComp = AddComponent<AreaDraw>();
+		auto TransComp = AddComponent<Transform>();
+
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+		SetAlphaActive(true);
+
+		TransComp->SetPosition(_Pos);
+		TransComp->SetScale(_Scal);
+		TransComp->SetRotation(_Rot);
+
+	}
+
+	void LoadBlock::OnUpdate()
+	{
+		auto PlayerObj = GetStage()->GetSharedGameObject<Player>(L"Player");
+		if (PlayerObj)
+		{
+			AABB PVol = AABB(PlayerObj->GetComponent<Transform>()->GetPosition(), 1.0f, 1.0f, 1.0f);
+			_SensingArea = AABB(GetComponent<Transform>()->GetPosition(), 2, 2, 2);
+			if (HitTest::AABB_AABB(PVol, _SensingArea))
+			{
+				SendGameEvent(GetThis<GameEventInterface>(), _MapStr, GameEventType::MoveStage);
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------------------------
