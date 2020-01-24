@@ -393,7 +393,7 @@ namespace basecross {
 	//ターゲットのセルを検索する
 	bool EnemyBehavior::Search(const Vec3& TargetPos)
 	{
-		auto MapPtr = EnemyBase::GetCellMap().lock();
+		auto MapPtr = dynamic_pointer_cast<EnemyBase>(GetGameObject())->GetCellMap().lock();
 		if (MapPtr) {
 			auto PathPtr = GetGameObject()->GetComponent<PathSearch>();
 			_CellPath.clear();

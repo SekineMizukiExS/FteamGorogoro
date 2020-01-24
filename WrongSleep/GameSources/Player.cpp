@@ -217,7 +217,7 @@ namespace basecross{
 			m_usingSize += 1;
 			//EfkPlay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition(), 0);
 			auto stg = GetStage();
-			auto teststg = dynamic_pointer_cast<TestStage>(stg);
+			auto teststg = dynamic_pointer_cast<StageBase>(stg);
 			if (teststg) {
 				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
 			}
@@ -233,7 +233,7 @@ namespace basecross{
 			Vec3 HitPoint;
 			//EfkPlay(L"Splash_EF", obj2->GetComponent<Transform>()->GetPosition(), 0);
 			auto stg = GetStage();
-			auto teststg = dynamic_pointer_cast<TestStage>(stg);
+			auto teststg = dynamic_pointer_cast<StageBase>(stg);
 			if (teststg) {
 				teststg->Effectplay(L"Splash_EF", obj2->GetComponent<Transform>()->GetPosition());
 			}
@@ -504,7 +504,7 @@ namespace basecross{
 				m_isRotate = false;
 
 				auto stg = GetStage();
-				auto teststg = dynamic_pointer_cast<TestStage>(stg);
+				auto teststg = dynamic_pointer_cast<StageBase>(stg);
 				if (teststg) {
 					teststg->Effectplay(L"SideSplash_EF",Vec3(nowPos.x,0.5,nowPos.z));
 				}

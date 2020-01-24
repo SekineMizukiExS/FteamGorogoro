@@ -95,7 +95,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//LoadStageクラス（読み込むステージ）
 	//--------------------------------------------------------------------------------------
-	class LoadStage : public Stage {
+	class LoadStage : public StageBase {
 		//ビューの作成
 		void CreateViewLight();
 		//スプライトの作成
@@ -108,7 +108,7 @@ namespace basecross {
 		//static std::mutex mtx;
 	public:
 		//構築と破棄
-		LoadStage() :Stage() {}
+		LoadStage() :StageBase() {}
 		virtual ~LoadStage() {}
 		//初期化
 		virtual void OnCreate()override;
@@ -131,6 +131,7 @@ namespace basecross {
 
 		void SettingObject();
 
+		void SetMapCost();
 	public:
 		//構築と破棄
 		MainGameStage();
@@ -141,6 +142,8 @@ namespace basecross {
 		void OnUpdate()override;
 		//描画
 		void OnDraw()override;
+
+		bool Test = false;
 	};
 	//--------------------------------------------------------------------------------------
 	//Movieクラス
@@ -181,7 +184,7 @@ namespace basecross {
 		void CreateCommonBox();
 		void CreateStageObject();
 
-		void SetCellMapCost();
+		//void SetCellMapCost();
 	public:
 		//構築と破棄
 		TestStage() :StageBase() {}

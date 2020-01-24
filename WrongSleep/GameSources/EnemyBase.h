@@ -4,6 +4,32 @@
 namespace basecross
 {
 	class EnemyBase;
+	//------------------------------------------------------
+	//ステージセルマップ
+	//------------------------------------------------------
+	class EnemyCellMap :public StageCellMap
+	{
+	public:
+		EnemyCellMap(const shared_ptr<Stage>& StagePtr, const wstring&MapKey, const bsm::Vec3& MiniPos, float PieceSize, UINT PieceCountX, UINT PieceCountZ, int DefaultCost = 1)
+			:StageCellMap(StagePtr,MiniPos,PieceSize,PieceCountX,PieceCountZ,DefaultCost),m_MapKey(MapKey)
+		{}
+
+		EnemyCellMap(const shared_ptr<Stage>& StagePtr, IXMLDOMNodePtr pNode);
+
+		//初期化
+		void OnCreate()override;
+
+		//更新
+		//void OnUpdate()override;
+
+	private:
+		wstring m_MapKey;
+		Vec3 m_MiniPos;
+		float m_PieceSize;
+		UINT m_PieceCountX;
+		UINT m_PieceCountZ;
+		int m_DefaultCost;
+	};
 	//----------------------------------------
 	//エネミーの管理クラス
 	//----------------------------------------
@@ -20,16 +46,28 @@ namespace basecross
 
 		//----------------------------------------------------------------------------------
 		/*!
-		@brief エネミー
-		@paramf[in] stage　生成させるターゲットステージ
-		@paramf[in] Builder オブジェクトビルダー
-		@paramf[in]	XMLFilePath	参照するXMLファイルのパス
-		@paramf[in] EnemyObjPath　Objectデータまでのパス
+		@brief 作成したセルマップを追加する
+		@paramf[in]
 		@return なし
 		*/
 		//----------------------------------------------------------------------------------
-		void SetEnemyObject(const shared_ptr<GameObject>&ObjectPtr);
-
+		void AddCellMap(const wstring&Key, const shared_ptr<EnemyCellMap>&CellMap);
+		//----------------------------------------------------------------------------------
+		/*!
+		@brief セルマップを取得する
+		@paramf[in]
+		@return なし
+		*/
+		//----------------------------------------------------------------------------------
+		weak_ptr<EnemyCellMap> GetCellMap(const wstring&Key);
+		//----------------------------------------------------------------------------------
+		/*!
+		@brief セルマップを取得する
+		@paramf[in]
+		@return なし
+		*/
+		//----------------------------------------------------------------------------------
+		vector<shared_ptr<EnemyCellMap>> GetCellMapVec();
 		//----------------------------------------------------------------------------------
 		/*!
 		@brief イベント関数
@@ -118,13 +156,10 @@ namespace basecross
 			return _TravelingPoint;
 		}
 
-		//static ゲッター
-		const static weak_ptr<StageCellMap> GetCellMap() { return _CellMap; }
-
-		//static セッター
-		const static void SetCellMap(const shared_ptr<StageCellMap> &CellMap)
+		//
+		weak_ptr<EnemyCellMap> GetCellMap()const
 		{
-			_CellMap = CellMap;
+			return GameManager::GetManager()->GetEnemyManager()->GetCellMap(m_MapKey);
 		}
 
 	protected:
@@ -133,9 +168,8 @@ namespace basecross
 		//ステートマシン
 		unique_ptr<StateMachine<EnemyBase>> m_SteteMachine;
 
-		//ステージセルマップ
-		static weak_ptr<StageCellMap> _CellMap;
-
+		//
+		wstring m_MapKey;
 		//unique_ptr<EnemyParam>pImpl;
 		//TODO
 				//Position

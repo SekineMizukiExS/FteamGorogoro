@@ -395,50 +395,88 @@ namespace basecross
 	//-------------------------------------------------------------------------
 	NumberSprite::NumberSprite(
 		const shared_ptr<Stage>& stagePtr,
+		const shared_ptr<GameObject>& TargetObjPtr,
 		const wstring& textureKey,
 		bool trace,
-		const Vec3& startPos,
-		const float halfSizeX,
-		const float halfSizeY,
-		const int m_drawNumber
+		size_t DrawNum
 	) :
 		GameObject(stagePtr),
-		m_textureKey(textureKey),
+		m_TargetObject(TargetObjPtr),
+		m_TexKey(textureKey),
 		m_trace(trace),
-		m_startScale(Vec2(1.0f)),
-		m_startPos(startPos),
-		m_halfSizeX(halfSizeX),
-		m_halfSizeY(halfSizeY)
+		m_Number(DrawNum)
 	{}
 
 	void NumberSprite::OnCreate()
 	{
+		auto PtrTransform = GetComponent<Transform>();
+		if (!m_TargetObject.expired()) {
+			auto SeekPtr = m_TargetObject.lock();
+			auto SeekTransPtr = SeekPtr->GetComponent<Transform>();
+			auto Pos = SeekTransPtr->GetPosition();
+			Pos.y += 0.75f;
+			PtrTransform->SetPosition(Pos);
+			PtrTransform->SetScale(1.0f, 1.0f, 1.0f);
+			PtrTransform->SetQuaternion(SeekTransPtr->GetQuaternion());
+			//変更できるスクエアリソースを作成
 
-		//インデックス配列
-		vector<uint16_t> indices = { 0, 1, 2, 1, 3, 2 };
-		SetAlphaActive(m_trace);
-		auto ptrTransform = GetComponent<Transform>();
-		ptrTransform->SetScale(m_startScale.x, m_startScale.y, 1.0f);
-		ptrTransform->SetRotation(0, 0, 0);
-		ptrTransform->SetPosition(m_startPos.x, m_startPos.y, 0.0f);
+			//頂点配列
+			vector<VertexPositionNormalTexture> vertices;
+			//インデックスを作成するための配列
+			vector<uint16_t> indices;
+			//Squareの作成(ヘルパー関数を利用)
+			MeshUtill::CreateSquare(1.0f, vertices, indices);
+			//UV値の変更
+			float from = ((float)m_Number) / 10.0f;
+			float to = from + (1.0f / 10.0f);
+			//左上頂点
+			vertices[0].textureCoordinate = Vec2(from, 0);
+			//右上頂点
+			vertices[1].textureCoordinate = Vec2(to, 0);
+			//左下頂点
+			vertices[2].textureCoordinate = Vec2(from, 1.0f);
+			//右下頂点
+			vertices[3].textureCoordinate = Vec2(to, 1.0f);
+			//頂点の型を変えた新しい頂点を作成
+			vector<VertexPositionColorTexture> new_vertices;
+			for (auto& v : vertices) {
+				VertexPositionColorTexture nv;
+				nv.position = v.position;
+				nv.color = Col4(1.0f, 1.0f, 1.0f, 1.0f);
+				nv.textureCoordinate = v.textureCoordinate;
+				new_vertices.push_back(nv);
+			}
+			//新しい頂点を使ってメッシュリソースの作成
+			m_SquareMeshResource = MeshResource::CreateMeshResource<VertexPositionColorTexture>(new_vertices, indices, true);
 
-		//頂点とインデックスを指定してスプライト作成
-		auto ptrDraw = AddComponent<PCTSpriteDraw>(m_vertices, indices);
-		ptrDraw->SetSamplerState(SamplerState::LinearWrap);
-		ptrDraw->SetTextureResource(m_textureKey);
+			auto DrawComp = AddComponent<PCTStaticDraw>();
+			DrawComp->SetMeshResource(m_SquareMeshResource);
+			DrawComp->SetTextureResource(m_TexKey);
+			SetAlphaActive(true);
+			SetDrawLayer(1);
+		}
 	}
 	void NumberSprite::OnUpdate()
 	{
-		float UVx_left = 0 + (float)m_drawNumber / 10.0f;
-		float UVx_right = 0.1f + (float)m_drawNumber / 10.0f;
-		vector<VertexPositionColorTexture> tempVertices = {
-			{ VertexPositionColorTexture(Vec3(-m_halfSizeX, m_halfSizeY, 0),Col4(1.0f,1.0f,1.0f,1.0f), Vec2(UVx_left, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_halfSizeX, m_halfSizeY, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(UVx_right, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(-m_halfSizeX, -m_halfSizeY, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(UVx_left, 1.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_halfSizeX, -m_halfSizeY, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(UVx_right, 1.0f)) },
-		};
-		auto ptrDraw = GetComponent<PCTSpriteDraw>();
-		ptrDraw->UpdateVertices(tempVertices);
+		if (!m_TargetObject.expired()) {
+			auto SeekPtr = m_TargetObject.lock();
+			auto SeekTransPtr = SeekPtr->GetComponent<Transform>();
+
+			auto PtrTransform = GetComponent<Transform>();
+			auto Pos = SeekTransPtr->GetPosition();
+			Pos.y += 1.5f;
+			PtrTransform->SetPosition(Pos);
+			PtrTransform->SetScale(1.0f, 1.0f, 1.0f);
+
+			auto PtrCamera = GetStage()->GetView()->GetTargetCamera();
+
+			Quat Qt;
+			//向きをビルボードにする
+			Qt = Billboard(PtrCamera->GetAt() - PtrCamera->GetEye());
+
+			PtrTransform->SetQuaternion(Qt);
+
+		}
 	}
 
 }
