@@ -229,11 +229,6 @@ namespace basecross {
 
 		_MView = CreateView <MultiView>();
 
-		//サブカメラ
-		auto SubCamera = ObjectFactory::Create<Camera>();
-		_SubCametaIndex = _MView->AddView(Sub, SubCamera);
-		SubCamera->SetEye(eye[3]);
-		SubCamera->SetAt(at);
 
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>();
@@ -250,6 +245,12 @@ namespace basecross {
 		PtrCamera->SetTargetObject(ptrPlayer);
 		PtrCamera->SetMinArm(1.0f);
 		PtrCamera->SetMaxArm(50.0f);
+
+		//サブカメラ
+		auto SubCamera = ObjectFactory::Create<Camera>();
+		_SubCametaIndex = _MView->AddView(Sub, SubCamera);
+		SubCamera->SetEye(eye[3]);
+		SubCamera->SetAt(at);
 
 		//イベントカメラのView作成
 		_EventView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
@@ -285,10 +286,11 @@ namespace basecross {
 		//ゲームオブジェクトビルダー
 		GameObjecttXMLBuilder Builder;
 		//ゲームオブジェクトの登録
-		Builder.Register<StageObjectsLoopTex>(L"FixedObject");
-		//Builder.Register<StageObjects>(L"BridgeObj");
-		//Builder.Register<StageObjects>(L"WarpObj");
-		Builder.Register<LoadBlock>(L"LoadBlock");
+		Builder.Register<StageObjectsLoopTex>(L"FixedGround");
+		Builder.Register<StageObjects>(L"FixedObject");
+		Builder.Register<LoadBlock>(L"LoadObject");
+		Builder.Register<MovingObject>(L"PairObject");
+		Builder.Register<SwitchObject>(L"SwitchObject");
 		Builder.Register<EnemyCellMap>(L"EnemyCellMap");
 		Builder.Register<ToyGuards>(L"Test");
 		wstring DataDir;
@@ -354,6 +356,11 @@ namespace basecross {
 			SetMapCost();
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
+			AddGameObject<EventCameraMan>();
+
+			//BGMの再生
+			auto AM = App::GetApp()->GetXAudio2Manager();
+			AM->Start(L"MainBGM_SD", XAUDIO2_LOOP_INFINITE, 0.25f);
 		}
 		catch (...) {
 			throw;
@@ -380,6 +387,38 @@ namespace basecross {
 		StageBase::OnDraw();
 	}
 
+	void MainGameStage::OnDestroy()
+	{
+	}
+
+	void MainGameStage::ToEventCamera() {
+		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+		//ObjCameraに変更
+		auto ptrCameraman = GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
+		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
+		ptrCameraman->GetComponent<Transform>()->SetPosition(ptrMyCamera->GetEye());
+		ptrCameraman->SetAtPos(ptrMyCamera->GetAt());
+		auto ptrObjCamera = dynamic_pointer_cast<EventCamera>(_EventView->GetCamera());
+		if (ptrObjCamera) {
+			ptrObjCamera->SetCameraObject(ptrCameraman);
+			//m_ObjCameraViewを使う
+			SetView(_EventView);
+			_Camera = SelectCamera::pEventCamera;
+		}
+	}
+
+	void MainGameStage::ToMyCamera()
+	{
+		//MyCameraに変更
+		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
+		if (ptrMyCamera) {
+			//m_MyCameraViewを使う
+			SetView(_MView);
+			_Camera = SelectCamera::pMyCamera;
+		}
+
+	}
+
 	//--------------------------------------------------------------------------------------
 	//Movieクラス
 	//--------------------------------------------------------------------------------------
@@ -394,7 +433,7 @@ namespace basecross {
 		MovieStage::SetAutoRepeat(false);
 		//再生
 		Play();
-		GameManager::GetManager()->LoadStart(StageType::TitleStage);
+		GameManager::GetManager()->LoadStart();
 	}
 
 	void MyMovieStage::OnUpdate()
@@ -403,7 +442,7 @@ namespace basecross {
 
 		if (/*(MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&*/GameManager::GetManager()->GetLoadEnd())
 		{
-			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 		}
 	}
 

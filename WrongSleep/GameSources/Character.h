@@ -330,8 +330,41 @@ namespace basecross{
 		virtual void OnUpdate() override {}
 	};
 
+	//-----------------------------------------------------------------
+	//オープニングカメラマンクラス
+	//-----------------------------------------------------------------
+	class OpeningCameraMan :public GameObject
+	{
+	public:
+		OpeningCameraMan(const shared_ptr<Stage>&StagePtr, const wstring& FilePath);
 
+		~OpeningCameraMan();
 
+		//void OnCreate()override;
+
+		//void OnUpdate() override;
+
+	private:
+		//ステートマシーン
+		unique_ptr<StateMachine<OpeningCameraMan>> m_StateMachine;
+		struct Impl;
+		unique_ptr<Impl>pImpl;
+	};
+
+	//------------------------------------------------------
+	//オープニングカメラステート
+	//------------------------------------------------------
+	//動く
+	class OPCMoveToPoint :ObjState<OpeningCameraMan>
+	{
+		OPCMoveToPoint(){}
+	public:
+		DECLARE_SINGLETON_INSTANCE(OPCMoveToPoint)
+		void Enter(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Execute(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Exit(const shared_ptr<OpeningCameraMan>&obj)override;
+	};
+	//
 	//-----------------------------------------------------------------
 	//イベント関係オブジェクト宣言
 	//-----------------------------------------------------------------

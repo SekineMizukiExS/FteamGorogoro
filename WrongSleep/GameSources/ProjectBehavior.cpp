@@ -446,7 +446,7 @@ namespace basecross {
 				_CurrntTime = 0.0f;
 			}
 		}
-		dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
+		dynamic_pointer_cast<MainGameStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
 	}
 
 	//TO
@@ -455,7 +455,7 @@ namespace basecross {
 		//èIóπ
 		auto CEye = _EndEyePos;
 		auto CAt = _EndAtPos;
-		auto Camera = dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->GetMyCamera();
+		auto Camera = dynamic_pointer_cast<MainGameStage>(GameManager::GetManager()->GetTargetStage())->GetMyCamera();
 		//äJén
 		_EndEyePos = Camera->GetEye();
 		_EndAtPos = Camera->GetAt();

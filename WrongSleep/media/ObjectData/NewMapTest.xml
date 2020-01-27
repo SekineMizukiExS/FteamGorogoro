@@ -2,23 +2,23 @@
 <root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Stage>
     <StageObjects>
-      <Object Type="FixedObject" Pos="-28,0,-39" Scale="40,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="0,0,21" Scale="99,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="-39,0,39" Scale="21,1,21" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="18,0,-9" Scale="10,1,27" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="40,0,-23" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="40,0,-28" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="40,0,-18" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="-4,0,-33" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="40,0,-6" Scale="15,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="-1,0,-39" Scale="5,1,5" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="1,0,-45" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="8,0,-44.97" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="12,0,-40" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="20,0,-40" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="34,0,-40" Scale="18,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="20,0,-35" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
-      <Object Type="FixedObject" Pos="20,0,-28" Scale="3,1,8" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="-28,0,-39" Scale="40,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="0,0,21" Scale="99,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="-39,0,39" Scale="21,1,21" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="18,0,-9" Scale="10,1,27" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="40,0,-23" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="40,0,-28" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="40,0,-18" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="-4,0,-33" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="40,0,-6" Scale="15,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="-1,0,-39" Scale="5,1,5" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="1,0,-45" Scale="5,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="8,0,-44.97" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="12,0,-40" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="20,0,-40" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="34,0,-40" Scale="18,1,15" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="20,0,-35" Scale="6,1,3" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
+      <Object Type="FixedGround" Pos="20,0,-28" Scale="3,1,8" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
       <Object Type="BridgeObj" Pos="0,0,0" Scale="1,1,1" Rot="0,0,0" MeshKey="Bridge_MD" TexKey="Bridge_TX" />
       <Object Type="WarpObj" Pos="17.52,0.58,1.76" Scale="1,1,1" Rot="0,0,0" MeshKey="WarpPad_MD" TexKey="WarpPad_TX" />
       <Object Type="EnemyCellMap" MapKey="TestMap" MiniPos="-49.5f, -0.5f, -46.5f" PieceSize="3.0f" PieceCountX="35" PieceCountZ="35" DefaultCost ="1"/>

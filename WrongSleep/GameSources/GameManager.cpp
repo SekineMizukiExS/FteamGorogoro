@@ -170,6 +170,8 @@ namespace basecross
 			break;
 			//カットシーン・イベントシーンイベント
 		case basecross::GameEventType::CutScene:
+			//イベント発生地点のKeyを取得する
+			//
 			break;
 			//セーブデータ選沢
 		case basecross::GameEventType::SaveDataIO:
@@ -254,14 +256,14 @@ namespace basecross
 		m_DataIO->WriteDataFile(_CurrntSaveDataPath);
 	}
 
-	void GameManager::LoadStart(const StageType type)
+	void GameManager::LoadStart()
 	{
-		std::thread LoadThread(&GameManager::LoadResource, this, type);
+		std::thread LoadThread(&GameManager::LoadResource, this);
 		LoadThread.detach();
 	}
 
 	//
-	void GameManager::LoadResource(const StageType type)
+	void GameManager::LoadResource()
 	{
 		_mutex.lock();
 		_LoadEnd = false;
@@ -274,19 +276,64 @@ namespace basecross
 		wstring TexturePath = mediaPath + L"Textures/";
 		wstring ModelPath = mediaPath + L"Models/";
 		wstring EffectPath = mediaPath + L"Effect/";
-		wstring SoundPath = mediaPath;
+		wstring BGMPath = mediaPath + L"Sounds/BGM/";
+		wstring SEPath = mediaPath + L"Sounds/SE/";
 
-		switch (type)
-		{
-		case StageType::TitleStage://タイトルステージで使うデータ
-			break;
-		case StageType::GameStage:
-			break;
-		case StageType::LoadStage:
-			break;
-		case StageType::SelectStage:
-			break;
-		}
+		//リソースの読込
+		App::GetApp()->RegisterTexture(L"Test_TX", TexturePath + L"KB.png");
+		App::GetApp()->RegisterTexture(L"LeafMat_TX", TexturePath + L"leafmat_tx.png");
+		App::GetApp()->RegisterTexture(L"LeafMatB_TX", TexturePath + L"leafmatBlack_tx.png");
+		App::GetApp()->RegisterTexture(L"Player_TX", TexturePath + L"Tx_Player.png");
+		App::GetApp()->RegisterTexture(L"Player002_TX", TexturePath + L"Tx_Player002.png");
+		App::GetApp()->RegisterTexture(L"RedApple_TX", TexturePath + L"Tx_RedApple.png");
+		App::GetApp()->RegisterTexture(L"clearG_TX", TexturePath + L"clearGreen.png");
+		App::GetApp()->RegisterTexture(L"clearmat_TX", TexturePath + L"clearmat.png");
+		App::GetApp()->RegisterTexture(L"skybox_TX", TexturePath + L"skybox_tx.png");
+		App::GetApp()->RegisterTexture(L"Title_TX", TexturePath + L"Title-Logo.png");
+
+		App::GetApp()->RegisterTexture(L"Bridge_TX", TexturePath + L"Tx_Bridge.png");
+		App::GetApp()->RegisterTexture(L"Fence_TX", TexturePath + L"Tx_Fence.png");
+		App::GetApp()->RegisterTexture(L"Flower_TX", TexturePath + L"Tx_Flower.png");
+		App::GetApp()->RegisterTexture(L"WarpPad_TX", TexturePath + L"Tx_WarpPad.png");
+		App::GetApp()->RegisterTexture(L"Tree_TX", TexturePath + L"Tx_Tree.png");
+		App::GetApp()->RegisterTexture(L"Pedestal_TX", TexturePath + L"Tx_Pedestal.png");
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", TexturePath + L"number.png");
+		//モデルテクスチャ
+		App::GetApp()->RegisterTexture(L"Button_TX", ModelPath + L"Tx_Button.png");
+
+		auto modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"MatTest.bmf", true);
+		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"PlayerModel.bmf");
+		App::GetApp()->RegisterResource(L"Player_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Player2.bmf");
+		App::GetApp()->RegisterResource(L"Player2_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Mat.bmf", true);
+		App::GetApp()->RegisterResource(L"Mat_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Apple2.bmf", true);
+		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"skyboxObj.bmf", true);
+		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateBoneModelMesh(ModelPath, L"Button.bmf");
+		App::GetApp()->RegisterResource(L"Switch_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_bridge.bmf");
+		App::GetApp()->RegisterResource(L"Bridge_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_Fence.bmf");
+		App::GetApp()->RegisterResource(L"Fence_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_Flower.bmf");
+		App::GetApp()->RegisterResource(L"Flower_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_WarpPad.bmf");
+		App::GetApp()->RegisterResource(L"WarpPad_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_Tree.bmf");
+		App::GetApp()->RegisterResource(L"Tree_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Pedestal.bmf");
+		App::GetApp()->RegisterResource(L"Pedestal_MD", modelMesh);
+
+		App::GetApp()->RegisterResource(L"TestCube", MeshResource::CreateCube(1.0f, true));
+
+		//音素材
+		App::GetApp()->RegisterWav(L"MainBGM_SD", BGMPath + L"MainMusicT.wav");
 
 		_mutex.lock();
 		_LoadEnd = true;

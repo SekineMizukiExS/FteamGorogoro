@@ -351,7 +351,7 @@ namespace basecross {
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
-		void LoadStart(const StageType type);
+		void LoadStart();
 
 		void OnCreate()override;
 
@@ -431,20 +431,20 @@ namespace basecross {
 		@param[in]	セレクトステージ
 		*/
 		//--------------------------------------------------------------------------------------
-		void LoadResource(const StageType type);
+		void LoadResource();
 
 		//Tex
 		void TextureLoad(const wstring& Key, const wstring& TextureFileName, const wstring& TexType = L"WIC")
 		{
 			auto Res = App::GetApp()->RegisterTexture(Key, TextureFileName, TexType);
-			_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
+			//_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
 		}
 
 		//wav
 		void AudioLoad(const wstring& Key, const wstring& WavFileName)
 		{
 			auto Res = App::GetApp()->RegisterWav(Key, WavFileName);
-			_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
+			//_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
 		}
 
 		//Effect
@@ -452,7 +452,7 @@ namespace basecross {
 		{
 			auto EfkInter = App::GetApp()->GetScene<Scene>()->GetEfkInterface();
 			auto Res = App::GetApp()->RegisterEffect(Key, EfkFileName, EfkInter, magnification);
-			_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
+			//_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
 		}
 		//		
 		shared_ptr<EnemyManager> _EnemyManager;

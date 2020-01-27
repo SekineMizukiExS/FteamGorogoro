@@ -142,8 +142,15 @@ namespace basecross {
 		void OnUpdate()override;
 		//•`‰æ
 		void OnDraw()override;
+		//”jŠü
+		void OnDestroy()override;
 
 		bool Test = false;
+
+		void ToMyCamera();
+
+		void ToEventCamera();
+
 	};
 	//--------------------------------------------------------------------------------------
 	//MovieƒNƒ‰ƒX

@@ -207,7 +207,7 @@ namespace basecross{
 		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
 		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 
-		auto MapStr = XmlDocReader::GetAttribute(pNode, L"MapStr");
+		auto MapStr = XmlDocReader::GetAttribute(pNode, L"LoadMapFile");
 		auto TargetPosStr = XmlDocReader::GetAttribute(pNode, L"TargetPosKey");
 		//メッシュ
 		_MeshKey = MeshStr;
@@ -350,8 +350,8 @@ namespace basecross{
 		Coll->SetFixed(true);
 
 		//イベントレシーバー登録
-		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(L"TESTEVENT", GetThis<ObjectInterface>());
-		GameManager::GetManager()->GetGameEventDispatcher()->AddEventReceiverGroup(L"TESTEVENT", GetThis<GameEventInterface>());
+		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(_LinkKey, GetThis<ObjectInterface>());
+		GameManager::GetManager()->GetGameEventDispatcher()->AddEventReceiverGroup(_LinkKey, GetThis<GameEventInterface>());
 	}
 
 	void MovingObject::OnUpdate()
@@ -443,22 +443,18 @@ namespace basecross{
 	SwitchObject::SwitchObject(const shared_ptr<Stage>&stageptr, IXMLDOMNodePtr pNode)
 		:GameObject(stageptr)
 	{
-		//auto MeshStr = XmlDocReader::GetAttribute(pNode, L"Mesh");
-		//auto TexStr = XmlDocReader::GetAttribute(pNode, L"Tex");
-		auto PositionNode = XmlDocReader::GetSelectSingleNode(pNode, L"Pos");
-		auto ScaleNode = XmlDocReader::GetSelectSingleNode(pNode, L"Scale");
-		auto RotetaNode = XmlDocReader::GetSelectSingleNode(pNode, L"Rot");
-		auto RoopNode = XmlDocReader::GetAttribute(pNode, L"IsRoop");
+		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
+		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
+		auto PositionStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		auto RotateStr = XmlDocReader::GetAttribute(pNode, L"Rot");
+		auto RoopNode = XmlDocReader::GetAttribute(pNode, L"MovingType");
 		auto LinkStr = XmlDocReader::GetAttribute(pNode, L"LINKCODE");
-
-		wstring PositionStr = XmlDocReader::GetText(PositionNode);
-		wstring ScaleStr = XmlDocReader::GetText(ScaleNode);
-		wstring RotetaStr = XmlDocReader::GetText(RotetaNode);
 
 		_roop = (bool)_wtoi(RoopNode.c_str());
 		_LinkKey = LinkStr;
 		//メッシュ
-		//_MeshKey = MeshStr;
+		_MeshKey = MeshStr;
 
 		//トークン（カラム）の配列
 		vector<wstring> Tokens;
@@ -482,13 +478,13 @@ namespace basecross{
 		);
 		//Rot
 		Tokens.clear();
-		Util::WStrToTokenVector(Tokens, RotetaStr, L',');
+		Util::WStrToTokenVector(Tokens, RotateStr, L',');
 		//回転は「XM_PIDIV2」の文字列になっている場合がある
 		_Rot.x = (Tokens[0] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[0].c_str());
 		_Rot.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
 		_Rot.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
 
-		//_TexKey = TexStr;
+		_TexKey = TexStr;
 
 	}
 
@@ -496,13 +492,13 @@ namespace basecross{
 	{
 		//形状作成
 		auto DrawComp = AddComponent<PNTStaticDraw>();
-		DrawComp->SetMeshResource(L"Switch_MD");
-		DrawComp->SetTextureResource(L"Button_TX");
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
 
 		auto TransComp = AddComponent<Transform>();
-		TransComp->SetPosition(40, 0.5, -6);
-		TransComp->SetScale(1, 1, 1);
-		TransComp->SetRotation(0, 0, 0);
+		TransComp->SetPosition(_Pos);
+		TransComp->SetScale(_Scal);
+		TransComp->SetRotation(_Rot);
 
 		auto Coll = AddComponent<CollisionObb>();
 		//Coll->SetFixed(true);
@@ -514,8 +510,8 @@ namespace basecross{
 		if (Obj&&!_ActiveFlag)
 		{
 			//PostEvent(0.0f, GetThis<ObjectInterface>(), L"TESTEVENT",L"PushSwitch");
-			_ActiveFlag = true;
-			SendGameEvent(GetThis<GameEventInterface>(), L"TESTEVENT", L"PushSwitch",GameEventType::GimmickAction);
+			_ActiveFlag = _roop ? true : false;
+			SendGameEvent(GetThis<GameEventInterface>(), _LinkKey, L"PushSwitch",GameEventType::GimmickAction);
 		}
 	}
 
@@ -798,6 +794,49 @@ namespace basecross{
 	}
 
 	//-----------------------------------------------------------------
+	//オープニングカメラ関係
+	//-----------------------------------------------------------------
+	//
+	struct OpeningCameraMan::Impl
+	{
+		//CurrntEye
+		Vec3 CurrntEye;
+		//CurrntAt;
+		Vec3 CurrntAt;
+		//ポジションデータ
+		vector<Vec3> PositionDatas;
+
+		Impl(const wstring& FilePath)
+		{
+			auto XMLReader = new XmlDocReader(FilePath);
+			auto CameraPosDatas = XMLReader->GetSelectNodes(L"root/SettingData/CameraPosDatas");
+			long NodeCount = XmlDocReader::GetLength(CameraPosDatas);
+
+			for (long i = 0; i < NodeCount; i++)
+			{
+				auto PosData = XmlDocReader::GetItem(CameraPosDatas, i);
+				
+				vector<Vec3>tokens;
+				tokens.clear();
+				
+			}
+		}
+	};
+
+	OpeningCameraMan::OpeningCameraMan(const shared_ptr<Stage>& StagePtr,const wstring& FilePath)
+		:GameObject(StagePtr),pImpl(make_unique<Impl>(FilePath))
+	{
+
+	}
+
+	OpeningCameraMan::~OpeningCameraMan(){}
+
+	//------------------------------------------------------
+	//オープニングカメラステート
+	//------------------------------------------------------
+	//動く
+
+	//-----------------------------------------------------------------
 	//イベントカメラマンクラス
 	//-----------------------------------------------------------------
 	void EventCameraMan::OnCreate()
@@ -898,7 +937,7 @@ namespace basecross{
 	}
 	void MoveToStartPoint::Exit(const shared_ptr<EventCameraMan>&obj)
 	{
-		obj->GetTypeStage<TestStage>()->ToMyCamera();
+		obj->GetTypeStage<MainGameStage>()->ToMyCamera();
 	}
 
 }

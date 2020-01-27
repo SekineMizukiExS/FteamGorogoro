@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Stage>
+    <StageObjects>
+      <Object Type="FixedObject" Pos="-16.86,1.01,14.6" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="43.89,1.01,25.28" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="38.5,1.01,25.28" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,22.2" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="27.48,1.01,25.28" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,-32.8" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-27,0.32,-39.54" Scale="5,5,5" Rot="0,0,0" MeshKey="Pedestal_MD" TexKey="Pedestal_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="38.21,1.01,5.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="LoadObject" Pos="41.7,0.5,40.9" Scale="5,1,5" Rot="0,0,0" MeshKey="WarpPad_MD" TexKey="WarpPad_TX" LoadMapFile="NewMapTest" TargetPosKey="PlayerStart" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="33.49,1.01,25.28" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,-40.4" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,-24.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,30.7" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="24.16,0.3,42.93" Scale="1.4119,1.4119,1.4119" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="19.71,1.01,5.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-27,0.32,-15" Scale="5,5,5" Rot="0,0,0" MeshKey="Pedestal_MD" TexKey="Pedestal_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,-16" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="32.38,1.01,5.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="49.46,1.01,25.28" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="-16.86,1.01,39" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="26.39,1.01,5.3" Scale="3.0728,3.0728,3.0728" Rot="0,0,0" MeshKey="Tree_MD" TexKey="Tree_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="PairObject" Pos="-3.08,0.89,5.33" Scale="12.449,1,7.2626" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="Pair1" MovingType="3" />
+      <Object Type="SwitchObject" Pos="-35.9,1.8,-26.6" Scale="1,1,1" Rot="0,0,0" MeshKey="Switch_MD" TexKey="Button_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="Pair1" MovingType="0" />
+      <Object Type="FixedObject" Pos="-3.37,0.41,5.47" Scale="6.229366,6.489358,3.700612" Rot="0,0,0" MeshKey="Bridge_MD" TexKey="Bridge_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedGround" Pos="5.96,0,-17.6" Scale="6.492127,1,8.739013" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedGround" Pos="30,0,7.15" Scale="45,1,9.907037" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedGround" Pos="-36,0,3" Scale="45,1,93" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedGround" Pos="30,0,33" Scale="45,1,30.9873" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="FixedObject" Pos="26.11955,0.3000001,45.2" Scale="1.4119,1.4119,1.4119" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+    </StageObjects>
+    <EnemyDatas />
+  </Stage>
+  <settingData>
+    <posDatas>
+      <SetPosData Type="PlayerStart" PosKey="PlayerStart" Position="-39.2,0,34.8" />
+    </posDatas>
+  </settingData>
+</root>
