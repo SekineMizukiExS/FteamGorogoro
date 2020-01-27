@@ -40,9 +40,9 @@ namespace basecross {
 		}
 
 		//èëÇ´èoÇµ
-		void WriteDataFile(const wstring& FilePath);
+		void WriteDataFile(const wstring& SelectNode);
 		//ì«çû
-		SaveData ReadDataFile(const wstring& FilePath);
+		SaveData ReadDataFile(const wstring& SelectNode);
 
 		void Test(const wstring& FilePath, const wstring& LoadName)
 		{
@@ -72,7 +72,7 @@ namespace basecross {
 
 		const SaveData GetCurrntSaveData()const { return m_Data; }
 
-		void SetSaveParam(const wstring XMLFileName, const wstring LoadName, const float times)
+		void SetSaveParam(const wstring& XMLFileName, const wstring& LoadName, const float &times)
 		{
 			m_XMLFileName = XMLFileName;
 			m_LoadFileName = LoadName;

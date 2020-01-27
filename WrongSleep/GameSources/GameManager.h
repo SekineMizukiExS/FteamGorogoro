@@ -21,6 +21,10 @@ namespace basecross {
 		//累計プレイ時間
 		float CumulativeTime;
 
+		SaveData(){}
+		SaveData(const wstring& MapName, const wstring& LoadBlock, const float& Time)
+			:LastMapName(MapName), LastLoadBlock(LoadBlock), CumulativeTime(Time)
+		{}
 	};
 
 	//ゲームイベントタイプ
@@ -396,12 +400,12 @@ namespace basecross {
 			_TargetStage = stage;
 		}
 
-		void SetXMLFilePath(const wstring FilePath)
+		void SetXMLFilePath(const wstring &FilePath)
 		{
 			_XMLFileName = FilePath;
 		}
 
-		void SetLoadPosKey(const wstring PosKey)
+		void SetLoadPosKey(const wstring &PosKey)
 		{
 			_LoadPosKey = PosKey;
 		}

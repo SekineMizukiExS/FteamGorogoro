@@ -148,9 +148,9 @@ namespace basecross {
 	//スプライトの作成
 	void LoadStage::CreateLoadSprite() 
 	{
-		auto Obj1 = AddGameObject<SaveDataObject>(L"SaveDatas/Data01.SVD", L"DEFAULT_CUBE", L"clearmat_TX", Vec3(-3, 0,0), Vec3(2, 2, 2), Vec3(0, 0, 0));
-		auto Obj2 = AddGameObject<SaveDataObject>(L"SaveDatas/Data02.SVD", L"DEFAULT_CUBE", L"clearmat_TX", Vec3(0, 0, 0), Vec3(2, 2, 2), Vec3(0, 0, 0));
-		auto Obj3 = AddGameObject<SaveDataObject>(L"SaveDatas/Data03.SVD", L"DEFAULT_CUBE", L"clearmat_TX", Vec3(3, 0, 0), Vec3(2, 2, 2), Vec3(0, 0, 0));
+		auto Obj1 = AddGameObject<SaveDataObject>(L"root/SaveData1", L"DEFAULT_CUBE", L"clearmat_TX", Vec3(-3, 0,0), Vec3(2, 2, 2), Vec3(0, 0, 0));
+		auto Obj2 = AddGameObject<SaveDataObject>(L"root/SaveData2", L"DEFAULT_CUBE", L"clearmat_TX", Vec3(0, 0, 0), Vec3(2, 2, 2), Vec3(0, 0, 0));
+		auto Obj3 = AddGameObject<SaveDataObject>(L"root/SaveData3", L"DEFAULT_CUBE", L"clearmat_TX", Vec3(3, 0, 0), Vec3(2, 2, 2), Vec3(0, 0, 0));
 		AddGameObject<NumberSprite>(Obj1, L"NUMBER_TX", true, 1);
 		AddGameObject<NumberSprite>(Obj2, L"NUMBER_TX", true, 2);
 		AddGameObject<NumberSprite>(Obj3, L"NUMBER_TX", true, 3);

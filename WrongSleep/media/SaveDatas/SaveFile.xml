@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<SaveData1 MapDataFile="NewMapTest" LoadBlockData="PlayerStart" AllTime="0.000"/>
+	<SaveData2 MapDataFile="TStageMap" LoadBlockData="PlayerStart" AllTime="0.000"/>
+	<SaveData3 MapDataFile="TStageMap" LoadBlockData="PlayerStart" AllTime="0.000"/>
+</root>

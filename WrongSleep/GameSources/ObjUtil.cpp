@@ -53,131 +53,89 @@ namespace basecross {
 	//------------------------------------------------------
 	//セーブデータ入出力クラス
 	//------------------------------------------------------
-	void DataBinaryIO::WriteDataFile(const wstring& FilePath)
+	void DataBinaryIO::WriteDataFile(const wstring& SelectNode)
 	{
+		//wstring MediaPath;
+		//App::GetApp()->GetDataDirectory(MediaPath);
+		//MediaPath = MediaPath + FilePath;
+		//ofstream ifs(MediaPath,ios::binary|ios::out);
+		//if (!ifs.bad())
+		//{
+		//	//m_Data.LastMapName = L"TTSTSTSTS";
+		//	//m_Data.LastLoadBlock = L"jihs";
+		//	//m_Data.CumulativeTime = m_Time;
+		//	//m_XMLFileName = L"LLLPS";
+		//	//m_LoadFileName = L"MEMIN";
+		//	//m_Time = 2.0f;
+		//	//ifs.write((const wchar_t*)&m_Data, sizeof(m_Data));
+		//	DataHeader FileName;
+		//	ZeroMemory(&FileName, sizeof(DataHeader));
+		//	FileName.Type = DataType::FileName;
+		//	auto Size = ((UINT)m_XMLFileName.size()+1 *sizeof(wchar_t));
+		//	FileName.Size = Size;
+		//	ifs.write((const char*)&FileName, sizeof(DataHeader));
+		//	ifs.write((const char*)m_XMLFileName.c_str(), Size);
+
+		//	DataHeader LoadName;
+		//	ZeroMemory(&LoadName, sizeof(DataHeader));
+		//	LoadName.Type = DataType::PointName;
+		//	auto Size1 = ((UINT)m_LoadFileName.size()+1 * sizeof(wchar_t));
+		//	LoadName.Size = Size1;
+		//	ifs.write((const char*)&LoadName, sizeof(DataHeader));
+		//	ifs.write((const char*)m_LoadFileName.c_str(), Size1);
+
+		//	DataHeader TimeName;
+		//	ZeroMemory(&TimeName, sizeof(DataHeader));
+		//	TimeName.Type = DataType::Time;
+		//	auto Size2 = (UINT)sizeof(float);
+		//	TimeName.Size = Size2;
+		//	ifs.write((const char*)&TimeName, sizeof(DataHeader));
+		//	ifs.write((const char*)&m_Time, Size2);
+		//	//ifs.write(m_LoadFileName.c_str(),m_LoadFileName.size()+1);
+		//	//ifs.write((wchar_t*)&m_Time, sizeof(m_Time));
+
+		//	//読み込み
+
+		//	//終了
+		//	ifs.close();
+		//}
+		//else
+		//{
+		//	MessageBox(0, L"FALED:LOADFILE", 0, 0);
+		//}
+
+		//XML
 		wstring MediaPath;
 		App::GetApp()->GetDataDirectory(MediaPath);
-		MediaPath = MediaPath + FilePath;
+		const wstring SaveDataFile = MediaPath + L"SaveDatas/SaveFile.xml";
+		auto XMLWriter = new XmlDoc(SaveDataFile);
 
-		ofstream ifs(MediaPath,ios::binary|ios::out);
-		if (!ifs.bad())
-		{
-			//m_Data.LastMapName = L"TTSTSTSTS";
-			//m_Data.LastLoadBlock = L"jihs";
-			//m_Data.CumulativeTime = m_Time;
-			//m_XMLFileName = L"LLLPS";
-			//m_LoadFileName = L"MEMIN";
-			//m_Time = 2.0f;
-			//ifs.write((const wchar_t*)&m_Data, sizeof(m_Data));
-			DataHeader FileName;
-			ZeroMemory(&FileName, sizeof(DataHeader));
-			FileName.Type = DataType::FileName;
-			auto Size = ((UINT)m_XMLFileName.size()+1 *sizeof(wchar_t));
-			FileName.Size = Size;
-			ifs.write((const char*)&FileName, sizeof(DataHeader));
-			ifs.write((const char*)m_XMLFileName.c_str(), Size);
+		IXMLDOMNodePtr Node;
+		Node = XMLWriter->GetSelectSingleNode(SelectNode.c_str());
+		XMLWriter->SetAttribute(Node, L"MapDataFile", m_XMLFileName.c_str());
 
-			DataHeader LoadName;
-			ZeroMemory(&LoadName, sizeof(DataHeader));
-			LoadName.Type = DataType::PointName;
-			auto Size1 = ((UINT)m_LoadFileName.size()+1 * sizeof(wchar_t));
-			LoadName.Size = Size1;
-			ifs.write((const char*)&LoadName, sizeof(DataHeader));
-			ifs.write((const char*)m_LoadFileName.c_str(), Size1);
-
-			DataHeader TimeName;
-			ZeroMemory(&TimeName, sizeof(DataHeader));
-			TimeName.Type = DataType::Time;
-			auto Size2 = (UINT)sizeof(float);
-			TimeName.Size = Size2;
-			ifs.write((const char*)&TimeName, sizeof(DataHeader));
-			ifs.write((const char*)&m_Time, Size2);
-			//ifs.write(m_LoadFileName.c_str(),m_LoadFileName.size()+1);
-			//ifs.write((wchar_t*)&m_Time, sizeof(m_Time));
-
-			//読み込み
-
-			//終了
-			ifs.close();
-		}
-		else
-		{
-			MessageBox(0, L"FALED:LOADFILE", 0, 0);
-		}
-
-
+		XMLWriter->SetAttribute(Node, L"LoadBlockData", m_LoadFileName.c_str());
+		auto TimeStr = Util::FloatToWStr(m_Time, 3, Util::Fixed);
+		XMLWriter->SetAttribute(Node, L"AllTime", TimeStr.c_str());
+		XMLWriter->Save(SaveDataFile);
 	}
 
-	SaveData DataBinaryIO::ReadDataFile(const wstring& FilePath)
+	SaveData DataBinaryIO::ReadDataFile(const wstring& SelectNode)
 	{
 		wstring MediaPath;
 		App::GetApp()->GetDataDirectory(MediaPath);
-		MediaPath = MediaPath + FilePath;
+		const wstring SaveDataFile = MediaPath + L"SaveDatas/SaveFile.xml";
 
-		ifstream file;
-		file.open(MediaPath, ios::binary | ios::in);
-		if (file)
-		{
-			//メモリの確保
-			SaveData Output = {};
-			
-			DataHeader Test;
-			file.seekg(0, ios::end);
-			size_t AllSize = (size_t)file.tellg();
-			file.seekg(0, ios::beg);
+		auto XMLRead = new XmlDocReader(SaveDataFile);
+		auto Node = XMLRead->GetSelectSingleNode(SelectNode.c_str());
 
-			while(AllSize!=(size_t)file.tellg()) {
-				ZeroMemory(&Test, sizeof(DataHeader));
+		m_XMLFileName = XmlDocReader::GetAttribute(Node, L"MapDataFile");
+		m_LoadFileName = XmlDocReader::GetAttribute(Node, L"LoadBlockData");
+		auto TimeStr = XmlDocReader::GetAttribute(Node, L"AllTime");
 
-				file.read((char*)&Test, sizeof(DataHeader));
+		m_Time = (float)_wtof(TimeStr.c_str());
 
-				switch (Test.Type)
-				{
-				case DataType::FileName:
-					ZeroMemory(&m_XMLFileName, Test.Size);
-					file.read((char*)&m_XMLFileName, Test.Size);
-					//m_XMLFileName.resize((Test.Size / 2)+1);
-					break;
-				case DataType::PointName:
-					ZeroMemory(&m_LoadFileName, Test.Size);
-					file.read((char*)&m_LoadFileName, Test.Size);
-					break;
-				case DataType::Time:
-					ZeroMemory(&m_Time, sizeof(float));
-					file.read((char*)&m_Time, Test.Size);
-					break;
-				default:
-					break;
-				}
-			}
-			
-			//ファイルのサイズを調べる
-
-			//file.read((wchar_t*)&Output, size);
-
-			//読み込み
-			//file.read((wchar_t*)&m_XMLFileName,sizeof(m_XMLFileName));
-			//file.read((wchar_t*)&m_LoadFileName, sizeof(m_LoadFileName));
-			//file.read((wchar_t*)&m_Time, sizeof(m_Time));
-
-			//Output.LastMapName = m_XMLFileName;
-			//Output.LastLoadBlock = m_LoadFileName;
-			//Output.CumulativeTime = m_Time;
-			memcpy(&Output.LastMapName, &m_XMLFileName, sizeof(m_XMLFileName));
-			memcpy(&Output.LastLoadBlock, &m_LoadFileName, sizeof(m_LoadFileName));
-			memcpy(&Output.CumulativeTime, &m_Time, sizeof(m_Time));
-			//終了
-			file.close();
-
-			return Output;
-		}
-		else
-		{
-			SaveData Result;
-			Result.LastMapName = L"TStageMap";
-			Result.LastLoadBlock = L"PlayerStart";
-			Result.CumulativeTime = 0.0f;
-			return Result;
-		}
+		SaveData result(m_XMLFileName, m_LoadFileName, m_Time);
+		return result;
 	}
 }
