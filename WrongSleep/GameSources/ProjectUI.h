@@ -238,37 +238,42 @@ namespace basecross
 	class NumberSprite : public GameObject {
 	protected:
 		bool m_trace;
-		Vec2 m_startScale;
-		Vec3 m_startPos;
-		wstring m_textureKey;
-		float m_halfSizeX;//横幅
-		float m_halfSizeY;//縦幅
-		int m_drawNumber;//表示する数字
-		//バックアップ頂点データ
-		vector<VertexPositionColor>  vertices;
 
-		//頂点配列（縦横５個ずつ表示）
-		vector<VertexPositionColorTexture> m_vertices = {
-			{ VertexPositionColorTexture(Vec3(-m_halfSizeX, m_halfSizeY, 0),Col4(1.0f,1.0f,1.0f,1.0f), Vec2(0.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_halfSizeX, m_halfSizeY, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(1.0f, 0.0f)) },
-			{ VertexPositionColorTexture(Vec3(-m_halfSizeX, -m_halfSizeY, 0), Col4(1.0f, 1.0f, 1.0f, 1.0f), Vec2(0.0f, 1.0f)) },
-			{ VertexPositionColorTexture(Vec3(m_halfSizeX, -m_halfSizeY, 0), Col4(1.0f, 1.0f, 1.0, 1.0f), Vec2(1.0f, 1.0f)) },
-		};
+		wstring m_TexKey;
+
+		weak_ptr<GameObject> m_TargetObject;
+		//このオブジェクトのみで使用するスクエアメッシュ
+		shared_ptr<MeshResource> m_SquareMeshResource;
+		//背番号
+		size_t m_Number;
+
+		Quat Billboard(const Vec3& Line) {
+			Vec3 Temp = Line;
+			Mat4x4 RotMatrix;
+			Vec3 DefUp(0, 1.0f, 0);
+			Vec2 TempVec2(Temp.x, Temp.z);
+			if (TempVec2.length() < 0.1f) {
+				DefUp = Vec3(0, 0, 1.0f);
+			}
+			Temp.normalize();
+			RotMatrix = XMMatrixLookAtLH(Vec3(0, 0, 0), Temp, DefUp);
+			RotMatrix.inverse();
+			Quat Qt;
+			Qt = RotMatrix.quatInMatrix();
+			Qt.normalize();
+			return Qt;
+		}
+
 	public:
 		NumberSprite(
 			const shared_ptr<Stage>& stagePtr,
+			const shared_ptr<GameObject>& TargetObjPtr,
 			const wstring& textureKey,
 			bool trace,
-			const Vec3& startPos,
-			const float halfSizeX,
-			const float halfSizeY,
-			const int m_drawNumber
+			size_t DrawNum
 		);
 		virtual	~NumberSprite() {}
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		void SetNumber(int n) {
-			m_drawNumber = n;
-		};
 	};
 }

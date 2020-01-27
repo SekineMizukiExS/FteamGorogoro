@@ -21,17 +21,17 @@
       <Object Type="FixedObject" Pos="20,0,-28" Scale="3,1,8" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMatB_TX" />
       <Object Type="BridgeObj" Pos="0,0,0" Scale="1,1,1" Rot="0,0,0" MeshKey="Bridge_MD" TexKey="Bridge_TX" />
       <Object Type="WarpObj" Pos="17.52,0.58,1.76" Scale="1,1,1" Rot="0,0,0" MeshKey="WarpPad_MD" TexKey="WarpPad_TX" />
+      <Object Type="EnemyCellMap" MapKey="TestMap" MiniPos="-49.5f, -0.5f, -46.5f" PieceSize="3.0f" PieceCountX="35" PieceCountZ="35" DefaultCost ="1"/>
     </StageObjects>
     <EnemyDatas>
-      <EnemyData Type="Test" Pos="-43.94,1,30.3" Scale="2,2,2" Rot="0,0,0" MeshKey="TestCube" TexKey="clearmat_TX">
+      <EnemyData Type="Test" MapKey = "TestMap" Pos="-43.94,1,30.3" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX">
         <ObjParam State="Wait" />
         <MovePoint>
           <Point>
-            <POINTDATA Pos="-43.94,1,-37.8" TravelingB="4" TravelingA="1" />
-            <POINTDATA Pos="44.8,0,20.9" TravelingB="0" TravelingA="2" />
-            <POINTDATA Pos="18.2,0,20.6" TravelingB="1" TravelingA="3" />
-            <POINTDATA Pos="-41,0,20.3" TravelingB="2" TravelingA="4" />
-            <POINTDATA Pos="-41,0,44.8" TravelingB="3" TravelingA="0" />
+            <POINTDATA Pos="44.8,0,20.9" TravelingB="3" TravelingA="1" />
+            <POINTDATA Pos="18.2,0,20.6" TravelingB="0" TravelingA="2" />
+            <POINTDATA Pos="-41,0,20.3" TravelingB="1" TravelingA="3" />
+            <POINTDATA Pos="-41,0,44.8" TravelingB="2" TravelingA="0" />
           </Point>
         </MovePoint>
       </EnemyData>

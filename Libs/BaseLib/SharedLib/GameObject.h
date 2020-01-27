@@ -1204,6 +1204,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class StageCellMap : public GameObject {
 	public:
+		StageCellMap(const shared_ptr<Stage>& StagePtr);
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief	コンストラクタ
@@ -1323,6 +1324,14 @@ namespace basecross {
 		*/
 		//--------------------------------------------------------------------------------------
 		virtual void OnDraw() override;
+		//--------------------------------------------------------------------------------------
+		/*!
+		@brief CellMapを作成する
+		@return	なし
+		*/
+		//--------------------------------------------------------------------------------------
+		virtual void CreateCellMap(const bsm::Vec3& MiniPos,
+			float PieceSize, UINT PieceCountX, UINT PieceCountZ, int DefaultCost = 1);
 	private:
 		//Implイディオム
 		struct Impl;

@@ -23,6 +23,12 @@ namespace basecross{
 			//エフェクトインターフェイス生成
 			_EfkInterface = ObjectFactory::Create<EfkInterface>();
 			GameManager::CreateManager();
+			//GameManager::GetManager()->GetDataIO()->SetSaveParam(L"TSET", L"SSSKD", 55.0f);
+			//wstring MediaPath;
+			//App::GetApp()->GetDataDirectory(MediaPath);
+			//MediaPath += L"SaveDatas/Test1.Test";
+			//GameManager::GetManager()->GetDataIO()->Test(MediaPath,L"OOLS");
+
 			SetUnionTextures();
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 		}
@@ -52,7 +58,7 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"WarpPad_TX", mediaPath + L"Textures/" + L"Tx_WarpPad.png");
 		App::GetApp()->RegisterTexture(L"Tree_TX", mediaPath + L"Textures/" + L"Tx_Tree.png");
 		App::GetApp()->RegisterTexture(L"Pedestal_TX", mediaPath + L"Textures/" + L"Tx_Pedestal.png");
-
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", mediaPath + L"Textures/" + L"number.png");
 		//モデルテクスチャ
 		App::GetApp()->RegisterTexture(L"Button_TX", mediaPath + L"Models/" + L"Tx_Button.png");
 
@@ -113,6 +119,11 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<TitleStage>();
+			return;
+		}
+		else if (event->m_MsgStr == L"ToLoadStage")
+		{
+			ResetActiveStage<LoadStage>();
 			return;
 		}
 		else if (event->m_MsgStr == L"ToMainGameStage")

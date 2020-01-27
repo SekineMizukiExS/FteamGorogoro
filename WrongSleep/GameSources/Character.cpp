@@ -62,6 +62,7 @@ namespace basecross{
 		//vector<VertexPositionColorTexture>& verteces = {};
 		//DrawComp->SetDrawActive(false);
 
+
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);
 		TransComp->SetRotation(_Rot);
@@ -72,6 +73,46 @@ namespace basecross{
 		//ptrColl->SetDrawActive(true);
 		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
 		Group->IntoGroup(GetThis<StageObjects>());
+	}
+
+	//------------------------------------------------------
+	//SaveData
+	//------------------------------------------------------
+	SaveDataObject::SaveDataObject(const shared_ptr<Stage>&StagePtr, const wstring& SaveDataPath, const wstring& MeshKey, const wstring& TexKey,
+		const Vec3 Pos, const Vec3 Scale, const Vec3 Rotation)
+		:GameObject(StagePtr)
+	{
+		_Pos = Pos;
+		_Scal = Scale;
+		_Rot = Rotation;
+		_MeshKey = MeshKey;
+		_TexKey = TexKey;
+		m_DataPath = SaveDataPath;
+	}
+
+	void SaveDataObject::OnCreate()
+	{
+		auto DrawComp = AddComponent<AreaDraw>();
+		auto TransComp = AddComponent<Transform>();
+
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+
+		TransComp->SetPosition(_Pos);
+		TransComp->SetScale(_Scal);
+		TransComp->SetRotation(_Rot);
+
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(false);
+	}
+
+	void SaveDataObject::OnCollisionEnter(shared_ptr<GameObject>& other)
+	{
+		auto PlayerPtr = dynamic_pointer_cast<Player>(other);
+		if (PlayerPtr)
+		{
+			SendGameEvent(GetThis<GameEventInterface>(), L"LoadData", GameEventType::SaveDataIO);
+		}
 	}
 
 	//
@@ -167,6 +208,7 @@ namespace basecross{
 		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 
 		auto MapStr = XmlDocReader::GetAttribute(pNode, L"MapStr");
+		auto TargetPosStr = XmlDocReader::GetAttribute(pNode, L"TargetPosKey");
 		//ÉÅÉbÉVÉÖ
 		_MeshKey = MeshStr;
 
@@ -201,6 +243,8 @@ namespace basecross{
 		_TexKey = TexStr;
 
 		_MapStr = MapStr;
+
+		_TargetPosStr = TargetPosStr;
 	}
 
 	void LoadBlock::OnCreate()

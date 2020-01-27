@@ -134,6 +134,10 @@ namespace basecross
 		GameEventType type = gameevent->m_Type;
 		shared_ptr<EventCameraMan> ECM;
 		shared_ptr<MovingObject> ER;
+		shared_ptr<LoadBlock> LB;
+		shared_ptr<SaveDataObject> SDObj;
+		wstring DataPath;
+		SaveData DataFile;
 
 		switch (type)
 		{
@@ -159,11 +163,21 @@ namespace basecross
 			break;
 			//ステージ移動イベント
 		case basecross::GameEventType::MoveStage:
+			LB = dynamic_pointer_cast<LoadBlock>(gameevent->m_Sender.lock());
 			GameManager::GetManager()->SetXMLFilePath(gameevent->m_MsgStr);
+			GameManager::GetManager()->SetLoadPosKey(LB->GetTargetPosStr());
 			GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 			break;
 			//カットシーン・イベントシーンイベント
 		case basecross::GameEventType::CutScene:
+			break;
+			//セーブデータ選沢
+		case basecross::GameEventType::SaveDataIO:
+			SDObj = dynamic_pointer_cast<SaveDataObject>(gameevent->m_Sender.lock());
+			DataPath = SDObj->GetSaveDataPath();
+			DataFile = GameManager::GetManager()->GetDataIO()->ReadDataFile(DataPath);
+			GameManager::GetManager()->SetSaveData(DataFile,DataPath);
+			GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 			break;
 		default:
 			break;
@@ -178,10 +192,11 @@ namespace basecross
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
 	//構築と破棄
 	GameManager::GameManager()
-		:_TargetStage(nullptr),_XMLFileName(L"NewMapTest")
+		:_TargetStage(nullptr),_XMLFileName(L"TStageMap"),_LoadPosKey(L"PlayerStart")
 	{
 		_EnemyManager = ObjectFactory::Create<EnemyManager>();
 		m_GameEventDispatcher = make_shared<GameEventDispatcher>();
+		m_DataIO = make_shared<DataBinaryIO>();
 	}
 
 
@@ -231,6 +246,12 @@ namespace basecross
 		if (m_Ins.get()) {
 			m_Ins.reset();
 		}
+	}
+
+	void GameManager::SaveGameData()
+	{
+		m_DataIO->SetSaveParam(_XMLFileName, _LoadPosKey, _CumulativeTime);
+		m_DataIO->WriteDataFile(_CurrntSaveDataPath);
 	}
 
 	void GameManager::LoadStart(const StageType type)
@@ -310,10 +331,9 @@ namespace basecross
 
 	void GameManager::OnEvent(const shared_ptr<Event>&event)
 	{
-		if (event->m_MsgStr == L"EventStart")
+		if (event->m_MsgStr == L"Save")
 		{
-			//auto EventCamera = _TargetStage->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
-			//SendEvent(GetThis<ObjectInterface>(), _TargetStage, L"ChangeCamera");
+			SaveGameData();
 		}
 	}
 

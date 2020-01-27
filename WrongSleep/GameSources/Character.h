@@ -30,13 +30,36 @@ namespace basecross{
 	public:
 		StageObjectsLoopTex(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
 		virtual void OnCreate() override;
-
 	private:
 		wstring _MeshKey;
 		Vec3 _Pos;
 		Vec3 _Scal;
 		Vec3 _Rot;
 		wstring _TexKey;
+	};
+
+	//------------------------------------------------------
+	//SaveData
+	//------------------------------------------------------
+	class SaveDataObject :public GameObject, public GameEventInterface
+	{
+	private:
+		wstring _MeshKey;
+		Vec3 _Pos;
+		Vec3 _Scal;
+		Vec3 _Rot;
+		wstring _TexKey;
+		wstring m_DataPath;
+	public:
+		SaveDataObject(const shared_ptr<Stage>&stage, const wstring& SaveDataPath, const wstring& MeshKey, const wstring& TexKey,
+			const Vec3 Pos, const Vec3 Scale, const Vec3 Rotation);
+
+		virtual void OnCreate() override;
+
+		//ゲッター
+		const wstring &GetSaveDataPath()const { return m_DataPath; }
+
+		void OnCollisionEnter(shared_ptr<GameObject>& other) override;
 	};
 
 	//ロードブロック
@@ -49,6 +72,8 @@ namespace basecross{
 
 		virtual void OnUpdate()override;
 
+		const wstring GetTargetPosStr()const { return _TargetPosStr; }
+
 	private:
 		Vec3 _Pos;
 		Vec3 _Scal;
@@ -58,6 +83,8 @@ namespace basecross{
 
 		//マップファイル名
 		wstring _MapStr;
+
+		wstring _TargetPosStr;
 
 		AABB _SensingArea;
 	};
