@@ -25,6 +25,9 @@ namespace basecross{
 		wstring _TexKey;
 	};
 
+	//------------------------------------------------------
+	//SaveData
+	//------------------------------------------------------
 	class SaveDataObject :public GameObject, public GameEventInterface
 	{
 

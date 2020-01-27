@@ -73,7 +73,9 @@ namespace basecross{
 		Group->IntoGroup(GetThis<StageObjects>());
 	}
 
-	//
+	//------------------------------------------------------
+	//SaveData
+	//------------------------------------------------------
 	SaveDataObject::SaveDataObject(const shared_ptr<Stage>&StagePtr, const wstring& SaveDataPath, const wstring& MeshKey, const wstring& TexKey,
 		const Vec3 Pos, const Vec3 Scale, const Vec3 Rotation)
 		:GameObject(StagePtr)
