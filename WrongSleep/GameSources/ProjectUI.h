@@ -62,7 +62,7 @@ namespace basecross
 	class GameMaskSprite :public GameObject
 	{
 	public:
-		GameMaskSprite(const shared_ptr<Stage>&StagePtr,const wstring MaskTexture,const wstring FadeTexture, bool trace);
+		GameMaskSprite(const shared_ptr<Stage>&StagePtr,const wstring& MaskTexture,const wstring& FadeTexture, bool trace);
 		~GameMaskSprite();
 
 		//‰Šú‰»
@@ -70,8 +70,8 @@ namespace basecross
 		//XV
 		void OnUpdate()override;
 		//•`‰æ
-		//void OnDraw()override;
 
+		void OnEvent(const shared_ptr<Event>&event)override;
 	private:
 		struct Impl;
 		unique_ptr<Impl> pImpl;

@@ -326,6 +326,10 @@ namespace basecross {
 		WORD wReleasedButtons;	///< 離された瞬間を所持するボタン
 		WORD wLastButtons;	///< 一つ前のボタン
 		bool bConnected;	///< 接続しているかどうか
+		
+		//TODO追加
+		WORD wRightvibration; ///<< 右のモータ
+		WORD wLeftvibration; /// << 左モータ
 	};
 	//--------------------------------------------------------------------------------------
 	///キーボードのステータス。マウスのステータスも取得する
@@ -452,6 +456,16 @@ namespace basecross {
 		}
 	};
 
+	struct VBE
+	{
+		float m_AllTime;
+		DWORD Key;
+		DWORD Vol;
+		VBE(const float Time, const DWORD& key,const DWORD&Vol)
+			:m_AllTime(Time),Key(key),Vol(Vol)
+		{}
+	};
+
 	//--------------------------------------------------------------------------------------
 	///	入力機器
 	//--------------------------------------------------------------------------------------
@@ -571,6 +585,7 @@ namespace basecross {
 				}
 			}
 		}
+
 		//	アクセサ
 		//--------------------------------------------------------------------------------------
 		/*!

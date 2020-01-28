@@ -1284,7 +1284,5 @@ namespace basecross {
 	void App::SetMovieAutoRepeat(bool b) {
 		movie::SetMovieAutoRepeat(b);
 	}
-
-
 }
 //end basecross

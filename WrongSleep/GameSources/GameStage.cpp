@@ -119,8 +119,10 @@ namespace basecross {
 
 	void TitleStage::OnUpdate()
 	{
-		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
-		if (Dev.m_bLastKeyTbl['G'])
+		auto Dev = App::GetApp()->GetInputDevice();
+		auto KeyB = Dev.GetKeyState();
+		auto cont = Dev.GetControlerVec()[0];
+		if (KeyB.m_bLastKeyTbl['G']||cont.wButtons == XINPUT_GAMEPAD_START)
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToLoadStage");
 		}
@@ -289,6 +291,7 @@ namespace basecross {
 		Builder.Register<StageObjectsLoopTex>(L"FixedGround");
 		Builder.Register<StageObjects>(L"FixedObject");
 		Builder.Register<LoadBlock>(L"LoadObject");
+		Builder.Register<CommonBox>(L"CommonObject");
 		Builder.Register<MovingObject>(L"PairObject");
 		Builder.Register<SwitchObject>(L"SwitchObject");
 		Builder.Register<EnemyCellMap>(L"EnemyCellMap");
@@ -357,10 +360,10 @@ namespace basecross {
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
 			AddGameObject<EventCameraMan>();
-
+			//AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
 			//BGMの再生
 			auto AM = App::GetApp()->GetXAudio2Manager();
-			AM->Start(L"MainBGM_SD", XAUDIO2_LOOP_INFINITE, 0.25f);
+			m_CurrntBGM = AM->Start(L"MainBGM_SD", XAUDIO2_LOOP_INFINITE, 0.25f);
 		}
 		catch (...) {
 			throw;
@@ -389,6 +392,9 @@ namespace basecross {
 
 	void MainGameStage::OnDestroy()
 	{
+		//BGMを破棄
+		auto MAudio = App::GetApp()->GetXAudio2Manager();
+		MAudio->Stop(m_CurrntBGM);
 	}
 
 	void MainGameStage::ToEventCamera() {
@@ -439,8 +445,8 @@ namespace basecross {
 	void MyMovieStage::OnUpdate()
 	{
 		auto Input = App::GetApp()->GetInputDevice().GetControlerVec()[0];
-
-		if (/*(MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&*/GameManager::GetManager()->GetLoadEnd())
+		
+		if ((MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&GameManager::GetManager()->GetLoadEnd())
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 		}

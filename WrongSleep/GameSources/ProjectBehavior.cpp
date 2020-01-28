@@ -159,7 +159,8 @@ namespace basecross {
 	Vec2 Player::GetInputState() const {
 		Vec2 ret;
 		//コントローラの取得
-		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		auto InputDiv = App::GetApp()->GetInputDevice();
+		auto cntlVec = InputDiv.GetControlerVec();
 		ret.x = 0.0f;
 		ret.y = 0.0f;
 		WORD wButtons = 0;
@@ -168,20 +169,20 @@ namespace basecross {
 			ret.y = cntlVec[0].fThumbLY;
 		}
 		//キーボードの取得(キーボード優先)
-		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
-		if (KeyState.m_bPushKeyTbl['W']) {
+		auto KeyState = InputDiv.GetKeyState();
+		if (KeyState.m_bPushKeyTbl['W']||cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_UP) {
 			//前
 			ret.y = 1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['A']) {
+		else if (KeyState.m_bPushKeyTbl['A'] || cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_LEFT) {
 			//左
 			ret.x = -1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['S']) {
+		else if (KeyState.m_bPushKeyTbl['S'] || cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_DOWN) {
 			//後ろ
 			ret.y = -1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['D']) {
+		else if (KeyState.m_bPushKeyTbl['D'] || cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_RIGHT) {
 			//右
 			ret.x = 1.0f;
 		}

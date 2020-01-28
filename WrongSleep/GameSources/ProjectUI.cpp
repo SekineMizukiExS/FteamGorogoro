@@ -89,10 +89,11 @@ namespace basecross
 		vector<uint16_t> indices;
 		wstring MaskTexture;
 		wstring FadeTexture;
+		float FadeTime;
 		const bool trance;
 		bool ActiveFade;
-		Impl(const wstring MaskTX,const wstring FadeTX,const bool Trance)
-			:MaskTexture(MaskTX),FadeTexture(FadeTX),trance(Trance),ActiveFade(false)
+		Impl(const wstring &MaskTX, const wstring &FadeTX, const bool Trance)
+			:MaskTexture(MaskTX), FadeTexture(FadeTX), trance(Trance), ActiveFade(false), FadeTime(0.0f)
 		{
 			float Sizex = (float)App::GetApp()->GetGameWidth() / 2.0f;
 			float Sizey = (float)App::GetApp()->GetGameHeight() / 2.0f;
@@ -110,7 +111,7 @@ namespace basecross
 	};
 
 	//構築と破棄
-	GameMaskSprite::GameMaskSprite(const shared_ptr<Stage>&StagePtr, const wstring MaskTexture, const wstring FadeTexture,bool trance)
+	GameMaskSprite::GameMaskSprite(const shared_ptr<Stage>&StagePtr, const wstring &MaskTexture, const wstring &FadeTexture,bool trance)
 		:GameObject(StagePtr),pImpl(make_unique<Impl>(MaskTexture, FadeTexture, trance))
 	{}
 
@@ -132,16 +133,28 @@ namespace basecross
 
 	void GameMaskSprite::OnUpdate()
 	{
+		const float MaxFadeTime = 5.0f;
 		auto DrawComp = GetComponent<MaskDraw>();
 		MaskParamB MK;
 		MK.param_f.x = 0.0f;
 		DrawComp->UpdateParam(MK);
+		//if (true)
+		//{
+		//	if (MaxFadeTime > pImpl->FadeTime)
+		//	{
+		//		pImpl->FadeTime += MaxFadeTime/App::GetApp()->GetElapsedTime();
+		//	}
+		//	DrawComp->UpdateParam(MK);
+		//}
 	}
 
-	//void GameMaskSprite::OnDraw()
-	//{
-
-	//}
+	void GameMaskSprite::OnEvent(const shared_ptr<Event>&event)
+	{
+		if (event->m_MsgStr == L"FadeStart")
+		{
+			pImpl->ActiveFade = true;
+		}
+	}
 
 	//-------------------------------------------------------------------------
 	//アニメーションスプライト

@@ -510,7 +510,7 @@ namespace basecross{
 		if (Obj&&!_ActiveFlag)
 		{
 			//PostEvent(0.0f, GetThis<ObjectInterface>(), L"TESTEVENT",L"PushSwitch");
-			_ActiveFlag = _roop ? true : false;
+			_ActiveFlag = true;
 			SendGameEvent(GetThis<GameEventInterface>(), _LinkKey, L"PushSwitch",GameEventType::GimmickAction);
 		}
 	}
@@ -716,6 +716,41 @@ namespace basecross{
 		_TexKey(TexKey),
 		_MeshKey(MeshKey)
 	{
+	}
+
+	//Builder
+	CommonBox::CommonBox(const shared_ptr<Stage>&StagePtr, IXMLDOMNodePtr Node)
+		:GameObject(StagePtr)
+	{
+		auto PosStr = XmlDocReader::GetAttribute(Node, L"Pos");
+		auto ScalStr = XmlDocReader::GetAttribute(Node, L"Scale");
+		auto RotStr = XmlDocReader::GetAttribute(Node, L"Rot");
+		auto MeshStr = XmlDocReader::GetAttribute(Node, L"MeshKey");
+		auto TexKey = XmlDocReader::GetAttribute(Node, L"TexKey");
+
+		//トークン
+		vector<wstring> Tokens;
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, PosStr, L',');
+		m_Position = Vec3((float)_wtof(Tokens[0].c_str()),
+						  (float)_wtof(Tokens[1].c_str()),
+						  (float)_wtof(Tokens[2].c_str()));
+
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, ScalStr, L',');
+		m_Scale = Vec3((float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str()));
+
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, RotStr, L',');
+		m_Rotation = Vec3((float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str()));
+
+		//メッシュ・テクスチャKey
+		_MeshKey = MeshStr;
+		_TexKey = TexKey;
 	}
 	CommonBox::~CommonBox() {}
 

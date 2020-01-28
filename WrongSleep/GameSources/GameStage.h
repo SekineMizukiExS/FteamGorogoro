@@ -124,6 +124,8 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class MainGameStage :public StageBase
 	{
+		shared_ptr<SoundItem> m_CurrntBGM;
+
 		void CreateViewLight()override;
 
 		//ƒvƒŒƒCƒ„[‚Ìì¬

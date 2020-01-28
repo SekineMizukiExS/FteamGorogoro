@@ -467,7 +467,7 @@ namespace basecross
 			{
 				pD3D11DeviceContext->PSSetShaderResources(1, 1, BTex->GetShaderResourceView().GetAddressOf());
 				//ƒTƒ“ƒvƒ‰[‚ðÝ’è
-				RenderState->SetSamplerState(pD3D11DeviceContext, GetSamplerState(), 0);
+				RenderState->SetSamplerState(pD3D11DeviceContext, GetSamplerState(), 1);
 			}
 		}
 		else {

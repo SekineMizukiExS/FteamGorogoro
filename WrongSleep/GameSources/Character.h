@@ -301,6 +301,9 @@ namespace basecross{
 
 		);
 
+		//Builder
+		CommonBox(const shared_ptr<Stage>&StagePtr, IXMLDOMNodePtr Node);
+
 		virtual ~CommonBox();
 		//‰Šú‰»
 		virtual void OnCreate() override;
