@@ -290,6 +290,7 @@ namespace basecross{
 		Vec3 m_Position;
 		wstring _TexKey;
 		wstring _MeshKey;
+		wstring m_Tag;
 	public:
 		//\’z‚Æ”jŠü
 		CommonBox(const shared_ptr<Stage>& StagePtr,

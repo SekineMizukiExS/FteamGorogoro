@@ -48,6 +48,7 @@ namespace basecross
 		StageCellMap::CreateCellMap(m_MiniPos, m_PieceSize, m_PieceCountX, m_PieceCountZ, m_DefaultCost);
 
 		StageCellMap::OnCreate();
+		SetDrawActive(true);
 
 		GameManager::GetManager()->GetEnemyManager()->AddCellMap(m_MapKey, GetThis<EnemyCellMap>());
 	}

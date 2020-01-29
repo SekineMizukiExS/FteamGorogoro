@@ -42,7 +42,7 @@ namespace basecross{
 		//GetStage()->SetDrawPerformanceActive(true);
 
 		//重力をつける
-		//auto ptrGra = AddComponent<Gravity>();
+		AddComponent<Gravity>();
 
 		//GetStage()->SetCollisionPerformanceActive(true);
 		//GetStage()->SetUpdatePerformanceActive(true);
@@ -171,7 +171,7 @@ namespace basecross{
 		RotateMove();
 		GetInFourEdge();
 		BoxExtending();
-		Gravity();
+		//Gravity();
 		DebugLine();
 		//auto inPut = GetInputState();
 		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
@@ -213,19 +213,36 @@ namespace basecross{
 		//ヒットしている物がコモンボックスなら *関数にできる
 		auto obj = dynamic_pointer_cast<CommonBox>(other);
 		if (obj) {
-			auto ptrTransform = GetComponent<Transform>();
-			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
-			Vec3 HitPoint;
-			m_usingSize += 1;
-			//EfkPlay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition(), 0);
-			auto stg = GetStage();
-			auto teststg = dynamic_pointer_cast<StageBase>(stg);
-			if (teststg) {
-				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+			//ヒット対象がAppleなら
+			if (obj->FindTag(L"Apple")) {
+				auto ptrTransform = GetComponent<Transform>();
+				//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
+				Vec3 HitPoint;
+				m_usingSize += 1;
+				//EfkPlay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition(), 0);
+				auto stg = GetStage();
+				auto teststg = dynamic_pointer_cast<StageBase>(stg);
+				if (teststg) {
+					teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+				}
+				obj->SetUpdateActive(false);
+				obj->SetDrawActive(false);
 			}
-			obj->SetUpdateActive(false);
-			obj->SetDrawActive(false);
-
+			//ヒット対象がカギなら
+			if (obj->FindTag(L"Key"))
+			{
+				//鍵取得時のエフェクト再生
+				auto stg = GetStage();
+				auto teststg = dynamic_pointer_cast<StageBase>(stg);
+				if (teststg) {
+					teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+				}
+				//取得情報をマネージャーに送信
+				GameManager::GetManager()->AddKeyNums(1);
+				//オブジェクトを破棄
+				obj->SetUpdateActive(false);
+				obj->SetDrawActive(false);
+			}
 		}
 
 		auto obj2 = dynamic_pointer_cast<EnemyBase>(other);
@@ -510,6 +527,7 @@ namespace basecross{
 				auto teststg = dynamic_pointer_cast<StageBase>(stg);
 				if (teststg) {
 					teststg->Effectplay(L"SideSplash_EF",Vec3(nowPos.x,0.5,nowPos.z));
+					GameManager::GetManager()->MovedPlayer();
 				}
 			}
 
@@ -567,7 +585,7 @@ namespace basecross{
 		}
 	}
 
-	void Player::Gravity() {
+	void Player::Gravity2() {
 		float length = m_V3HS._yHalfSizeMin - 0.5f;
 
 		auto transptr = GetComponent<Transform>();

@@ -192,8 +192,8 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
 		//ptrColl->SetDrawActive(true);
-		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
-		Group->IntoGroup(GetThis<StageObjects>());
+		//auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
+		//Group->IntoGroup(GetThis<StageObjects>());
 	}
 
 
@@ -265,7 +265,7 @@ namespace basecross{
 	void LoadBlock::OnUpdate()
 	{
 		auto PlayerObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-		if (PlayerObj)
+		if (PlayerObj&&GameManager::GetManager()->CheckKeyVol())
 		{
 			AABB PVol = AABB(PlayerObj->GetComponent<Transform>()->GetPosition(), 1.0f, 1.0f, 1.0f);
 			_SensingArea = AABB(GetComponent<Transform>()->GetPosition(), 2, 2, 2);
@@ -290,6 +290,10 @@ namespace basecross{
 		auto LinkStr = XmlDocReader::GetAttribute(pNode, L"LINKCODE");
 		auto MovingTypeStr = XmlDocReader::GetAttribute(pNode, L"MovingType");
 
+		//ループするかどうか・
+
+		//モーションType
+		_MoveType = (MovingType)_wtoi(MovingTypeStr.c_str());
 		//メッシュ
 		_MeshKey = MeshStr;
 		//テクスチャ
@@ -339,12 +343,12 @@ namespace basecross{
 		DrawComp->SetEmissive(Col4(1, 1, 1, 1));
 
 		auto TransComp = AddComponent<Transform>();
-		TransComp->SetPosition(-15, 0, -12);
-		TransComp->SetScale(35, 1, 5);
-		TransComp->SetRotation(0, 0, 0);
+		TransComp->SetPosition(_Position);
+		TransComp->SetScale(_Scale);
+		TransComp->SetRotation(_Rotate);
 
-		_Start = TransComp->GetScale();
-		_End = Vec3(5, 1, 35);
+		_Start = GameManager::GetManager()->GetSettingPosData(L"MoveStart");
+		_End = GameManager::GetManager()->GetSettingPosData(L"MoveEnd");
 
 		auto Coll = AddComponent<CollisionObb>();
 		Coll->SetFixed(true);
@@ -356,7 +360,7 @@ namespace basecross{
 
 	void MovingObject::OnUpdate()
 	{
-		if (_OnEventFlag)
+		if (_OnEventFlag&& _EndFlag)
 		{
 			_OnEventFlag =!TestMove(5.0f);
 		}
@@ -641,8 +645,8 @@ namespace basecross{
 		ptrTransform->SetRotation(m_Rotation);
 		ptrTransform->SetPosition(m_Position);
 		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		ptrColl->SetFixed(true);
+		//auto ptrColl = AddComponent<CollisionObb>();
+		//ptrColl->SetFixed(true);
 		//タグをつける
 		AddTag(L"CMeshBox");
 		//影をつける（シャドウマップを描画する）
@@ -714,7 +718,8 @@ namespace basecross{
 		m_Rotation(Rotation),
 		m_Position(Position),
 		_TexKey(TexKey),
-		_MeshKey(MeshKey)
+		_MeshKey(MeshKey),
+		m_Tag(L"NULL")
 	{
 	}
 
@@ -727,6 +732,7 @@ namespace basecross{
 		auto RotStr = XmlDocReader::GetAttribute(Node, L"Rot");
 		auto MeshStr = XmlDocReader::GetAttribute(Node, L"MeshKey");
 		auto TexKey = XmlDocReader::GetAttribute(Node, L"TexKey");
+		auto TagName = XmlDocReader::GetAttribute(Node, L"Tag");
 
 		//トークン
 		vector<wstring> Tokens;
@@ -751,6 +757,7 @@ namespace basecross{
 		//メッシュ・テクスチャKey
 		_MeshKey = MeshStr;
 		_TexKey = TexKey;
+		m_Tag = TagName;
 	}
 	CommonBox::~CommonBox() {}
 
@@ -764,7 +771,7 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
 		//タグをつける
-		AddTag(L"CommonBox");
+		AddTag(m_Tag);
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
 		//影の形（メッシュ）を設定

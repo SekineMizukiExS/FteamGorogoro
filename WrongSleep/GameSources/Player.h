@@ -100,7 +100,7 @@ namespace basecross{
 		Vec3 GetRotateVector();
 
 		//重力処理
-		void Gravity();
+		void Gravity2();
 
 		//プレイヤーの最初の底面を取得する関数
 		

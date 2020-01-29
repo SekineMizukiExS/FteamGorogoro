@@ -194,7 +194,7 @@ namespace basecross
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
 	//構築と破棄
 	GameManager::GameManager()
-		:_TargetStage(nullptr),_XMLFileName(L"TStageMap"),_LoadPosKey(L"PlayerStart")
+		:_TargetStage(nullptr),_XMLFileName(L"TStageMap"),_LoadPosKey(L"PlayerStart"),MaxMoveCount(10000),m_CurrntKeyNums(0)
 	{
 		_EnemyManager = ObjectFactory::Create<EnemyManager>();
 		m_GameEventDispatcher = make_shared<GameEventDispatcher>();
@@ -300,6 +300,7 @@ namespace basecross
 		App::GetApp()->RegisterTexture(L"NUMBER_TX", TexturePath + L"number.png");
 		//モデルテクスチャ
 		App::GetApp()->RegisterTexture(L"Button_TX", ModelPath + L"Tx_Button.png");
+		App::GetApp()->RegisterTexture(L"Key_TX", TexturePath + L"Tx_Key.png");
 
 		auto modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"MatTest.bmf", true);
 		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
@@ -313,6 +314,9 @@ namespace basecross
 		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"skyboxObj.bmf", true);
 		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Key.bmf", true);
+		App::GetApp()->RegisterResource(L"Key_MD", modelMesh);
 
 		modelMesh = MeshResource::CreateBoneModelMesh(ModelPath, L"Button.bmf");
 		App::GetApp()->RegisterResource(L"Switch_MD", modelMesh);
@@ -369,10 +373,25 @@ namespace basecross
 
 			_SettingPosData[PosKey] = Pos;
 		}
+
+		//ステージクリア条件を読み込む
+		auto StageNode = XMLRead->GetSelectSingleNode(L"root/Stage");
+		//鍵の個数
+		auto KeyNumStr = XmlDocReader::GetAttribute(StageNode, L"KeyNum");
+
+		MaxKeyNums = (int)_wtoi(KeyNumStr.c_str());
+
+		//Bonusアイテムの個数
+
+		//移動回数制限
+		auto MoveMaxLimitStr = XmlDocReader::GetAttribute(StageNode, L"MoveLimit");
+		MaxMoveCount = (int)_wtoi(MoveMaxLimitStr.c_str());
+		m_CurrntKeyNums = 0;
 	}
 
 	void GameManager::OnCreate()
 	{
+		
 		//_TargetStage->AddGameObject<DebugObj>();
 	}
 
@@ -387,6 +406,12 @@ namespace basecross
 	void GameManager::ChangeEventCamera()
 	{
 		
+	}
+
+	void GameManager::OnUpdate()
+	{
+		auto Delta = App::GetApp()->GetElapsedTime();
+		_CumulativeTime += Delta;
 	}
 
 	//-----------------------------------------------------------

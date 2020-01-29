@@ -295,7 +295,7 @@ namespace basecross {
 		Builder.Register<MovingObject>(L"PairObject");
 		Builder.Register<SwitchObject>(L"SwitchObject");
 		Builder.Register<EnemyCellMap>(L"EnemyCellMap");
-		Builder.Register<ToyGuards>(L"Test");
+		Builder.Register<ToyGuards>(L"Enemy");
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
@@ -334,7 +334,7 @@ namespace basecross {
 					for (auto& vObj : ObjectsAABBVec) {
 						if (HitTest::AABB_AABB_NOT_EQUAL(v2.m_PieceRange, vObj)) {
 							//ボックスのABBとNOT_EQUALで衝突判定
-							v2.m_Cost = 1;
+							v2.m_Cost = -1;
 							break;
 						}
 					}
@@ -361,9 +361,20 @@ namespace basecross {
 			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
 			AddGameObject<EventCameraMan>();
 			//AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
+			AddGameObject<DebugObj>();
 			//BGMの再生
 			auto AM = App::GetApp()->GetXAudio2Manager();
 			m_CurrntBGM = AM->Start(L"MainBGM_SD", XAUDIO2_LOOP_INFINITE, 0.25f);
+
+			//auto Vec = GetGameObjectVec();
+			//for (auto C : Vec)
+			//{
+			//	auto Col = C->GetComponent<Collision>(false);
+			//	if (Col)
+			//	{
+			//		Col->SetDrawActive(true);
+			//	}
+			//}
 		}
 		catch (...) {
 			throw;
@@ -375,6 +386,7 @@ namespace basecross {
 	void MainGameStage::OnUpdate()
 	{
 		StageBase::OnUpdate();
+		GameManager::GetManager()->OnUpdate();
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
 		if (Dev.m_bLastKeyTbl['G']&&!Test)
 		{

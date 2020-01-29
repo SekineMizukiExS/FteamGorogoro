@@ -283,6 +283,12 @@ namespace basecross {
 
 		map<wstring, Vec3> _SettingPosData; ///<-初期配置データ群
 
+		int MaxKeyNums;						///<-クリアに必要な鍵数
+
+		int m_CurrntKeyNums;
+
+		int MaxMoveCount;					///<-ステージ上で移動できる回数
+
 		wstring _CurrntSaveDataPath;
 
 		wstring _XMLFileName;
@@ -355,7 +361,7 @@ namespace basecross {
 
 		void OnCreate()override;
 
-		void OnUpdate() {}
+		void OnUpdate();
 
 		void OnEvent(const shared_ptr<Event>&event)override;
 
@@ -373,7 +379,7 @@ namespace basecross {
 
 		const wstring GetLoadPosKey()const { return _LoadPosKey; }
 
-		const float GetCumulativeTime()const { return _CumulativeTime; }
+		const float &GetCumulativeTime()const { return _CumulativeTime; }
 
 		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
 
@@ -382,6 +388,9 @@ namespace basecross {
 		const shared_ptr<Stage> GetTargetStage()const { return _TargetStage; }
 
 		const Vec3 GetSettingPosData(const wstring& PosKey) { return _SettingPosData[PosKey]; }
+
+		//鍵数
+		const bool CheckKeyVol() { return MaxKeyNums == m_CurrntKeyNums; }
 
 		//リソースの読込が終わったらTrue	
 		bool GetLoadEnd()const
@@ -410,6 +419,11 @@ namespace basecross {
 			_LoadPosKey = PosKey;
 		}
 
+		void AddKeyNums(const int &Vol)
+		{
+			m_CurrntKeyNums += Vol;
+		}
+
 		void SetSaveData(const SaveData& SaveDataPtr,const wstring DataPath)
 		{
 			_CurrntSaveDataPath = DataPath;
@@ -419,6 +433,15 @@ namespace basecross {
 		}
 
 		void SetSettingPosData(const wstring& FilePath);
+
+		void MovedPlayer() 
+		{
+			MaxMoveCount--;
+			if (MaxMoveCount <= 0)
+			{
+				PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
+			}
+		}
 
 		void ChangeEventCamera();
 
