@@ -165,24 +165,44 @@ namespace basecross {
 		ret.y = 0.0f;
 		WORD wButtons = 0;
 		if (cntlVec[0].bConnected) {
-			ret.x = cntlVec[0].fThumbLX;
-			ret.y = cntlVec[0].fThumbLY;
+			float LY = cntlVec[0].fThumbLY;
+			float LX = cntlVec[0].fThumbLX;
+			//ret.y = cntlVec[0].fThumbLY;
+			//wButtons = ChangeToDPad(cntlVec[0].fThumbLX, cntlVec[0].fThumbLY);
+			if (LY >= 0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_UP;
+			}
+			else if (LY <= -0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_DOWN;
+			}
+
+			if (LX <= -0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_LEFT;
+			}
+			else if (LX >= 0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_RIGHT;
+			}
+
 		}
 		//キーボードの取得(キーボード優先)
 		auto KeyState = InputDiv.GetKeyState();
-		if (KeyState.m_bPushKeyTbl['W']||cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_UP) {
+		if (KeyState.m_bPushKeyTbl['W']|| wButtons == XINPUT_GAMEPAD_DPAD_UP) {
 			//前
 			ret.y = 1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['A'] || cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_LEFT) {
+		else if (KeyState.m_bPushKeyTbl['A'] || wButtons == XINPUT_GAMEPAD_DPAD_LEFT) {
 			//左
 			ret.x = -1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['S'] || cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_DOWN) {
+		else if (KeyState.m_bPushKeyTbl['S'] || wButtons == XINPUT_GAMEPAD_DPAD_DOWN) {
 			//後ろ
 			ret.y = -1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['D'] || cntlVec[0].wButtons == XINPUT_GAMEPAD_DPAD_RIGHT) {
+		else if (KeyState.m_bPushKeyTbl['D'] || wButtons == XINPUT_GAMEPAD_DPAD_RIGHT) {
 			//右
 			ret.x = 1.0f;
 		}

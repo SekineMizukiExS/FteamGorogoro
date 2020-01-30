@@ -16,7 +16,8 @@ namespace basecross {
 	Vec3HalfSizes GetFourEdge(shared_ptr <Transform> trans, shared_ptr<BcPNTStaticDraw> draw);
 
 	bool IsNearVecCheck(const Vec3& v1, const Vec3& v2);	
-
+	// スティックの入力を方向パッドフラグに変換
+	WORD ChangeToDPad(const float fThumbX, const float fThumbY);
 	//------------------------------------------------------
 	//セーブデータ入出力クラス
 	//------------------------------------------------------

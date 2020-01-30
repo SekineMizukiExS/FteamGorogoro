@@ -50,6 +50,32 @@ namespace basecross {
 	return false;
 	}
 
+	WORD ChangeToDPad(const float fThumbX, const float fThumbY)
+	{
+		WORD wButtons = 0;
+
+		if (fThumbY >= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+		{
+			wButtons |= XINPUT_GAMEPAD_DPAD_UP;
+		}
+		else if (fThumbY <= -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+		{
+			wButtons |= XINPUT_GAMEPAD_DPAD_DOWN;
+		}
+
+		if (fThumbX <= -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+		{
+			wButtons |= XINPUT_GAMEPAD_DPAD_LEFT;
+		}
+		else if (fThumbX >= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+		{
+			wButtons |= XINPUT_GAMEPAD_DPAD_RIGHT;
+		}
+
+		return wButtons;
+	}
+
+
 	//------------------------------------------------------
 	//セーブデータ入出力クラス
 	//------------------------------------------------------
