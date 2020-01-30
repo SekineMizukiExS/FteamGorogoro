@@ -62,6 +62,7 @@ namespace basecross{
 		//vector<VertexPositionColorTexture>& verteces = {};
 		//DrawComp->SetDrawActive(false);
 
+		AddTag(L"Obstacles");
 
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);
@@ -260,12 +261,13 @@ namespace basecross{
 		TransComp->SetScale(_Scal);
 		TransComp->SetRotation(_Rot);
 
+		GetStage()->SetSharedGameObject(L"Goal", GetThis<LoadBlock>());
 	}
 
 	void LoadBlock::OnUpdate()
 	{
 		auto PlayerObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-		if (PlayerObj&&GameManager::GetManager()->CheckKeyVol())
+		if (PlayerObj->GetMoveActive()&&GameManager::GetManager()->CheckKeyVol())
 		{
 			AABB PVol = AABB(PlayerObj->GetComponent<Transform>()->GetPosition(), 1.0f, 1.0f, 1.0f);
 			_SensingArea = AABB(GetComponent<Transform>()->GetPosition(), 2, 2, 2);
@@ -772,6 +774,7 @@ namespace basecross{
 		ptrColl->SetFixed(true);
 		//タグをつける
 		AddTag(m_Tag);
+		AddTag(L"Obstacles");
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
 		//影の形（メッシュ）を設定
@@ -838,45 +841,110 @@ namespace basecross{
 	//-----------------------------------------------------------------
 	//オープニングカメラ関係
 	//-----------------------------------------------------------------
-	//
-	struct OpeningCameraMan::Impl
-	{
-		//CurrntEye
-		Vec3 CurrntEye;
-		//CurrntAt;
-		Vec3 CurrntAt;
-		//ポジションデータ
-		vector<Vec3> PositionDatas;
-
-		Impl(const wstring& FilePath)
-		{
-			auto XMLReader = new XmlDocReader(FilePath);
-			auto CameraPosDatas = XMLReader->GetSelectNodes(L"root/SettingData/CameraPosDatas");
-			long NodeCount = XmlDocReader::GetLength(CameraPosDatas);
-
-			for (long i = 0; i < NodeCount; i++)
-			{
-				auto PosData = XmlDocReader::GetItem(CameraPosDatas, i);
-				
-				vector<Vec3>tokens;
-				tokens.clear();
-				
-			}
-		}
-	};
-
-	OpeningCameraMan::OpeningCameraMan(const shared_ptr<Stage>& StagePtr,const wstring& FilePath)
-		:GameObject(StagePtr),pImpl(make_unique<Impl>(FilePath))
+	OpeningCameraMan::OpeningCameraMan(const shared_ptr<Stage>& StagePtr)
+		:GameObject(StagePtr)
 	{
 
 	}
 
 	OpeningCameraMan::~OpeningCameraMan(){}
 
+	void OpeningCameraMan::OnCreate()
+	{
+		GetStage()->SetSharedGameObject(L"OpeningCameraMan", GetThis<OpeningCameraMan>());
+		m_StateMachine.reset(new StateMachine<OpeningCameraMan>(GetThis<OpeningCameraMan>()));
+		m_StateMachine->ChangeState(OPCMoveToGoal::Instance());
+	}
+
+	void OpeningCameraMan::OnUpdate()
+	{
+		m_StateMachine->Update();
+	}
+
+	void OpeningCameraMan::ToGoalParam()
+	{
+		auto CameraPtr = dynamic_pointer_cast<StageBase>(GetStage())->GetMyCamera();
+		m_StartEye = CameraPtr->GetEye();
+		m_StartAt = CameraPtr->GetAt();
+		m_EndAt = GetStage()->GetSharedGameObject<LoadBlock>(L"Goal")->GetComponent<Transform>()->GetPosition();
+		m_EndEye = m_EndAt + (m_StartEye - m_StartAt)*5.0f;
+		m_CurrntAt = m_StartAt;
+		m_TotalTime = 0.0f;
+	}
+
+	void OpeningCameraMan::ToStartParam()
+	{
+		auto CameraPtr = dynamic_pointer_cast<StageBase>(GetStage())->GetMyCamera();
+		auto Eye = m_EndEye;
+		auto At = m_EndAt;
+		m_StartEye = m_EndEye;
+		m_StartAt = m_EndAt;
+		m_EndAt = CameraPtr->GetAt();
+		m_EndEye = CameraPtr->GetEye();
+		m_CurrntAt = m_StartAt;
+		m_TotalTime = 0.0f;
+	}
+	
+	bool OpeningCameraMan::Excute()
+	{
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		m_TotalTime += ElapsedTime;
+		if (m_TotalTime > 5.0f) {
+			return true;
+		}
+		Easing<Vec3> easing;
+		auto TgtPos = easing.EaseInOut(EasingType::Cubic, m_StartEye, m_EndEye, m_TotalTime, 5.0f);
+		m_CurrntAt = easing.EaseInOut(EasingType::Cubic, m_StartAt, m_EndAt, m_TotalTime, 5.0f);
+		auto ptrTrans = GetComponent<Transform>();
+		ptrTrans->SetPosition(TgtPos);
+
+		return false;
+
+	}
+
 	//------------------------------------------------------
 	//オープニングカメラステート
 	//------------------------------------------------------
 	//動く
+	IMPLEMENT_SINGLETON_INSTANCE(OPCMoveToGoal)
+	void OPCMoveToGoal::Enter(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		Obj->ToGoalParam();
+		Obj->GetTypeStage<MainGameStage>(false)->ToOpeningCamera();
+	}
+
+	void OPCMoveToGoal::Execute(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		if (Obj->Excute())
+		{
+			Obj->GetStateMachine()->ChangeState(OPCMoveToStart::Instance());
+		}
+	}
+
+	void OPCMoveToGoal::Exit(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+
+	}
+	//
+	IMPLEMENT_SINGLETON_INSTANCE(OPCMoveToStart)
+	void OPCMoveToStart::Enter(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		Obj->ToStartParam();
+	}
+
+	void OPCMoveToStart::Execute(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		if (Obj->Excute())
+		{
+			Obj->GetTypeStage<MainGameStage>(false)->ToMyCamera();
+			Obj->SetUpdateActive(false);
+		}
+	}
+
+	void OPCMoveToStart::Exit(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+
+	}
 
 	//-----------------------------------------------------------------
 	//イベントカメラマンクラス

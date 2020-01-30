@@ -288,6 +288,23 @@ namespace basecross
 		GetStage()->RemoveGameObject<EnemyBase>(GetThis<EnemyBase>());
 	}
 
+	void EnemyBase::OnCollisionEnter(shared_ptr<GameObject>&obj)
+	{
+		if (obj->FindTag(L"Obstacles")&&GetBehavior<EnemyBehavior>()->GetMoveActive())
+		{
+			auto TransComp = GetComponent<Transform>();
+			auto BeforePos = GetBehavior<EnemyBehavior>()->GetBeforePos();
+			TransComp->SetPosition(BeforePos);
+			auto stg = GetStage();
+			auto teststg = dynamic_pointer_cast<StageBase>(stg);
+			if (teststg) {
+				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+			}
+
+			GetStage()->RemoveGameObject<GameObject>(obj);
+		}
+	}
+
 	//-------------------------------------------
 	//Enemyステートマシン実装
 	//-------------------------------------------

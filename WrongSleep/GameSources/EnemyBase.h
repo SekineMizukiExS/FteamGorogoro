@@ -144,6 +144,8 @@ namespace basecross
 		
 		virtual void OnEvent(const shared_ptr<Event>& event)override;
 
+		virtual void OnCollisionEnter(shared_ptr<GameObject>&Object)override;
+
 		void OnDestroy()override;
 
 		unique_ptr<StateMachine<EnemyBase>> &GetStateMachine()

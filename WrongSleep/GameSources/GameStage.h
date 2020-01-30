@@ -16,7 +16,8 @@ namespace basecross {
 	enum  SelectCamera
 	{
 		pMyCamera,
-		pEventCamera
+		pEventCamera,
+		pOpeningCamera
 	};
 
 	class StageBase : public Stage {
@@ -52,6 +53,7 @@ namespace basecross {
 
 		shared_ptr<MultiView>_MView;
 		shared_ptr<SingleView>_EventView;
+		shared_ptr<SingleView>_OpeningView;
 		//
 		size_t _MyCameraIndex;
 		size_t _SubCametaIndex;
@@ -152,6 +154,8 @@ namespace basecross {
 		void ToMyCamera();
 
 		void ToEventCamera();
+
+		void ToOpeningCamera();
 
 	};
 	//--------------------------------------------------------------------------------------

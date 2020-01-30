@@ -102,6 +102,8 @@ namespace basecross{
 		//重力処理
 		void Gravity2();
 
+		bool GetMoveActive() { return !m_isRotate; }
+
 		//プレイヤーの最初の底面を取得する関数
 		
 

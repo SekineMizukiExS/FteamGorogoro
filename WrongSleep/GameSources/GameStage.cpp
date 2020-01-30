@@ -209,7 +209,7 @@ namespace basecross {
 							  Vec3(0.0f, 0.0f, -30.0f),
 							  Vec3(0.0f, 20.0f, 00.1f),
 							  Vec3(0.0f, 110.0f, -75.0f),
-							  Vec3(0.0f,15.0f,50.0f),
+							  Vec3(0.0f,20.0f,50.0f),
 							  Vec3(10.0f, 0.0f, -10.0f),
 								Vec3(0.0f,15.0f,-10.0f) };
 		const Vec3 at(0.0f);
@@ -260,6 +260,13 @@ namespace basecross {
 		_EventView->SetCamera(EventCameraPtr);
 		EventCameraPtr->SetEye(eye[3]);
 		EventCameraPtr->SetAt(at);
+
+		//イベントカメラのView作成
+		_OpeningView = ObjectFactory::Create<SingleView>(GetThis<Stage>());
+		auto OpeningCameraPtr = ObjectFactory::Create<OpeningCamera>();
+		_OpeningView->SetCamera(OpeningCameraPtr);
+		OpeningCameraPtr->SetEye(eye[3]);
+		OpeningCameraPtr->SetAt(at);
 
 		CreateSharedObjectGroup(L"StageObjects");
 	}
@@ -356,10 +363,11 @@ namespace basecross {
 			//auto Ptr = AddGameObject<StageCellMap>(Vec3(-49.5f, -0.5f, -46.5f), PieceSize, mapSizeUint, mapSizeUint, -1);
 			//Ptr->SetDrawActive(false);
 			SettingObject();
-			SetMapCost();
+			//SetMapCost();
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
 			AddGameObject<EventCameraMan>();
+			AddGameObject<OpeningCameraMan>();
 			//AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
 			AddGameObject<DebugObj>();
 			//BGMの再生
@@ -422,6 +430,23 @@ namespace basecross {
 			//m_ObjCameraViewを使う
 			SetView(_EventView);
 			_Camera = SelectCamera::pEventCamera;
+		}
+	}
+
+	void MainGameStage::ToOpeningCamera()
+	{
+		auto ptrPlayer = GetSharedGameObject<Player>(L"Player");
+		//ObjCameraに変更
+		auto ptrCameraman = GetSharedGameObject<OpeningCameraMan>(L"OpeningCameraMan");
+		auto ptrMyCamera = dynamic_pointer_cast<MyCamera>(_MView->GetCamera(_MyCameraIndex));
+		ptrCameraman->GetComponent<Transform>()->SetPosition(ptrMyCamera->GetEye());
+		ptrCameraman->SetAt(ptrMyCamera->GetAt());
+		auto ptrObjCamera = dynamic_pointer_cast<OpeningCamera>(_OpeningView->GetCamera());
+		if (ptrObjCamera) {
+			ptrObjCamera->SetCameraObject(ptrCameraman);
+			//m_ObjCameraViewを使う
+			SetView(_OpeningView);
+			_Camera = SelectCamera::pOpeningCamera;
 		}
 	}
 

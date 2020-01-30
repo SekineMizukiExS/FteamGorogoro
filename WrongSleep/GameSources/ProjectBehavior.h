@@ -223,13 +223,17 @@ namespace basecross {
 	{
 	public:
 		EnemyBehavior(const shared_ptr<GameObject>&GameObjectPtr)
-			:Behavior(GameObjectPtr), _NextKey(0), _RotActive(false),_MoveActive(false),_TestMove(true), _count(0), _RotPoint(Vec3(0)), _RotAxis(Vec3(0))
+			:Behavior(GameObjectPtr), _NextKey(0), _RotActive(false),_MoveActive(false),_TestMove(true), _count(0), _RotPoint(Vec3(0)), _RotAxis(Vec3(0)), _BeforePos(Vec3(0))
 		{}
 		
 		//移動完了したらTRUE
 		bool TravelingMove();
 
 		bool TrackingMove();
+
+		bool GetMoveActive() { return _MoveActive; }
+
+		Vec3 &GetBeforePos() { return _BeforePos; }
 
 		//プレイヤーを発見したらTRUE
 		//bool SearchPlayer();
@@ -262,8 +266,8 @@ namespace basecross {
 
 		//現在位置
 		Vec3 _CurrntPos;
-		//状態遷移時の位置
-		Vec3 _BreakPos;
+		//前回移動時の位置
+		Vec3 _BeforePos;
 		//目的地
 		Vec3 _MovePoint;
 		//次のPointのkey;

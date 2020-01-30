@@ -340,30 +340,62 @@ namespace basecross{
 	class OpeningCameraMan :public GameObject
 	{
 	public:
-		OpeningCameraMan(const shared_ptr<Stage>&StagePtr, const wstring& FilePath);
+		OpeningCameraMan(const shared_ptr<Stage>&StagePtr);
 
 		~OpeningCameraMan();
 
-		//void OnCreate()override;
+		void OnCreate()override;
 
-		//void OnUpdate() override;
+		void OnUpdate() override;
+
+		void ToGoalParam();
+
+		void ToStartParam();
+
+		bool Excute();
+
+		void SetAt(const Vec3& At) { m_CurrntAt = At; }
+
+		const Vec3 &GetAt()const { return m_CurrntAt; }
+
+		unique_ptr<StateMachine<OpeningCameraMan>> &GetStateMachine()
+		{
+			return m_StateMachine;
+		}
 
 	private:
 		//ステートマシーン
 		unique_ptr<StateMachine<OpeningCameraMan>> m_StateMachine;
-		struct Impl;
-		unique_ptr<Impl>pImpl;
+
+		Vec3 m_StartEye;
+		Vec3 m_StartAt;
+		Vec3 m_EndEye;
+		Vec3 m_EndAt;
+		Vec3 m_CurrntAt;
+		float m_TotalTime;
 	};
 
 	//------------------------------------------------------
 	//オープニングカメラステート
 	//------------------------------------------------------
-	//動く
-	class OPCMoveToPoint :ObjState<OpeningCameraMan>
+
+	//ゴール
+	class OPCMoveToGoal :public ObjState<OpeningCameraMan>
 	{
-		OPCMoveToPoint(){}
+		OPCMoveToGoal() {}
 	public:
-		DECLARE_SINGLETON_INSTANCE(OPCMoveToPoint)
+		DECLARE_SINGLETON_INSTANCE(OPCMoveToGoal)
+		void Enter(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Execute(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Exit(const shared_ptr<OpeningCameraMan>&obj)override;
+	};
+
+	//スタート
+	class OPCMoveToStart :public ObjState<OpeningCameraMan>
+	{
+		OPCMoveToStart() {}
+	public:
+		DECLARE_SINGLETON_INSTANCE(OPCMoveToStart)
 		void Enter(const shared_ptr<OpeningCameraMan>&obj)override;
 		void Execute(const shared_ptr<OpeningCameraMan>&obj)override;
 		void Exit(const shared_ptr<OpeningCameraMan>&obj)override;
