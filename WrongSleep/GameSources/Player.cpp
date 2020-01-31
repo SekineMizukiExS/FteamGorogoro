@@ -169,7 +169,7 @@ namespace basecross{
 	}
 
 	void Player::OnUpdate() {
-		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera||GetTypeStage<StageBase>()->GetCameraSelects == SelectCamera::pOpeningCamera)
+		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera||GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pOpeningCamera)
 			return;
 
 		auto ptrGra = GetComponent<basecross::Gravity>();
@@ -181,16 +181,19 @@ namespace basecross{
 		RotateMove();
 		GetInFourEdge();
 		BoxExtending();
-		//Gravity();
+		Gravity();
 		DebugLine();
 		//auto inPut = GetInputState();
-		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
-		if (KeyState.m_bPressedKeyTbl['F']) {
+		auto InputDevice = App::GetApp()->GetInputDevice();
+		auto KeyState = InputDevice.GetKeyState();
+		auto cntlVec = InputDevice.GetControlerVec()[0];
+		WORD wButtons = cntlVec.wPressedButtons;
+		if (KeyState.m_bPressedKeyTbl['F']|| wButtons ==XINPUT_GAMEPAD_Y) {
 			if (m_usingSize > m_nowSize.y) {
 				m_nowSize.y += 1.0f;
 			}
 		}
-		if (KeyState.m_bPressedKeyTbl['X']) {
+		if (KeyState.m_bPressedKeyTbl['X']|| wButtons == XINPUT_GAMEPAD_X) {
 			m_nowSize.y -= 1.0f;
 		}
 
@@ -209,6 +212,7 @@ namespace basecross{
 		if (nowPos.y < -0.5f) {
 			//transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
 			transPtr->SetPosition(m_beforePos.x,5.0f, m_beforePos.z);
+			PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 		}
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
@@ -637,7 +641,6 @@ namespace basecross{
 		float length = 0.1f;
 
 		if (!m_isGroundLower) {
-			
 		}
 		else {
 			length = 0.1f;
