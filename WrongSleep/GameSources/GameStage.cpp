@@ -122,7 +122,7 @@ namespace basecross {
 		auto Dev = App::GetApp()->GetInputDevice();
 		auto KeyB = Dev.GetKeyState();
 		auto cont = Dev.GetControlerVec()[0];
-		if (KeyB.m_bLastKeyTbl['G']||cont.wButtons == XINPUT_GAMEPAD_START)
+		if (KeyB.m_bLastKeyTbl['G']||cont.wPressedButtons == XINPUT_GAMEPAD_START)
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToLoadStage");
 		}
@@ -136,12 +136,17 @@ namespace basecross {
 	void LoadStage::CreateViewLight() {
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<Camera>();
+		auto PtrCamera = ObjectFactory::Create<MyCamera>();
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(Vec3(0.0f, 10.0f, -20.0f));
 		PtrCamera->SetAt(Vec3(0.0f, 0.0f, 0.0f));
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
+		auto ptrPlayer = GetSharedGameObject<PlayerMarker>(L"PlayerMarker");
+		PtrCamera->SetTargetObject(ptrPlayer);
+		PtrCamera->SetMinArm(1.0f);
+		PtrCamera->SetMaxArm(50.0f);
+
 		//デフォルトのライティングを指定
 		PtrMultiLight->SetDefaultLighting();
 
@@ -179,9 +184,9 @@ namespace basecross {
 	void LoadStage::OnCreate() 
 	{
 		StageBase::OnCreate();
-		CreateViewLight();
 		//スプライトの作成
 		CreateLoadSprite();
+		CreateViewLight();
 	}
 
 	//更新
@@ -304,6 +309,7 @@ namespace basecross {
 		Builder.Register<SwitchObject>(L"SwitchObject");
 		Builder.Register<EnemyCellMap>(L"EnemyCellMap");
 		Builder.Register<ToyGuards>(L"Enemy");
+		Builder.Register<CollectEnemy>(L"CollectEnemy");
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
@@ -369,7 +375,7 @@ namespace basecross {
 			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
 			AddGameObject<EventCameraMan>();
 			AddGameObject<OpeningCameraMan>();
-			//AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
+			AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
 			AddGameObject<DebugObj>();
 			//BGMの再生
 			auto AM = App::GetApp()->GetXAudio2Manager();
@@ -484,7 +490,7 @@ namespace basecross {
 	{
 		auto Input = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 		
-		if ((MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_A)&GameManager::GetManager()->GetLoadEnd())
+		if ((MovieStage::EndMedia()||Input.wPressedButtons == XINPUT_GAMEPAD_START)&GameManager::GetManager()->GetLoadEnd())
 		{
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 		}

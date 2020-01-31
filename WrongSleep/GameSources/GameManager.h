@@ -381,6 +381,8 @@ namespace basecross {
 
 		const float &GetCumulativeTime()const { return _CumulativeTime; }
 
+		const int &GetMaxMoveCount()const { return MaxMoveCount; }
+
 		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
 
 		shared_ptr<DataBinaryIO> GetDataIO()const { return m_DataIO; }

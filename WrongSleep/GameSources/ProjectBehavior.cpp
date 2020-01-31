@@ -334,8 +334,8 @@ namespace basecross {
 				TransComp->SetPosition(temppos.x, 2.5f, temppos.z);
 			}
 			if (_RotActive) {
-				if (_count < 5) {
-					TransComp->RotateAround(_RotPoint, _RotAxis, 0.1f * XM_PI, nowPos);
+				if (_count < 5.0f*(1.0f/0.25f)){
+					TransComp->RotateAround(_RotPoint, _RotAxis, 0.1f * XM_PI*0.25f, nowPos);
 					_count += 1;
 					_MoveActive = true;
 				}

@@ -75,6 +75,7 @@ namespace basecross{
 		{
 			memset(this, 0, sizeof(MaskParamB));
 			param_f = Vec4();
+			Flags = XMUINT4();
 		}
 	};
 

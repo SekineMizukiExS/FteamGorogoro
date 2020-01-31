@@ -71,8 +71,13 @@ namespace basecross
 		void OnUpdate()override;
 		//•`‰æ
 
+		void FadeAction();
+
 		void OnEvent(const shared_ptr<Event>&event)override;
 	private:
+
+		void MaskAction();
+		MaskParamB Param;
 		struct Impl;
 		unique_ptr<Impl> pImpl;
 	};

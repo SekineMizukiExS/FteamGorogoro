@@ -45,7 +45,7 @@
   </Stage>
   <settingData>
     <posDatas>
-      <SetPosData Type="PlayerStart" PosKey="PlayerStart" Position="20.294,0,20.041" />
+      <SetPosData Type="PlayerStart" PosKey="PlayerStart" Position="20.294,5,20.041" />
     </posDatas>
   </settingData>
 </root>

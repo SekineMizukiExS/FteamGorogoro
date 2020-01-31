@@ -258,4 +258,41 @@ namespace basecross
 	private:
 		
 	};
+
+	//----------------------------------------------------
+	//収集エネミー
+	//----------------------------------------------------
+	class CollectEnemy: public EnemyBase
+	{
+	public:
+		CollectEnemy(const shared_ptr<Stage>&StagePtr)
+			:EnemyBase(StagePtr)
+		{}
+		CollectEnemy(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode)
+			:EnemyBase(stage, pNode)
+		{};
+
+
+		void OnCreate()override;
+
+		void OnUpdate()override;
+
+	private:
+
+	};
+
+	//------------------------------------------------------
+	//収集ステート
+	//------------------------------------------------------
+	class CollectState :public ObjState<EnemyBase>
+	{
+		CollectState() {}
+	public:
+		DECLARE_SINGLETON_INSTANCE(CollectState);
+		virtual void Enter(const shared_ptr<EnemyBase>&obj)override;
+		virtual void Execute(const shared_ptr<EnemyBase>&obj)override;
+		virtual void Exit(const shared_ptr<EnemyBase>&obj)override;
+
+		bool Check;
+	};
 }

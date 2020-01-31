@@ -212,7 +212,8 @@ namespace basecross{
 		if (nowPos.y < -0.5f) {
 			//transPtr->SetPosition(nowPos.x, 0.5f, nowPos.z);
 			transPtr->SetPosition(m_beforePos.x,5.0f, m_beforePos.z);
-			PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
+			if (GetTypeStage<MainGameStage>(false)) {}
+				//PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 		}
 		//wstring tempQtx(L"tempQ: ");
 		//tempQtx += Util::FloatToWStr(tempQ.getW()) + L"\n";
@@ -275,7 +276,31 @@ namespace basecross{
 
 		}
 
+		auto TransComp = GetComponent<Transform>();
 
+		auto obj3 = dynamic_pointer_cast<MovingObject>(other);
+		if (obj3)
+		{
+			auto otherforce = obj3->GetMoveForce();
+			auto Pos = TransComp->GetPosition();
+			TransComp->SetPosition(Pos + otherforce);
+			return;
+		}
+
+	}
+
+	void Player::OnCollisionExcute(shared_ptr<GameObject>& other)
+	{
+		auto TransComp = GetComponent<Transform>();
+
+		auto obj = dynamic_pointer_cast<MovingObject>(other);
+		if (obj)
+		{
+			auto otherforce = obj->GetMoveForce();
+			auto Pos = TransComp->GetPosition();
+			TransComp->SetPosition(Pos+otherforce);
+			return;
+		}
 	}
 
 	Vec3 Player::GetRotateVector() {

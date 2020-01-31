@@ -408,11 +408,129 @@ namespace basecross
 		auto Dev = App::GetApp()->GetInputDevice().GetKeyState();
 		if (Dev.m_bLastKeyTbl['B'])
 		{
-			m_SteteMachine->ChangeState(TrackingState::Instance());
+			m_SteteMachine->ChangeState(CollectState::Instance());
 		}
 
 		//落下したら削除
 
 
 	}
+
+	//----------------------------------------------------
+	//収集エネミー
+	//----------------------------------------------------
+	void CollectEnemy::OnCreate()
+	{
+		auto DrawComp = AddComponent<AreaDraw>();
+		auto TransComp = AddComponent<Transform>();
+
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+
+		TransComp->SetPosition(_Position);
+		TransComp->SetScale(_Scale);
+		TransComp->SetRotation(_Rotate);
+
+		m_SteteMachine.reset(new StateMachine<EnemyBase>(GetThis<CollectEnemy>()));
+
+		m_SteteMachine->ChangeState(CollectState::Instance());
+
+		//経路探索
+		auto MapPtr = GetCellMap().lock();
+		if (MapPtr)
+		{
+			AddComponent<PathSearch>(MapPtr);
+		}
+		else
+		{
+			throw BaseException(
+				L"CellMapがありません",
+				L"Enemy.cpp",
+				L"EnemyBase::OnCreate()"
+			);
+		}
+
+		AddComponent<CollisionObb>();
+
+		AddComponent<Gravity>();
+	}
+
+	void CollectEnemy::OnUpdate()
+	{
+		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera || GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pOpeningCamera)
+			return;
+
+		m_SteteMachine->Update();
+
+	}
+
+	//
+	IMPLEMENT_SINGLETON_INSTANCE(CollectState);
+	void CollectState::Enter(const shared_ptr<EnemyBase>&obj)
+	{
+		//前回位置がある場合その場所を最初のPointに設定
+		//現在地点か一番近いPointを取得
+		auto ObjVec = obj->GetStage()->GetGameObjectVec();
+
+		for (auto Obj : ObjVec)
+		{
+			auto Common = dynamic_pointer_cast<CommonBox>(Obj);
+			if (Common) {
+				obj->GetBehavior<EnemyBehavior>()->SetTargetObject(Common);
+				return;
+			}
+		}
+		Check = false;
+	}
+
+	void CollectState::Execute(const shared_ptr<EnemyBase>&obj)
+	{
+		//巡回経路を取得
+		if (obj->GetBehavior<EnemyBehavior>()->TrackingMove())
+		{
+			auto ObjVec = obj->GetStage()->GetGameObjectVec();
+			for (auto Obj : ObjVec)
+			{
+				auto Common = dynamic_pointer_cast<CommonBox>(Obj);
+				if (Common) {
+					obj->GetBehavior<EnemyBehavior>()->SetTargetObject(Common);
+					Check = true;
+					return;
+				}
+				else
+				{
+					Check = false;
+				}
+
+			}
+			obj->GetStateMachine()->ChangeState(TravelingState::Instance());
+		}
+		else if (Check)
+		{
+			auto ObjVec = obj->GetStage()->GetGameObjectVec();
+			for (auto Obj : ObjVec)
+			{
+				auto Common = dynamic_pointer_cast<CommonBox>(Obj);
+				if (Common) {
+					obj->GetBehavior<EnemyBehavior>()->SetTargetObject(Common);
+					Check = true;
+					return;
+				}
+				else
+				{
+					Check = false;
+				}
+			}
+
+		}
+	}
+
+	void CollectState::Exit(const shared_ptr<EnemyBase>&obj)
+	{
+		//ターゲット情報を破棄
+		obj->GetBehavior<EnemyBehavior>()->SetTargetObject(nullptr);
+	}
+
+
+
 }

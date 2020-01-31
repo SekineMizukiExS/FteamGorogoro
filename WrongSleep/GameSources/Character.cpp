@@ -433,8 +433,10 @@ namespace basecross{
 			return true;
 		}
 		Easing<Vec3> easing;
-		auto Force = easing.EaseInOut(EasingType::Cubic, _Start, _End, _CurrntTime, TotalTime);
+		//auto Force = easing.EaseInOut(EasingType::Cubic, _Start, _End, _CurrntTime, TotalTime);
+		auto Force = easing.Linear(_Start,_End,_CurrntTime,TotalTime);
 		auto ptrTrans = GetComponent<Transform>();
+		_Force = Force - ptrTrans->GetPosition();
 		switch (_MoveType)
 		{
 		case basecross::MovingObject::Position:

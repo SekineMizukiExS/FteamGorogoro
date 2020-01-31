@@ -93,7 +93,7 @@ namespace basecross
 		const bool trance;
 		bool ActiveFade;
 		Impl(const wstring &MaskTX, const wstring &FadeTX, const bool Trance)
-			:MaskTexture(MaskTX), FadeTexture(FadeTX), trance(Trance), ActiveFade(false), FadeTime(0.0f)
+			:MaskTexture(MaskTX), FadeTexture(FadeTX), trance(Trance), ActiveFade(true), FadeTime(0.0f)
 		{
 			float Sizex = (float)App::GetApp()->GetGameWidth() / 2.0f;
 			float Sizey = (float)App::GetApp()->GetGameHeight() / 2.0f;
@@ -129,30 +129,63 @@ namespace basecross
 		ptrDraw->SetSamplerState(SamplerState::LinearWrap);
 		ptrDraw->SetTextureResource(pImpl->MaskTexture);
 		//ptrDraw->SetFadeTextureResource(pImpl->FadeTexture);
+		Param.Flags.x = 1;//フェードイン
+		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(L"MaskObject", GetThis<ObjectInterface>());
+	}
+
+	void GameMaskSprite::FadeAction()
+	{
+		const float MaxFadeTime = 2.0f;
+		auto DrawComp = GetComponent<MaskDraw>();
+		if (pImpl->ActiveFade)
+		{
+			if (MaxFadeTime > pImpl->FadeTime)
+			{
+				pImpl->FadeTime += App::GetApp()->GetElapsedTime();
+				Param.param_f.x = pImpl->FadeTime / MaxFadeTime;
+			}
+			else
+			{
+				Param.Flags.x = 0;
+				pImpl->FadeTime = 0;
+				pImpl->ActiveFade = false;
+			}
+			DrawComp->UpdateParam(Param);
+		}
+
+	}
+
+	void GameMaskSprite::MaskAction()
+	{
+		auto MoveCount = GameManager::GetManager()->GetMaxMoveCount();
+		if (MoveCount <= 20)
+		{
+			Param.Flags.y = 2;
+			Param.param_f.y = 1.0f - (float)(MoveCount / 20.0f);
+			auto DrawComp = GetComponent<MaskDraw>();
+			DrawComp->UpdateParam(Param);
+		}
 	}
 
 	void GameMaskSprite::OnUpdate()
 	{
-		const float MaxFadeTime = 5.0f;
-		auto DrawComp = GetComponent<MaskDraw>();
-		MaskParamB MK;
-		MK.param_f.x = 0.0f;
-		DrawComp->UpdateParam(MK);
-		//if (true)
-		//{
-		//	if (MaxFadeTime > pImpl->FadeTime)
-		//	{
-		//		pImpl->FadeTime += MaxFadeTime/App::GetApp()->GetElapsedTime();
-		//	}
-		//	DrawComp->UpdateParam(MK);
-		//}
+		FadeAction();
+		MaskAction();
 	}
 
 	void GameMaskSprite::OnEvent(const shared_ptr<Event>&event)
 	{
-		if (event->m_MsgStr == L"FadeStart")
+		if (event->m_MsgStr == L"FadeIn")
 		{
 			pImpl->ActiveFade = true;
+			Param.Flags.x = 1;//フェードイン
+			pImpl->FadeTime = 0;
+		}
+		if (event->m_MsgStr == L"FadeOut")
+		{
+			pImpl->ActiveFade = true;
+			Param.Flags.x = 2;//フェードアウト
+			pImpl->FadeTime = 0;
 		}
 	}
 

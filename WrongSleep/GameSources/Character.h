@@ -114,6 +114,8 @@ namespace basecross{
 		}
 		bool TestMove(const float TotalTime);
 
+		const Vec3 GetMoveForce()const{return _Force;}
+
 	protected:
 
 		enum MovingType
@@ -130,6 +132,8 @@ namespace basecross{
 		wstring _TexKey;
 		wstring _LinkKey;
 		MovingType _MoveType;
+
+		Vec3 _Force;
 
 		//ˆÚ“®—p•Ï”
 		//Œo‰ßŠÔ

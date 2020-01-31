@@ -10,7 +10,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //定数
 const wchar_t* pClassName = L"BaseCrossFullClass";
-const wchar_t* pWndTitle = L"BaseCrossFullSample";
+const wchar_t* pWndTitle = L"CLEAR BOX WONDERLAND";
 //ウィンドウモードの時の幅と高さ
 int g_ClientWidth = 1280;
 int g_ClientHeight = 800;

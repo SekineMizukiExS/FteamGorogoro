@@ -11,8 +11,12 @@ cbuffer MaskParam : register(b1)
 {
     //シェーダー制御用パラメータ
     //param.x = フェード補間係数（0～1）
+    //param.y = マスク用補間係数（0～1)  
     float4 paramf : packoffset(c0);
-    
+    //シェーダー制御用コントロールキー
+    //contlKeys.x = フェードコントロール用
+    //contlKeys.y = マスク制御用
+    uint4 contlKeys : packoffset(c1);
 }
 
 struct SpriteVS
