@@ -444,6 +444,8 @@ namespace basecross{
 		default:
 			break;
 		}
+
+
 		return tempPos;
 	}
 
@@ -656,10 +658,16 @@ namespace basecross{
 		if (ptrTarget) {
 
 			Vec3 tempPos(ptrTarget->GetComponent<Transform>()->GetPosition());
-			ptrTrans->SetPosition(tempPos.x, tempPos.y -0.65f, tempPos.z);
+			
+			ptrTrans->SetPosition(tempPos.x, tempPos.y-0.85f, tempPos.z);
+			
+
 
 			auto obj = dynamic_pointer_cast<Player>(ptrTarget);
 			if (obj) {
+				Vec3 bottomPos = obj->GetExtendingAngle();//ƒvƒŒƒCƒ„[‚Ì’ê–Ê‚ðŽæ“¾
+				//ptrTrans->SetPosition(tempPos + bottomPos);
+				
 				Vec3 MAngle = obj->GetRotateVector();
 
 				MAngle.y = 0;

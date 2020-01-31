@@ -80,7 +80,7 @@ namespace basecross{
 		App::GetApp()->RegisterResource(L"Flower_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_WarpPad.bmf");
 		App::GetApp()->RegisterResource(L"WarpPad_MD", modelMesh);
-		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_Tree.bmf");
+		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"SAModel_TreeV2.bmf");
 		App::GetApp()->RegisterResource(L"Tree_MD", modelMesh);
 		modelMesh = MeshResource::CreateStaticModelMesh(mediaPath + L"Models/", L"Pedestal.bmf");
 		App::GetApp()->RegisterResource(L"Pedestal_MD", modelMesh);
