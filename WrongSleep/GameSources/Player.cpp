@@ -42,7 +42,8 @@ namespace basecross{
 		//GetStage()->SetDrawPerformanceActive(true);
 
 		//èdóÕÇÇ¬ÇØÇÈ
-		//auto ptrGra = AddComponent<Gravity>();
+		auto ptrGra = AddComponent<basecross::Gravity>();
+		
 
 		//GetStage()->SetCollisionPerformanceActive(true);
 		//GetStage()->SetUpdatePerformanceActive(true);
@@ -156,8 +157,13 @@ namespace basecross{
 		vCount += Util::FloatToWStr(m_vCount, 5);
 		vCount += L"\n";
 
+		wstring Grounded(L"Grounded:\t");
+		if (m_isGround) {
+			Grounded += L"true";
+			Grounded += L"\n";
+		}
 		wstring str = ButtomVecX + ButtomVecY + ButtomVecZ
-			+ Vertices + VerticesC + counts + HalfX + HalfY + HalfZ + vCount;
+			+ Vertices + VerticesC + counts + HalfX + HalfY + HalfZ + vCount + Grounded;
 
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
@@ -166,6 +172,11 @@ namespace basecross{
 	void Player::OnUpdate() {
 		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera)
 			return;
+
+		auto ptrGra = GetComponent<basecross::Gravity>();
+		ptrGra->SetGravity(Vec3(0,-1.0f,0));
+		ptrGra->SetGravityVerocity(Vec3(0, -1.0f, 0));
+
 		//GetMoveVector();
 		//MovePlayer();
 		RotateMove();
@@ -521,10 +532,13 @@ namespace basecross{
 			//m_isRotate = false;
 
 		}
+		else if(!m_isGround){
+
+		}
 		else if (moveX > 0)
 		{
 			GetInFourEdge();
-			nowPos = transptr->GetPosition();
+			nowPos = transptr->GetWorldPosition();
 			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(m_V3HS._xHalfSize, m_V3HS._yHalfSizeMin, nowPos.z);
 			m_rotateAxis = Vec3(0, 0, 1);
@@ -538,7 +552,7 @@ namespace basecross{
 		else if (moveX < 0)
 		{
 			GetInFourEdge();
-			nowPos = transptr->GetPosition();
+			nowPos = transptr->GetWorldPosition();
 			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(m_V3HS._xHalfSizeMin, m_V3HS._yHalfSizeMin, nowPos.z);
 			m_rotateAxis = Vec3(0, 0, -1);
@@ -547,7 +561,7 @@ namespace basecross{
 		else if (moveZ > 0)
 		{
 			GetInFourEdge();
-			nowPos = transptr->GetPosition();
+			nowPos = transptr->GetWorldPosition();
 			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(nowPos.x, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSize);
 			m_rotateAxis = Vec3(-1, 0, 0);
@@ -556,7 +570,7 @@ namespace basecross{
 		else if (moveZ < 0)
 		{
 			GetInFourEdge();
-			nowPos = transptr->GetPosition();
+			nowPos = transptr->GetWorldPosition();
 			m_beforePos = transptr->GetWorldPosition();
 			m_rotatePoint = Vec3(nowPos.x, m_V3HS._yHalfSizeMin, m_V3HS._zHalfSizeMin);
 			m_rotateAxis = Vec3(1, 0, 0);
@@ -570,12 +584,87 @@ namespace basecross{
 	}
 
 	void Player::Gravity() {
-		float length = m_V3HS._yHalfSizeMin - 0.5f;
-
+		m_isGround;
+		m_isGroundLower;//ÇﬂÇËçûÇ›
 		auto transptr = GetComponent<Transform>();
 		Vec3 nowPos = transptr->GetWorldPosition();
-		nowPos.y -= length;
-		transptr->SetWorldPosition(nowPos);
+		Vec3 tempPos = transptr->GetWorldPosition();
+		tempPos.y = m_V3HS._yHalfSizeMin;
+		//Vec3 lowerPos = tempPos - Vec3(0, 0.1f, 0);
+
+		Vec3 nowPositions[5] = {};
+		nowPositions[0] = nowPos;
+		nowPositions[1] = Vec3(m_V3HS._xHalfSize, nowPos.y, m_V3HS._zHalfSize);
+		nowPositions[2] = Vec3(m_V3HS._xHalfSizeMin, nowPos.y, m_V3HS._zHalfSize);
+		nowPositions[3] = Vec3(m_V3HS._xHalfSize, nowPos.y, m_V3HS._zHalfSizeMin);
+		nowPositions[4] = Vec3(m_V3HS._xHalfSizeMin, nowPos.y, m_V3HS._zHalfSizeMin);
+
+		Vec3 tempPositions[5] = {};
+		tempPositions[0] = tempPos;
+		tempPositions[1] = Vec3(m_V3HS._xHalfSize, tempPos.y, m_V3HS._zHalfSize);
+		tempPositions[2] = Vec3(m_V3HS._xHalfSizeMin, tempPos.y, m_V3HS._zHalfSize);
+		tempPositions[3] = Vec3(m_V3HS._xHalfSize, tempPos.y, m_V3HS._zHalfSizeMin);
+		tempPositions[4] = Vec3(m_V3HS._xHalfSizeMin, tempPos.y, m_V3HS._zHalfSizeMin);
+
+		for(int i = 0;i < 5; i++){
+
+		m_isGround = RayCast(tempPositions[i], tempPositions[i]-Vec3(0,-0.1f,0));
+		m_isGroundLower = RayCast(nowPositions[i], tempPositions[i]);
+
+		}
+		float length = 0.1f;
+
+		if (!m_isGroundLower) {
+			
+		}
+		else {
+			length = 0.1f;
+			nowPos.y += length;
+			transptr->SetWorldPosition(nowPos);
+		}
+
+	}
+
+	bool Player::RayCast(Vec3 pos , Vec3 target) {
+		auto stage = GetStage();
+		auto transptr = GetComponent<Transform>();
+		
+		bool hit = false;
+
+		for (auto& v : stage->GetGameObjectVec()) {
+
+			auto PlayerPtr = dynamic_pointer_cast<Player>(v);
+			if (!PlayerPtr) {
+				auto PsPtr = dynamic_pointer_cast<GameObject>(v);
+				if (PsPtr) {
+					auto ColObb = PsPtr->GetComponent<CollisionObb>(false);
+					auto ColSp = PsPtr->GetComponent<CollisionSphere>(false);
+					auto ColCapsule = PsPtr->GetComponent<CollisionCapsule>(false);
+					if (ColObb) {
+						auto Obb = ColObb->GetObb();
+						if (HitTest::SEGMENT_OBB(pos, target, Obb)) {
+							hit = true;
+							return hit;
+						}
+					}
+					else if (ColSp) {
+						auto Sp = ColSp->GetSphere();
+						if (HitTest::SEGMENT_SPHERE(pos, target, Sp)) {
+							hit = true;
+							return hit;
+						}
+					}
+					else if (ColCapsule) {
+						auto Cap = ColCapsule->GetCapsule();
+						if (HitTest::SEGMENT_CAPSULE(pos, target, Cap)) {
+							hit = true;
+							return hit;
+						}
+					}
+				}
+			}
+		}
+		return hit;
 	}
 
 

@@ -52,6 +52,8 @@ namespace basecross{
 		float m_cubeAngle = 15;
 		Vec3 m_rotatePoint = Vec3(0, 0, 0);
 		Vec3 m_rotateAxis = Vec3(0, 0, 0);
+		bool m_isGround = false;
+		bool m_isGroundLower = false;
 
 		//接地面の四辺を格納して置く構造体
 		Vec3HalfSizes m_V3HS = {0};
@@ -101,6 +103,7 @@ namespace basecross{
 
 		//重力処理
 		void Gravity();
+		bool RayCast(Vec3 pos, Vec3 target);
 
 		//プレイヤーの最初の底面を取得する関数
 		
