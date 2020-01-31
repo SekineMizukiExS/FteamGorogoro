@@ -16,7 +16,8 @@ namespace basecross {
 	enum  SelectCamera
 	{
 		pMyCamera,
-		pEventCamera
+		pEventCamera,
+		pOpeningCamera
 	};
 
 	class StageBase : public Stage {
@@ -52,6 +53,7 @@ namespace basecross {
 
 		shared_ptr<MultiView>_MView;
 		shared_ptr<SingleView>_EventView;
+		shared_ptr<SingleView>_OpeningView;
 		//
 		size_t _MyCameraIndex;
 		size_t _SubCametaIndex;
@@ -95,7 +97,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//LoadStageクラス（読み込むステージ）
 	//--------------------------------------------------------------------------------------
-	class LoadStage : public Stage {
+	class LoadStage : public StageBase {
 		//ビューの作成
 		void CreateViewLight();
 		//スプライトの作成
@@ -108,7 +110,7 @@ namespace basecross {
 		//static std::mutex mtx;
 	public:
 		//構築と破棄
-		LoadStage() :Stage() {}
+		LoadStage() :StageBase() {}
 		virtual ~LoadStage() {}
 		//初期化
 		virtual void OnCreate()override;
@@ -124,6 +126,8 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class MainGameStage :public StageBase
 	{
+		shared_ptr<SoundItem> m_CurrntBGM;
+
 		void CreateViewLight()override;
 
 		//プレイヤーの作成
@@ -131,6 +135,7 @@ namespace basecross {
 
 		void SettingObject();
 
+		void SetMapCost();
 	public:
 		//構築と破棄
 		MainGameStage();
@@ -141,6 +146,17 @@ namespace basecross {
 		void OnUpdate()override;
 		//描画
 		void OnDraw()override;
+		//破棄
+		void OnDestroy()override;
+
+		bool Test = false;
+
+		void ToMyCamera();
+
+		void ToEventCamera();
+
+		void ToOpeningCamera();
+
 	};
 	//--------------------------------------------------------------------------------------
 	//Movieクラス
@@ -181,7 +197,7 @@ namespace basecross {
 		void CreateCommonBox();
 		void CreateStageObject();
 
-		void SetCellMapCost();
+		//void SetCellMapCost();
 	public:
 		//構築と破棄
 		TestStage() :StageBase() {}

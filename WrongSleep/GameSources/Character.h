@@ -30,13 +30,36 @@ namespace basecross{
 	public:
 		StageObjectsLoopTex(const shared_ptr<Stage>&stage, IXMLDOMNodePtr pNode);
 		virtual void OnCreate() override;
-
 	private:
 		wstring _MeshKey;
 		Vec3 _Pos;
 		Vec3 _Scal;
 		Vec3 _Rot;
 		wstring _TexKey;
+	};
+
+	//------------------------------------------------------
+	//SaveData
+	//------------------------------------------------------
+	class SaveDataObject :public GameObject, public GameEventInterface
+	{
+	private:
+		wstring _MeshKey;
+		Vec3 _Pos;
+		Vec3 _Scal;
+		Vec3 _Rot;
+		wstring _TexKey;
+		wstring m_DataPath;
+	public:
+		SaveDataObject(const shared_ptr<Stage>&stage, const wstring& SaveDataPath, const wstring& MeshKey, const wstring& TexKey,
+			const Vec3 Pos, const Vec3 Scale, const Vec3 Rotation);
+
+		virtual void OnCreate() override;
+
+		//ゲッター
+		const wstring &GetSaveDataPath()const { return m_DataPath; }
+
+		void OnCollisionEnter(shared_ptr<GameObject>& other) override;
 	};
 
 	//ロードブロック
@@ -49,6 +72,8 @@ namespace basecross{
 
 		virtual void OnUpdate()override;
 
+		const wstring GetTargetPosStr()const { return _TargetPosStr; }
+
 	private:
 		Vec3 _Pos;
 		Vec3 _Scal;
@@ -58,6 +83,8 @@ namespace basecross{
 
 		//マップファイル名
 		wstring _MapStr;
+
+		wstring _TargetPosStr;
 
 		AABB _SensingArea;
 	};
@@ -263,6 +290,7 @@ namespace basecross{
 		Vec3 m_Position;
 		wstring _TexKey;
 		wstring _MeshKey;
+		wstring m_Tag;
 	public:
 		//構築と破棄
 		CommonBox(const shared_ptr<Stage>& StagePtr,
@@ -273,6 +301,9 @@ namespace basecross{
 			const wstring MeshKey
 
 		);
+
+		//Builder
+		CommonBox(const shared_ptr<Stage>&StagePtr, IXMLDOMNodePtr Node);
 
 		virtual ~CommonBox();
 		//初期化
@@ -303,8 +334,73 @@ namespace basecross{
 		virtual void OnUpdate() override {}
 	};
 
+	//-----------------------------------------------------------------
+	//オープニングカメラマンクラス
+	//-----------------------------------------------------------------
+	class OpeningCameraMan :public GameObject
+	{
+	public:
+		OpeningCameraMan(const shared_ptr<Stage>&StagePtr);
 
+		~OpeningCameraMan();
 
+		void OnCreate()override;
+
+		void OnUpdate() override;
+
+		void ToGoalParam();
+
+		void ToStartParam();
+
+		bool Excute();
+
+		void SetAt(const Vec3& At) { m_CurrntAt = At; }
+
+		const Vec3 &GetAt()const { return m_CurrntAt; }
+
+		unique_ptr<StateMachine<OpeningCameraMan>> &GetStateMachine()
+		{
+			return m_StateMachine;
+		}
+
+	private:
+		//ステートマシーン
+		unique_ptr<StateMachine<OpeningCameraMan>> m_StateMachine;
+
+		Vec3 m_StartEye;
+		Vec3 m_StartAt;
+		Vec3 m_EndEye;
+		Vec3 m_EndAt;
+		Vec3 m_CurrntAt;
+		float m_TotalTime;
+	};
+
+	//------------------------------------------------------
+	//オープニングカメラステート
+	//------------------------------------------------------
+
+	//ゴール
+	class OPCMoveToGoal :public ObjState<OpeningCameraMan>
+	{
+		OPCMoveToGoal() {}
+	public:
+		DECLARE_SINGLETON_INSTANCE(OPCMoveToGoal)
+		void Enter(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Execute(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Exit(const shared_ptr<OpeningCameraMan>&obj)override;
+	};
+
+	//スタート
+	class OPCMoveToStart :public ObjState<OpeningCameraMan>
+	{
+		OPCMoveToStart() {}
+	public:
+		DECLARE_SINGLETON_INSTANCE(OPCMoveToStart)
+		void Enter(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Execute(const shared_ptr<OpeningCameraMan>&obj)override;
+		void Exit(const shared_ptr<OpeningCameraMan>&obj)override;
+	};
+	//
 	//-----------------------------------------------------------------
 	//イベント関係オブジェクト宣言
 	//-----------------------------------------------------------------

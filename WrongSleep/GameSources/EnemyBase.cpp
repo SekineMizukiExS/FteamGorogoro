@@ -6,16 +6,107 @@ namespace basecross
 	//前方定義
 	class GameManager;
 	class EnemyBase;
+	//------------------------------------------------------
+	//Enemyセルマップ
+	//------------------------------------------------------
+	EnemyCellMap::EnemyCellMap(const shared_ptr<Stage>&StagePtr, IXMLDOMNodePtr pNode)
+		:StageCellMap(StagePtr)
+	{
+		auto MapKeyStr = XmlDocReader::GetAttribute(pNode, L"MapKey");
+		auto MiniPosStr = XmlDocReader::GetAttribute(pNode, L"MiniPos");
+		auto PieceSizeStr = XmlDocReader::GetAttribute(pNode, L"PieceSize");
+		auto PieceCountXStr = XmlDocReader::GetAttribute(pNode, L"PieceCountX");
+		auto PieceCountZStr = XmlDocReader::GetAttribute(pNode, L"PieceCountZ");
+		auto DefaultCostStr = XmlDocReader::GetAttribute(pNode, L"DefaultCost");
+
+		m_MapKey = MapKeyStr;
+
+		//トークン（カラム）の配列
+		vector<wstring> Tokens;
+		//トークン（カラム）単位で文字列を抽出(L','をデリミタとして区分け)
+		//Position
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, MiniPosStr, L',');
+		//各トークン（カラム）を読み込む
+		m_MiniPos = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+
+		m_PieceSize = (float)_wtof(PieceSizeStr.c_str());
+
+		m_PieceCountX = (UINT)_wtoi(PieceCountXStr.c_str());
+
+		m_PieceCountZ = (UINT)_wtoi(PieceCountZStr.c_str());
+
+		m_DefaultCost = (int)_wtoi(DefaultCostStr.c_str());
+	}
+
+	void EnemyCellMap::OnCreate()
+	{
+		StageCellMap::CreateCellMap(m_MiniPos, m_PieceSize, m_PieceCountX, m_PieceCountZ, m_DefaultCost);
+
+		StageCellMap::OnCreate();
+		SetDrawActive(true);
+
+		GameManager::GetManager()->GetEnemyManager()->AddCellMap(m_MapKey, GetThis<EnemyCellMap>());
+	}
 	//----------------------------------------
 	///エネミー管理クラス
 	//----------------------------------------
 	struct EnemyManager::Impl
 	{
+		//ステージセルマップ
+		map<wstring, shared_ptr<EnemyCellMap>> m_MapList;
+
 		Impl()
-		{}
+		{
+			m_MapList.clear();
+		}
 		~Impl() {}
 
+		void SetCellMapData(const wstring& Key, const shared_ptr<EnemyCellMap> CellMap)
+		{
+			m_MapList[Key] = CellMap;
+		}
+
+		shared_ptr<EnemyCellMap> GetCellMapData(const wstring& Key) { return m_MapList[Key]; }
+
+		vector<shared_ptr<EnemyCellMap>> GetCellMapVec();
+
+		bool ChackIntoTarget(const AABB& targetPosition, shared_ptr<EnemyCellMap>&Out);
 	};
+
+	vector<shared_ptr<EnemyCellMap>> EnemyManager::Impl::GetCellMapVec()
+	{
+		vector<shared_ptr<EnemyCellMap>> resultVec;
+		resultVec.clear();
+		auto begin = m_MapList.begin();
+		auto end = m_MapList.end();
+		for (begin; begin != end; begin++)
+		{
+			resultVec.push_back(begin->second);
+		}
+
+		return resultVec;
+	}
+
+	bool EnemyManager::Impl::ChackIntoTarget(const AABB& targetVol,shared_ptr<EnemyCellMap>&Out)
+	{
+		for (auto CellMap :m_MapList)
+		{
+			AABB MapVol;
+			CellMap.second->GetMapAABB(MapVol);
+			//マップに目標がいたら
+			if (HitTest::AABB_AABB(MapVol, targetVol))
+			{
+				Out = CellMap.second;
+				return true;
+			}
+		}
+		return false;
+	}
 
 	EnemyManager::EnemyManager()
 		:pImpl(make_unique<Impl>())
@@ -26,9 +117,19 @@ namespace basecross
 	EnemyManager::~EnemyManager()
 	{}
 
-	void EnemyManager::SetEnemyObject(const shared_ptr<GameObject>&ObjectPtr)
+	void EnemyManager::AddCellMap(const wstring&Key, const shared_ptr<EnemyCellMap>&CellMap)
 	{
-		
+		pImpl->SetCellMapData(Key, CellMap);
+	}
+
+	weak_ptr<EnemyCellMap> EnemyManager::GetCellMap(const wstring& MapKey)
+	{
+		return pImpl->GetCellMapData(MapKey);
+	}
+
+	vector<shared_ptr<EnemyCellMap>> EnemyManager::GetCellMapVec()
+	{
+		return pImpl->GetCellMapVec();
 	}
 
 	void EnemyManager::OnEvent(const shared_ptr<Event>&event)
@@ -87,8 +188,6 @@ namespace basecross
 	//Enemyクラスの実装
 	//-------------------------------------------
 	//Static変数の実体
-	weak_ptr<StageCellMap> EnemyBase::_CellMap;
-
 	EnemyBase::EnemyBase(const shared_ptr<Stage>&Stage)
 		:GameObject(Stage)
 	{
@@ -98,12 +197,15 @@ namespace basecross
 	EnemyBase::EnemyBase(const shared_ptr<Stage>&Stage, IXMLDOMNodePtr pNode)
 		:GameObject(Stage)
 	{
+		auto MapKeyStr = XmlDocReader::GetAttribute(pNode, L"MapKey");
 		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
 		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
 		auto PosStr = XmlDocReader::GetAttribute(pNode, L"Pos");
 		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
 		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 
+		//マップキー
+		m_MapKey = MapKeyStr;
 		//メッシュ
 		_MeshKey = MeshStr;
 		//テクスチャ
@@ -186,6 +288,23 @@ namespace basecross
 		GetStage()->RemoveGameObject<EnemyBase>(GetThis<EnemyBase>());
 	}
 
+	void EnemyBase::OnCollisionEnter(shared_ptr<GameObject>&obj)
+	{
+		if (obj->FindTag(L"Obstacles")&&GetBehavior<EnemyBehavior>()->GetMoveActive())
+		{
+			auto TransComp = GetComponent<Transform>();
+			auto BeforePos = GetBehavior<EnemyBehavior>()->GetBeforePos();
+			TransComp->SetPosition(BeforePos);
+			auto stg = GetStage();
+			auto teststg = dynamic_pointer_cast<StageBase>(stg);
+			if (teststg) {
+				teststg->Effectplay(L"Splash_EF", obj->GetComponent<Transform>()->GetPosition());
+			}
+
+			GetStage()->RemoveGameObject<GameObject>(obj);
+		}
+	}
+
 	//-------------------------------------------
 	//Enemyステートマシン実装
 	//-------------------------------------------
@@ -260,7 +379,7 @@ namespace basecross
 		m_SteteMachine->ChangeState(TravelingState::Instance());
 
 		//経路探索
-		auto MapPtr = _CellMap.lock();
+		auto MapPtr = GetCellMap().lock();
 		if (MapPtr)
 		{
 			AddComponent<PathSearch>(MapPtr);

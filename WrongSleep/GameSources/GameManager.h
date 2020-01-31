@@ -7,6 +7,26 @@ namespace basecross {
 	class EnemyManager;
 	struct GameEvent;
 	class EventCameraMan;
+	class DataBinaryIO;
+
+	//------------------------------------------------------
+	//セーブデータ形式
+	//------------------------------------------------------
+	struct SaveData
+	{
+		//前回終了時のマップ名
+		wstring LastMapName;
+		//前回マップの読込時のプレイヤー地点名
+		wstring LastLoadBlock;
+		//累計プレイ時間
+		float CumulativeTime;
+
+		SaveData(){}
+		SaveData(const wstring& MapName, const wstring& LoadBlock, const float& Time)
+			:LastMapName(MapName), LastLoadBlock(LoadBlock), CumulativeTime(Time)
+		{}
+	};
+
 	//ゲームイベントタイプ
 	/*
 	*0標準
@@ -21,7 +41,8 @@ namespace basecross {
 		Gimmick,
 		GimmickAction,
 		MoveStage,
-		CutScene
+		CutScene,
+		SaveDataIO
 	};
 
 	class GameEventInterface
@@ -238,7 +259,7 @@ namespace basecross {
 	//-----------------------------------------
 	//ゲームマネージャークラス実装(ステージが切り替わる度にリセット)
 	//-----------------------------------------
-	class GameManager final:public ObjectInterface
+	class GameManager :public ObjectInterface
 	{
 		// デリーター
 		struct GMDeleter
@@ -258,9 +279,23 @@ namespace basecross {
 		map<wstring,shared_ptr<BaseResource>> _ResMap;		///<-ステージ独自で使用するリソース 
 		shared_ptr<GameEventDispatcher> m_GameEventDispatcher;	///< イベント送信オブジェクト
 
+		shared_ptr<DataBinaryIO> m_DataIO;
+
 		map<wstring, Vec3> _SettingPosData; ///<-初期配置データ群
 
+		int MaxKeyNums;						///<-クリアに必要な鍵数
+
+		int m_CurrntKeyNums;
+
+		int MaxMoveCount;					///<-ステージ上で移動できる回数
+
+		wstring _CurrntSaveDataPath;
+
 		wstring _XMLFileName;
+
+		wstring _LoadPosKey;
+
+		float _CumulativeTime; ///<-累計プレイ時間
 
 		std::mutex _mutex;										///<-マルチスレッド用
 		bool _LoadEnd = false;									///<<-ロード終了したらTrue
@@ -309,6 +344,7 @@ namespace basecross {
 			希望：別スレッドで実行し、終了したらTrue
 		*/
 		//--------------------------------------------------------------------------------------
+		void SaveGameData();
 		//--------------------------------------------------------------------------------------
 		/*!
 		@brief ステージの配置
@@ -321,11 +357,11 @@ namespace basecross {
 		@return	なし
 		*/
 		//--------------------------------------------------------------------------------------
-		void LoadStart(const StageType type);
+		void LoadStart();
 
 		void OnCreate()override;
 
-		void OnUpdate() {}
+		void OnUpdate();
 
 		void OnEvent(const shared_ptr<Event>&event)override;
 
@@ -341,11 +377,20 @@ namespace basecross {
 		
 		const wstring GetXMLFilePath()const { return _XMLFileName; }
 
+		const wstring GetLoadPosKey()const { return _LoadPosKey; }
+
+		const float &GetCumulativeTime()const { return _CumulativeTime; }
+
 		shared_ptr<GameEventDispatcher> GetGameEventDispatcher()const { return m_GameEventDispatcher; }
+
+		shared_ptr<DataBinaryIO> GetDataIO()const { return m_DataIO; }
 
 		const shared_ptr<Stage> GetTargetStage()const { return _TargetStage; }
 
 		const Vec3 GetSettingPosData(const wstring& PosKey) { return _SettingPosData[PosKey]; }
+
+		//鍵数
+		const bool CheckKeyVol() { return MaxKeyNums == m_CurrntKeyNums; }
 
 		//リソースの読込が終わったらTrue	
 		bool GetLoadEnd()const
@@ -364,12 +409,39 @@ namespace basecross {
 			_TargetStage = stage;
 		}
 
-		void SetXMLFilePath(const wstring& FilePath)
+		void SetXMLFilePath(const wstring &FilePath)
 		{
 			_XMLFileName = FilePath;
 		}
 
+		void SetLoadPosKey(const wstring &PosKey)
+		{
+			_LoadPosKey = PosKey;
+		}
+
+		void AddKeyNums(const int &Vol)
+		{
+			m_CurrntKeyNums += Vol;
+		}
+
+		void SetSaveData(const SaveData& SaveDataPtr,const wstring DataPath)
+		{
+			_CurrntSaveDataPath = DataPath;
+			_XMLFileName = SaveDataPtr.LastMapName;
+			_LoadPosKey = SaveDataPtr.LastLoadBlock;
+			_CumulativeTime = SaveDataPtr.CumulativeTime;
+		}
+
 		void SetSettingPosData(const wstring& FilePath);
+
+		void MovedPlayer() 
+		{
+			MaxMoveCount--;
+			if (MaxMoveCount <= 0)
+			{
+				PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
+			}
+		}
 
 		void ChangeEventCamera();
 
@@ -382,20 +454,20 @@ namespace basecross {
 		@param[in]	セレクトステージ
 		*/
 		//--------------------------------------------------------------------------------------
-		void LoadResource(const StageType type);
+		void LoadResource();
 
 		//Tex
 		void TextureLoad(const wstring& Key, const wstring& TextureFileName, const wstring& TexType = L"WIC")
 		{
 			auto Res = App::GetApp()->RegisterTexture(Key, TextureFileName, TexType);
-			_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
+			//_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
 		}
 
 		//wav
 		void AudioLoad(const wstring& Key, const wstring& WavFileName)
 		{
 			auto Res = App::GetApp()->RegisterWav(Key, WavFileName);
-			_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
+			//_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
 		}
 
 		//Effect
@@ -403,7 +475,7 @@ namespace basecross {
 		{
 			auto EfkInter = App::GetApp()->GetScene<Scene>()->GetEfkInterface();
 			auto Res = App::GetApp()->RegisterEffect(Key, EfkFileName, EfkInter, magnification);
-			_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
+			//_ResMap[Key] = static_pointer_cast<BaseResource>(Res);
 		}
 		//		
 		shared_ptr<EnemyManager> _EnemyManager;

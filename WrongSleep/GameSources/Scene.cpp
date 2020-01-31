@@ -23,8 +23,14 @@ namespace basecross{
 			//エフェクトインターフェイス生成
 			_EfkInterface = ObjectFactory::Create<EfkInterface>();
 			GameManager::CreateManager();
+			//GameManager::GetManager()->GetDataIO()->SetSaveParam(L"TSET", L"SSSKD", 55.0f);
+			//wstring MediaPath;
+			//App::GetApp()->GetDataDirectory(MediaPath);
+			//MediaPath += L"SaveDatas/Test1.Test";
+			//GameManager::GetManager()->GetDataIO()->Test(MediaPath,L"OOLS");
+
 			SetUnionTextures();
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToMovieStage");
 		}
 		catch (...) {
 			throw;
@@ -33,8 +39,7 @@ namespace basecross{
 
 	void Scene::SetUnionTextures()
 	{
-		wstring mediaPath;
-		App::GetApp()->GetDataDirectory(mediaPath);
+		/*
 		App::GetApp()->RegisterTexture(L"Test_TX", mediaPath + L"Textures/" + L"KB.png");
 		App::GetApp()->RegisterTexture(L"LeafMat_TX", mediaPath + L"Textures/" + L"leafmat_tx.png");
 		App::GetApp()->RegisterTexture(L"LeafMatB_TX", mediaPath + L"Textures/" + L"leafmatBlack_tx.png");
@@ -44,7 +49,7 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"clearG_TX", mediaPath + L"Textures/" + L"clearGreen.png");
 		App::GetApp()->RegisterTexture(L"clearmat_TX", mediaPath + L"Textures/" + L"clearmat.png");
 		App::GetApp()->RegisterTexture(L"skybox_TX", mediaPath + L"Textures/" + L"skybox_tx.png");
-		App::GetApp()->RegisterTexture(L"Title_TX", mediaPath + L"Textures/" + L"Title.png");
+		App::GetApp()->RegisterTexture(L"Title_TX", mediaPath + L"Textures/" + L"Title-Logo.png");
 
 		App::GetApp()->RegisterTexture(L"Bridge_TX", mediaPath + L"Textures/" + L"Tx_Bridge.png");
 		App::GetApp()->RegisterTexture(L"Fence_TX", mediaPath + L"Textures/" + L"Tx_Fence.png");
@@ -52,7 +57,7 @@ namespace basecross{
 		App::GetApp()->RegisterTexture(L"WarpPad_TX", mediaPath + L"Textures/" + L"Tx_WarpPad.png");
 		App::GetApp()->RegisterTexture(L"Tree_TX", mediaPath + L"Textures/" + L"Tx_Tree.png");
 		App::GetApp()->RegisterTexture(L"Pedestal_TX", mediaPath + L"Textures/" + L"Tx_Pedestal.png");
-
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", mediaPath + L"Textures/" + L"number.png");
 		//モデルテクスチャ
 		App::GetApp()->RegisterTexture(L"Button_TX", mediaPath + L"Models/" + L"Tx_Button.png");
 
@@ -97,6 +102,21 @@ namespace basecross{
 
 		App::GetApp()->RegisterEffect(L"Splash_EF", mediaPath + L"Effect/" + L"splash_efk.efk",_EfkInterface,10.0f);
 		App::GetApp()->RegisterEffect(L"SideSplash_EF", mediaPath + L"Effect/" + L"sidesplash.efk", _EfkInterface, 1.0f);
+		*/
+
+		//test
+		wstring mediaPath;
+		App::GetApp()->GetDataDirectory(mediaPath);
+		App::GetApp()->RegisterEffect(L"TestEfk", mediaPath + L"Effects/EnemyHit.efk", _EfkInterface, 10);
+		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"MitaGTmodels/", L"ValkylyeModel_TypeC_Valkylye.bmf", true);
+		//App::GetApp()->RegisterResource(L"MITAGTV_MD", multiModelMesh);
+
+		//auto multiModelMesh = MultiMeshResource::CreateBoneModelMultiMesh(mediaPath + L"Models/", L"Player2_Motion.bmf", true);
+		//App::GetApp()->RegisterResource(L"Player3_MD", multiModelMesh);
+
+		App::GetApp()->RegisterEffect(L"Splash_EF", mediaPath + L"Effect/" + L"splash_efk.efk", _EfkInterface, 10.0f);
+		App::GetApp()->RegisterEffect(L"SideSplash_EF", mediaPath + L"Effect/" + L"sidesplash.efk", _EfkInterface, 1.0f);
+
 	}
 
 	Scene::~Scene() {
@@ -104,7 +124,6 @@ namespace basecross{
 
 	void Scene::OnUpdate()
 	{
-		//GameManager::GetManager()->OnUpdate();
 		SceneBase::OnUpdate();
 	}
 
@@ -113,6 +132,11 @@ namespace basecross{
 		if (event->m_MsgStr == L"ToTitleStage") {
 			//最初のアクティブステージの設定
 			ResetActiveStage<TitleStage>();
+			return;
+		}
+		else if (event->m_MsgStr == L"ToLoadStage")
+		{
+			ResetActiveStage<LoadStage>();
 			return;
 		}
 		else if (event->m_MsgStr == L"ToMainGameStage")

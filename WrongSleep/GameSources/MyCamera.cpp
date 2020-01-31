@@ -188,15 +188,33 @@ namespace basecross {
 		float fThumbRX = 0.0f;
 		WORD wButtons = 0;
 		if (cntlVec[0].bConnected) {
-			//fThumbRY = cntlVec[0].fThumbRY;
-			//fThumbRX = cntlVec[0].fThumbRX;
-			fThumbRY = 0.0f;
-			fThumbRX = 0.0f;
+			float RY = cntlVec[0].fThumbRY;
+			float RX = cntlVec[0].fThumbRX;
+			//fThumbRY = 0.0f;
+			//fThumbRX = 0.0f;
 			wButtons = cntlVec[0].wButtons;
+			if (RY >= 0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_UP;
+			}
+			else if (RY <= -0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_DOWN;
+			}
+
+			if (RX <= -0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_LEFT;
+			}
+			else if (RX >= 0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_RIGHT;
+			}
+
 		}
 
 		//上下角度の変更
-		if (fThumbRY >= 0.1f || keyData.m_bPushKeyTbl[VK_UP]) {
+		if (fThumbRY >= 0.1f || keyData.m_bPushKeyTbl[VK_UP] || wButtons == XINPUT_GAMEPAD_DPAD_UP) {
 			if (IsUDBaseMode()) {
 				m_RadY += m_CameraUpDownSpeed * elapsedTime;
 			}
@@ -204,7 +222,7 @@ namespace basecross {
 				m_RadY -= m_CameraUpDownSpeed * elapsedTime;
 			}
 		}
-		else if (fThumbRY <= -0.1f || keyData.m_bPushKeyTbl[VK_DOWN]) {
+		else if (fThumbRY <= -0.1f || keyData.m_bPushKeyTbl[VK_DOWN] || wButtons == XINPUT_GAMEPAD_DPAD_DOWN) {
 			if (IsUDBaseMode()) {
 				m_RadY -= m_CameraUpDownSpeed * elapsedTime;
 			}
@@ -221,7 +239,7 @@ namespace basecross {
 		//}
 		armVec.y = sin(m_RadY);
 		//ここでY軸回転を作成
-		if (fThumbRX != 0 || keyData.m_bPushKeyTbl[VK_LEFT] || keyData.m_bPushKeyTbl[VK_RIGHT]) {
+		if (fThumbRX != 0 || keyData.m_bPushKeyTbl[VK_LEFT] || keyData.m_bPushKeyTbl[VK_RIGHT] || wButtons == XINPUT_GAMEPAD_DPAD_LEFT || wButtons == XINPUT_GAMEPAD_DPAD_RIGHT) {
 			//回転スピードを反映
 			if (fThumbRX != 0) {
 				if (IsLRBaseMode()) {
@@ -231,7 +249,7 @@ namespace basecross {
 					m_RadXZ += fThumbRX * elapsedTime * m_RotSpeed;
 				}
 			}
-			else if (keyData.m_bPushKeyTbl[VK_LEFT]) {
+			else if (keyData.m_bPushKeyTbl[VK_LEFT] || wButtons == XINPUT_GAMEPAD_DPAD_LEFT) {
 				if (IsLRBaseMode()) {
 					m_RadXZ += elapsedTime * m_RotSpeed;
 				}
@@ -239,7 +257,7 @@ namespace basecross {
 					m_RadXZ -= elapsedTime * m_RotSpeed;
 				}
 			}
-			else if (keyData.m_bPushKeyTbl[VK_RIGHT]) {
+			else if (keyData.m_bPushKeyTbl[VK_RIGHT] || wButtons == XINPUT_GAMEPAD_DPAD_RIGHT) {
 				if (IsLRBaseMode()) {
 					m_RadXZ -= elapsedTime * m_RotSpeed;
 				}
@@ -281,7 +299,7 @@ namespace basecross {
 		}
 		//アームの変更
 		//Dパッド下
-		if (wButtons & XINPUT_GAMEPAD_DPAD_DOWN || keyData.m_bPushKeyTbl[VK_NEXT]) {
+		if (wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER || keyData.m_bPushKeyTbl[VK_NEXT]) {
 			//カメラ位置を引く
 			m_ArmLen += m_ZoomSpeed;
 			if (m_ArmLen >= m_MaxArm) {
@@ -290,7 +308,7 @@ namespace basecross {
 			}
 		}
 		//Dパッド上
-		else if (wButtons & XINPUT_GAMEPAD_DPAD_UP || keyData.m_bPushKeyTbl[VK_PRIOR]) {
+		else if (wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER || keyData.m_bPushKeyTbl[VK_PRIOR]) {
 			//カメラ位置を寄る
 			m_ArmLen -= m_ZoomSpeed;
 			if (m_ArmLen <= m_MinArm) {

@@ -134,6 +134,10 @@ namespace basecross
 		GameEventType type = gameevent->m_Type;
 		shared_ptr<EventCameraMan> ECM;
 		shared_ptr<MovingObject> ER;
+		shared_ptr<LoadBlock> LB;
+		shared_ptr<SaveDataObject> SDObj;
+		wstring DataPath;
+		SaveData DataFile;
 
 		switch (type)
 		{
@@ -159,11 +163,23 @@ namespace basecross
 			break;
 			//ステージ移動イベント
 		case basecross::GameEventType::MoveStage:
+			LB = dynamic_pointer_cast<LoadBlock>(gameevent->m_Sender.lock());
 			GameManager::GetManager()->SetXMLFilePath(gameevent->m_MsgStr);
+			GameManager::GetManager()->SetLoadPosKey(LB->GetTargetPosStr());
 			GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 			break;
 			//カットシーン・イベントシーンイベント
 		case basecross::GameEventType::CutScene:
+			//イベント発生地点のKeyを取得する
+			//
+			break;
+			//セーブデータ選沢
+		case basecross::GameEventType::SaveDataIO:
+			SDObj = dynamic_pointer_cast<SaveDataObject>(gameevent->m_Sender.lock());
+			DataPath = SDObj->GetSaveDataPath();
+			DataFile = GameManager::GetManager()->GetDataIO()->ReadDataFile(DataPath);
+			GameManager::GetManager()->SetSaveData(DataFile,DataPath);
+			GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
 			break;
 		default:
 			break;
@@ -178,10 +194,11 @@ namespace basecross
 	unique_ptr<GameManager, GameManager::GMDeleter> GameManager::m_Ins;
 	//構築と破棄
 	GameManager::GameManager()
-		:_TargetStage(nullptr),_XMLFileName(L"NewMapTest")
+		:_TargetStage(nullptr),_XMLFileName(L"TStageMap"),_LoadPosKey(L"PlayerStart"),MaxMoveCount(10000),m_CurrntKeyNums(0)
 	{
 		_EnemyManager = ObjectFactory::Create<EnemyManager>();
 		m_GameEventDispatcher = make_shared<GameEventDispatcher>();
+		m_DataIO = make_shared<DataBinaryIO>();
 	}
 
 
@@ -233,14 +250,20 @@ namespace basecross
 		}
 	}
 
-	void GameManager::LoadStart(const StageType type)
+	void GameManager::SaveGameData()
 	{
-		std::thread LoadThread(&GameManager::LoadResource, this, type);
+		m_DataIO->SetSaveParam(_XMLFileName, _LoadPosKey, _CumulativeTime);
+		m_DataIO->WriteDataFile(_CurrntSaveDataPath);
+	}
+
+	void GameManager::LoadStart()
+	{
+		std::thread LoadThread(&GameManager::LoadResource, this);
 		LoadThread.detach();
 	}
 
 	//
-	void GameManager::LoadResource(const StageType type)
+	void GameManager::LoadResource()
 	{
 		_mutex.lock();
 		_LoadEnd = false;
@@ -253,19 +276,68 @@ namespace basecross
 		wstring TexturePath = mediaPath + L"Textures/";
 		wstring ModelPath = mediaPath + L"Models/";
 		wstring EffectPath = mediaPath + L"Effect/";
-		wstring SoundPath = mediaPath;
+		wstring BGMPath = mediaPath + L"Sounds/BGM/";
+		wstring SEPath = mediaPath + L"Sounds/SE/";
 
-		switch (type)
-		{
-		case StageType::TitleStage://タイトルステージで使うデータ
-			break;
-		case StageType::GameStage:
-			break;
-		case StageType::LoadStage:
-			break;
-		case StageType::SelectStage:
-			break;
-		}
+		//リソースの読込
+		App::GetApp()->RegisterTexture(L"Test_TX", TexturePath + L"KB.png");
+		App::GetApp()->RegisterTexture(L"LeafMat_TX", TexturePath + L"leafmat_tx.png");
+		App::GetApp()->RegisterTexture(L"LeafMatB_TX", TexturePath + L"leafmatBlack_tx.png");
+		App::GetApp()->RegisterTexture(L"Player_TX", TexturePath + L"Tx_Player.png");
+		App::GetApp()->RegisterTexture(L"Player002_TX", TexturePath + L"Tx_Player002.png");
+		App::GetApp()->RegisterTexture(L"RedApple_TX", TexturePath + L"Tx_RedApple.png");
+		App::GetApp()->RegisterTexture(L"clearG_TX", TexturePath + L"clearGreen.png");
+		App::GetApp()->RegisterTexture(L"clearmat_TX", TexturePath + L"clearmat.png");
+		App::GetApp()->RegisterTexture(L"skybox_TX", TexturePath + L"skybox_tx.png");
+		App::GetApp()->RegisterTexture(L"Title_TX", TexturePath + L"Title-Logo.png");
+
+		App::GetApp()->RegisterTexture(L"Bridge_TX", TexturePath + L"Tx_Bridge.png");
+		App::GetApp()->RegisterTexture(L"Fence_TX", TexturePath + L"Tx_Fence.png");
+		App::GetApp()->RegisterTexture(L"Flower_TX", TexturePath + L"Tx_Flower.png");
+		App::GetApp()->RegisterTexture(L"WarpPad_TX", TexturePath + L"Tx_WarpPad.png");
+		App::GetApp()->RegisterTexture(L"Tree_TX", TexturePath + L"Tx_Tree.png");
+		App::GetApp()->RegisterTexture(L"Pedestal_TX", TexturePath + L"Tx_Pedestal.png");
+		App::GetApp()->RegisterTexture(L"NUMBER_TX", TexturePath + L"number.png");
+		//モデルテクスチャ
+		App::GetApp()->RegisterTexture(L"Button_TX", ModelPath + L"Tx_Button.png");
+		App::GetApp()->RegisterTexture(L"Key_TX", TexturePath + L"Tx_Key.png");
+
+		auto modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"MatTest.bmf", true);
+		App::GetApp()->RegisterResource(L"MatTest_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"PlayerModel.bmf");
+		App::GetApp()->RegisterResource(L"Player_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Player2.bmf");
+		App::GetApp()->RegisterResource(L"Player2_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Mat.bmf", true);
+		App::GetApp()->RegisterResource(L"Mat_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Apple2.bmf", true);
+		App::GetApp()->RegisterResource(L"Apple_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"skyboxObj.bmf", true);
+		App::GetApp()->RegisterResource(L"SkyBox_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Key.bmf", true);
+		App::GetApp()->RegisterResource(L"Key_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateBoneModelMesh(ModelPath, L"Button.bmf");
+		App::GetApp()->RegisterResource(L"Switch_MD", modelMesh);
+
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_bridge.bmf");
+		App::GetApp()->RegisterResource(L"Bridge_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_Fence.bmf");
+		App::GetApp()->RegisterResource(L"Fence_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_Flower.bmf");
+		App::GetApp()->RegisterResource(L"Flower_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_WarpPad.bmf");
+		App::GetApp()->RegisterResource(L"WarpPad_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"SAModel_Tree.bmf");
+		App::GetApp()->RegisterResource(L"Tree_MD", modelMesh);
+		modelMesh = MeshResource::CreateStaticModelMesh(ModelPath, L"Pedestal.bmf");
+		App::GetApp()->RegisterResource(L"Pedestal_MD", modelMesh);
+
+		App::GetApp()->RegisterResource(L"TestCube", MeshResource::CreateCube(1.0f, true));
+
+		//音素材
+		App::GetApp()->RegisterWav(L"MainBGM_SD", BGMPath + L"MainMusicT.wav");
 
 		_mutex.lock();
 		_LoadEnd = true;
@@ -301,25 +373,45 @@ namespace basecross
 
 			_SettingPosData[PosKey] = Pos;
 		}
+
+		//ステージクリア条件を読み込む
+		auto StageNode = XMLRead->GetSelectSingleNode(L"root/Stage");
+		//鍵の個数
+		auto KeyNumStr = XmlDocReader::GetAttribute(StageNode, L"KeyNum");
+
+		MaxKeyNums = (int)_wtoi(KeyNumStr.c_str());
+
+		//Bonusアイテムの個数
+
+		//移動回数制限
+		auto MoveMaxLimitStr = XmlDocReader::GetAttribute(StageNode, L"MoveLimit");
+		MaxMoveCount = (int)_wtoi(MoveMaxLimitStr.c_str());
+		m_CurrntKeyNums = 0;
 	}
 
 	void GameManager::OnCreate()
 	{
+		
 		//_TargetStage->AddGameObject<DebugObj>();
 	}
 
 	void GameManager::OnEvent(const shared_ptr<Event>&event)
 	{
-		if (event->m_MsgStr == L"EventStart")
+		if (event->m_MsgStr == L"Save")
 		{
-			//auto EventCamera = _TargetStage->GetSharedGameObject<EventCameraMan>(L"EventCameraMan");
-			//SendEvent(GetThis<ObjectInterface>(), _TargetStage, L"ChangeCamera");
+			SaveGameData();
 		}
 	}
 
 	void GameManager::ChangeEventCamera()
 	{
 		
+	}
+
+	void GameManager::OnUpdate()
+	{
+		auto Delta = App::GetApp()->GetElapsedTime();
+		_CumulativeTime += Delta;
 	}
 
 	//-----------------------------------------------------------

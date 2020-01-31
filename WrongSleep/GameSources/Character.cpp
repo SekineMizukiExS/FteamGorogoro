@@ -62,6 +62,8 @@ namespace basecross{
 		//vector<VertexPositionColorTexture>& verteces = {};
 		//DrawComp->SetDrawActive(false);
 
+		AddTag(L"Obstacles");
+
 		TransComp->SetPosition(_Pos);
 		TransComp->SetScale(_Scal);
 		TransComp->SetRotation(_Rot);
@@ -72,6 +74,46 @@ namespace basecross{
 		//ptrColl->SetDrawActive(true);
 		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
 		Group->IntoGroup(GetThis<StageObjects>());
+	}
+
+	//------------------------------------------------------
+	//SaveData
+	//------------------------------------------------------
+	SaveDataObject::SaveDataObject(const shared_ptr<Stage>&StagePtr, const wstring& SaveDataPath, const wstring& MeshKey, const wstring& TexKey,
+		const Vec3 Pos, const Vec3 Scale, const Vec3 Rotation)
+		:GameObject(StagePtr)
+	{
+		_Pos = Pos;
+		_Scal = Scale;
+		_Rot = Rotation;
+		_MeshKey = MeshKey;
+		_TexKey = TexKey;
+		m_DataPath = SaveDataPath;
+	}
+
+	void SaveDataObject::OnCreate()
+	{
+		auto DrawComp = AddComponent<AreaDraw>();
+		auto TransComp = AddComponent<Transform>();
+
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
+
+		TransComp->SetPosition(_Pos);
+		TransComp->SetScale(_Scal);
+		TransComp->SetRotation(_Rot);
+
+		auto ptrColl = AddComponent<CollisionObb>();
+		ptrColl->SetFixed(false);
+	}
+
+	void SaveDataObject::OnCollisionEnter(shared_ptr<GameObject>& other)
+	{
+		auto PlayerPtr = dynamic_pointer_cast<Player>(other);
+		if (PlayerPtr)
+		{
+			SendGameEvent(GetThis<GameEventInterface>(), L"LoadData", GameEventType::SaveDataIO);
+		}
 	}
 
 	//
@@ -151,8 +193,8 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
 		//ptrColl->SetDrawActive(true);
-		auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
-		Group->IntoGroup(GetThis<StageObjects>());
+		//auto Group = GetStage()->GetSharedObjectGroup(L"StageObjects");
+		//Group->IntoGroup(GetThis<StageObjects>());
 	}
 
 
@@ -166,7 +208,8 @@ namespace basecross{
 		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
 		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 
-		auto MapStr = XmlDocReader::GetAttribute(pNode, L"MapStr");
+		auto MapStr = XmlDocReader::GetAttribute(pNode, L"LoadMapFile");
+		auto TargetPosStr = XmlDocReader::GetAttribute(pNode, L"TargetPosKey");
 		//メッシュ
 		_MeshKey = MeshStr;
 
@@ -201,6 +244,8 @@ namespace basecross{
 		_TexKey = TexStr;
 
 		_MapStr = MapStr;
+
+		_TargetPosStr = TargetPosStr;
 	}
 
 	void LoadBlock::OnCreate()
@@ -216,12 +261,13 @@ namespace basecross{
 		TransComp->SetScale(_Scal);
 		TransComp->SetRotation(_Rot);
 
+		GetStage()->SetSharedGameObject(L"Goal", GetThis<LoadBlock>());
 	}
 
 	void LoadBlock::OnUpdate()
 	{
 		auto PlayerObj = GetStage()->GetSharedGameObject<Player>(L"Player");
-		if (PlayerObj)
+		if (PlayerObj->GetMoveActive()&&GameManager::GetManager()->CheckKeyVol())
 		{
 			AABB PVol = AABB(PlayerObj->GetComponent<Transform>()->GetPosition(), 1.0f, 1.0f, 1.0f);
 			_SensingArea = AABB(GetComponent<Transform>()->GetPosition(), 2, 2, 2);
@@ -246,6 +292,10 @@ namespace basecross{
 		auto LinkStr = XmlDocReader::GetAttribute(pNode, L"LINKCODE");
 		auto MovingTypeStr = XmlDocReader::GetAttribute(pNode, L"MovingType");
 
+		//ループするかどうか・
+
+		//モーションType
+		_MoveType = (MovingType)_wtoi(MovingTypeStr.c_str());
 		//メッシュ
 		_MeshKey = MeshStr;
 		//テクスチャ
@@ -295,24 +345,24 @@ namespace basecross{
 		DrawComp->SetEmissive(Col4(1, 1, 1, 1));
 
 		auto TransComp = AddComponent<Transform>();
-		TransComp->SetPosition(-15, 0, -12);
-		TransComp->SetScale(35, 1, 5);
-		TransComp->SetRotation(0, 0, 0);
+		TransComp->SetPosition(_Position);
+		TransComp->SetScale(_Scale);
+		TransComp->SetRotation(_Rotate);
 
-		_Start = TransComp->GetScale();
-		_End = Vec3(5, 1, 35);
+		_Start = GameManager::GetManager()->GetSettingPosData(L"MoveStart");
+		_End = GameManager::GetManager()->GetSettingPosData(L"MoveEnd");
 
 		auto Coll = AddComponent<CollisionObb>();
 		Coll->SetFixed(true);
 
 		//イベントレシーバー登録
-		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(L"TESTEVENT", GetThis<ObjectInterface>());
-		GameManager::GetManager()->GetGameEventDispatcher()->AddEventReceiverGroup(L"TESTEVENT", GetThis<GameEventInterface>());
+		App::GetApp()->GetEventDispatcher()->AddEventReceiverGroup(_LinkKey, GetThis<ObjectInterface>());
+		GameManager::GetManager()->GetGameEventDispatcher()->AddEventReceiverGroup(_LinkKey, GetThis<GameEventInterface>());
 	}
 
 	void MovingObject::OnUpdate()
 	{
-		if (_OnEventFlag)
+		if (_OnEventFlag&& _EndFlag)
 		{
 			_OnEventFlag =!TestMove(5.0f);
 		}
@@ -399,22 +449,18 @@ namespace basecross{
 	SwitchObject::SwitchObject(const shared_ptr<Stage>&stageptr, IXMLDOMNodePtr pNode)
 		:GameObject(stageptr)
 	{
-		//auto MeshStr = XmlDocReader::GetAttribute(pNode, L"Mesh");
-		//auto TexStr = XmlDocReader::GetAttribute(pNode, L"Tex");
-		auto PositionNode = XmlDocReader::GetSelectSingleNode(pNode, L"Pos");
-		auto ScaleNode = XmlDocReader::GetSelectSingleNode(pNode, L"Scale");
-		auto RotetaNode = XmlDocReader::GetSelectSingleNode(pNode, L"Rot");
-		auto RoopNode = XmlDocReader::GetAttribute(pNode, L"IsRoop");
+		auto MeshStr = XmlDocReader::GetAttribute(pNode, L"MeshKey");
+		auto TexStr = XmlDocReader::GetAttribute(pNode, L"TexKey");
+		auto PositionStr = XmlDocReader::GetAttribute(pNode, L"Pos");
+		auto ScaleStr = XmlDocReader::GetAttribute(pNode, L"Scale");
+		auto RotateStr = XmlDocReader::GetAttribute(pNode, L"Rot");
+		auto RoopNode = XmlDocReader::GetAttribute(pNode, L"MovingType");
 		auto LinkStr = XmlDocReader::GetAttribute(pNode, L"LINKCODE");
-
-		wstring PositionStr = XmlDocReader::GetText(PositionNode);
-		wstring ScaleStr = XmlDocReader::GetText(ScaleNode);
-		wstring RotetaStr = XmlDocReader::GetText(RotetaNode);
 
 		_roop = (bool)_wtoi(RoopNode.c_str());
 		_LinkKey = LinkStr;
 		//メッシュ
-		//_MeshKey = MeshStr;
+		_MeshKey = MeshStr;
 
 		//トークン（カラム）の配列
 		vector<wstring> Tokens;
@@ -438,13 +484,13 @@ namespace basecross{
 		);
 		//Rot
 		Tokens.clear();
-		Util::WStrToTokenVector(Tokens, RotetaStr, L',');
+		Util::WStrToTokenVector(Tokens, RotateStr, L',');
 		//回転は「XM_PIDIV2」の文字列になっている場合がある
 		_Rot.x = (Tokens[0] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[0].c_str());
 		_Rot.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
 		_Rot.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
 
-		//_TexKey = TexStr;
+		_TexKey = TexStr;
 
 	}
 
@@ -452,13 +498,13 @@ namespace basecross{
 	{
 		//形状作成
 		auto DrawComp = AddComponent<PNTStaticDraw>();
-		DrawComp->SetMeshResource(L"Switch_MD");
-		DrawComp->SetTextureResource(L"Button_TX");
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
 
 		auto TransComp = AddComponent<Transform>();
-		TransComp->SetPosition(40, 0.5, -6);
-		TransComp->SetScale(1, 1, 1);
-		TransComp->SetRotation(0, 0, 0);
+		TransComp->SetPosition(_Pos);
+		TransComp->SetScale(_Scal);
+		TransComp->SetRotation(_Rot);
 
 		auto Coll = AddComponent<CollisionObb>();
 		//Coll->SetFixed(true);
@@ -471,7 +517,7 @@ namespace basecross{
 		{
 			//PostEvent(0.0f, GetThis<ObjectInterface>(), L"TESTEVENT",L"PushSwitch");
 			_ActiveFlag = true;
-			SendGameEvent(GetThis<GameEventInterface>(), L"TESTEVENT", L"PushSwitch",GameEventType::GimmickAction);
+			SendGameEvent(GetThis<GameEventInterface>(), _LinkKey, L"PushSwitch",GameEventType::GimmickAction);
 		}
 	}
 
@@ -601,8 +647,8 @@ namespace basecross{
 		ptrTransform->SetRotation(m_Rotation);
 		ptrTransform->SetPosition(m_Position);
 		//OBB衝突j判定を付ける
-		auto ptrColl = AddComponent<CollisionObb>();
-		ptrColl->SetFixed(true);
+		//auto ptrColl = AddComponent<CollisionObb>();
+		//ptrColl->SetFixed(true);
 		//タグをつける
 		AddTag(L"CMeshBox");
 		//影をつける（シャドウマップを描画する）
@@ -674,8 +720,46 @@ namespace basecross{
 		m_Rotation(Rotation),
 		m_Position(Position),
 		_TexKey(TexKey),
-		_MeshKey(MeshKey)
+		_MeshKey(MeshKey),
+		m_Tag(L"NULL")
 	{
+	}
+
+	//Builder
+	CommonBox::CommonBox(const shared_ptr<Stage>&StagePtr, IXMLDOMNodePtr Node)
+		:GameObject(StagePtr)
+	{
+		auto PosStr = XmlDocReader::GetAttribute(Node, L"Pos");
+		auto ScalStr = XmlDocReader::GetAttribute(Node, L"Scale");
+		auto RotStr = XmlDocReader::GetAttribute(Node, L"Rot");
+		auto MeshStr = XmlDocReader::GetAttribute(Node, L"MeshKey");
+		auto TexKey = XmlDocReader::GetAttribute(Node, L"TexKey");
+		auto TagName = XmlDocReader::GetAttribute(Node, L"Tag");
+
+		//トークン
+		vector<wstring> Tokens;
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, PosStr, L',');
+		m_Position = Vec3((float)_wtof(Tokens[0].c_str()),
+						  (float)_wtof(Tokens[1].c_str()),
+						  (float)_wtof(Tokens[2].c_str()));
+
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, ScalStr, L',');
+		m_Scale = Vec3((float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str()));
+
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, RotStr, L',');
+		m_Rotation = Vec3((float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str()));
+
+		//メッシュ・テクスチャKey
+		_MeshKey = MeshStr;
+		_TexKey = TexKey;
+		m_Tag = TagName;
 	}
 	CommonBox::~CommonBox() {}
 
@@ -689,7 +773,8 @@ namespace basecross{
 		auto ptrColl = AddComponent<CollisionObb>();
 		ptrColl->SetFixed(true);
 		//タグをつける
-		AddTag(L"CommonBox");
+		AddTag(m_Tag);
+		AddTag(L"Obstacles");
 		//影をつける（シャドウマップを描画する）
 		auto shadowPtr = AddComponent<Shadowmap>();
 		//影の形（メッシュ）を設定
@@ -750,6 +835,114 @@ namespace basecross{
 		}
 		//_cnt++;
 		DrawComp->UpdateVertices(vert);
+
+	}
+
+	//-----------------------------------------------------------------
+	//オープニングカメラ関係
+	//-----------------------------------------------------------------
+	OpeningCameraMan::OpeningCameraMan(const shared_ptr<Stage>& StagePtr)
+		:GameObject(StagePtr)
+	{
+
+	}
+
+	OpeningCameraMan::~OpeningCameraMan(){}
+
+	void OpeningCameraMan::OnCreate()
+	{
+		GetStage()->SetSharedGameObject(L"OpeningCameraMan", GetThis<OpeningCameraMan>());
+		m_StateMachine.reset(new StateMachine<OpeningCameraMan>(GetThis<OpeningCameraMan>()));
+		m_StateMachine->ChangeState(OPCMoveToGoal::Instance());
+	}
+
+	void OpeningCameraMan::OnUpdate()
+	{
+		m_StateMachine->Update();
+	}
+
+	void OpeningCameraMan::ToGoalParam()
+	{
+		auto CameraPtr = dynamic_pointer_cast<StageBase>(GetStage())->GetMyCamera();
+		m_StartEye = CameraPtr->GetEye();
+		m_StartAt = CameraPtr->GetAt();
+		m_EndAt = GetStage()->GetSharedGameObject<LoadBlock>(L"Goal")->GetComponent<Transform>()->GetPosition();
+		m_EndEye = m_EndAt + (m_StartEye - m_StartAt)*5.0f;
+		m_CurrntAt = m_StartAt;
+		m_TotalTime = 0.0f;
+	}
+
+	void OpeningCameraMan::ToStartParam()
+	{
+		auto CameraPtr = dynamic_pointer_cast<StageBase>(GetStage())->GetMyCamera();
+		auto Eye = m_EndEye;
+		auto At = m_EndAt;
+		m_StartEye = m_EndEye;
+		m_StartAt = m_EndAt;
+		m_EndAt = CameraPtr->GetAt();
+		m_EndEye = CameraPtr->GetEye();
+		m_CurrntAt = m_StartAt;
+		m_TotalTime = 0.0f;
+	}
+	
+	bool OpeningCameraMan::Excute()
+	{
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		m_TotalTime += ElapsedTime;
+		if (m_TotalTime > 5.0f) {
+			return true;
+		}
+		Easing<Vec3> easing;
+		auto TgtPos = easing.EaseInOut(EasingType::Cubic, m_StartEye, m_EndEye, m_TotalTime, 5.0f);
+		m_CurrntAt = easing.EaseInOut(EasingType::Cubic, m_StartAt, m_EndAt, m_TotalTime, 5.0f);
+		auto ptrTrans = GetComponent<Transform>();
+		ptrTrans->SetPosition(TgtPos);
+
+		return false;
+
+	}
+
+	//------------------------------------------------------
+	//オープニングカメラステート
+	//------------------------------------------------------
+	//動く
+	IMPLEMENT_SINGLETON_INSTANCE(OPCMoveToGoal)
+	void OPCMoveToGoal::Enter(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		Obj->ToGoalParam();
+		Obj->GetTypeStage<MainGameStage>(false)->ToOpeningCamera();
+	}
+
+	void OPCMoveToGoal::Execute(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		if (Obj->Excute())
+		{
+			Obj->GetStateMachine()->ChangeState(OPCMoveToStart::Instance());
+		}
+	}
+
+	void OPCMoveToGoal::Exit(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+
+	}
+	//
+	IMPLEMENT_SINGLETON_INSTANCE(OPCMoveToStart)
+	void OPCMoveToStart::Enter(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		Obj->ToStartParam();
+	}
+
+	void OPCMoveToStart::Execute(const shared_ptr<OpeningCameraMan>&Obj)
+	{
+		if (Obj->Excute())
+		{
+			Obj->GetTypeStage<MainGameStage>(false)->ToMyCamera();
+			Obj->SetUpdateActive(false);
+		}
+	}
+
+	void OPCMoveToStart::Exit(const shared_ptr<OpeningCameraMan>&Obj)
+	{
 
 	}
 
@@ -854,7 +1047,7 @@ namespace basecross{
 	}
 	void MoveToStartPoint::Exit(const shared_ptr<EventCameraMan>&obj)
 	{
-		obj->GetTypeStage<TestStage>()->ToMyCamera();
+		obj->GetTypeStage<MainGameStage>()->ToMyCamera();
 	}
 
 }

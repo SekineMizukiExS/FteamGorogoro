@@ -159,29 +159,50 @@ namespace basecross {
 	Vec2 Player::GetInputState() const {
 		Vec2 ret;
 		//コントローラの取得
-		auto cntlVec = App::GetApp()->GetInputDevice().GetControlerVec();
+		auto InputDiv = App::GetApp()->GetInputDevice();
+		auto cntlVec = InputDiv.GetControlerVec();
 		ret.x = 0.0f;
 		ret.y = 0.0f;
 		WORD wButtons = 0;
 		if (cntlVec[0].bConnected) {
-			ret.x = cntlVec[0].fThumbLX;
-			ret.y = cntlVec[0].fThumbLY;
+			float LY = cntlVec[0].fThumbLY;
+			float LX = cntlVec[0].fThumbLX;
+			//ret.y = cntlVec[0].fThumbLY;
+			//wButtons = ChangeToDPad(cntlVec[0].fThumbLX, cntlVec[0].fThumbLY);
+			if (LY >= 0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_UP;
+			}
+			else if (LY <= -0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_DOWN;
+			}
+
+			if (LX <= -0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_LEFT;
+			}
+			else if (LX >= 0.5f)
+			{
+				wButtons |= XINPUT_GAMEPAD_DPAD_RIGHT;
+			}
+
 		}
 		//キーボードの取得(キーボード優先)
-		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
-		if (KeyState.m_bPushKeyTbl['W']) {
+		auto KeyState = InputDiv.GetKeyState();
+		if (KeyState.m_bPushKeyTbl['W']|| wButtons == XINPUT_GAMEPAD_DPAD_UP) {
 			//前
 			ret.y = 1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['A']) {
+		else if (KeyState.m_bPushKeyTbl['A'] || wButtons == XINPUT_GAMEPAD_DPAD_LEFT) {
 			//左
 			ret.x = -1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['S']) {
+		else if (KeyState.m_bPushKeyTbl['S'] || wButtons == XINPUT_GAMEPAD_DPAD_DOWN) {
 			//後ろ
 			ret.y = -1.0f;
 		}
-		else if (KeyState.m_bPushKeyTbl['D']) {
+		else if (KeyState.m_bPushKeyTbl['D'] || wButtons == XINPUT_GAMEPAD_DPAD_RIGHT) {
 			//右
 			ret.x = 1.0f;
 		}
@@ -302,24 +323,28 @@ namespace basecross {
 		Vec3 nowPos = TransComp->GetPosition();
 		float maxrot = 0.5f * XM_PI;
 
+		const float MoveSpeed = 0.25f;
+
 		//Key判定
 		if (Search(_MovePoint))
 		{
 			//めり込み直し
-			if (TransComp->GetPosition().y <= 0.5f) {
+			if (TransComp->GetPosition().y <= 2.5f) {
 				auto temppos = TransComp->GetPosition();
-				TransComp->SetPosition(temppos.x, 0.5f, temppos.z);
+				TransComp->SetPosition(temppos.x, 2.5f, temppos.z);
 			}
 			if (_RotActive) {
 				if (_count < 5) {
 					TransComp->RotateAround(_RotPoint, _RotAxis, 0.1f * XM_PI, nowPos);
 					_count += 1;
+					_MoveActive = true;
 				}
 				else {
 
 					_count = 0;
 					_RotActive = false;
-
+					_MoveActive = false;
+					_BeforePos = TransComp->GetPosition();
 				}
 			}
 			else
@@ -393,7 +418,7 @@ namespace basecross {
 	//ターゲットのセルを検索する
 	bool EnemyBehavior::Search(const Vec3& TargetPos)
 	{
-		auto MapPtr = EnemyBase::GetCellMap().lock();
+		auto MapPtr = dynamic_pointer_cast<EnemyBase>(GetGameObject())->GetCellMap().lock();
 		if (MapPtr) {
 			auto PathPtr = GetGameObject()->GetComponent<PathSearch>();
 			_CellPath.clear();
@@ -446,7 +471,7 @@ namespace basecross {
 				_CurrntTime = 0.0f;
 			}
 		}
-		dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
+		dynamic_pointer_cast<MainGameStage>(GameManager::GetManager()->GetTargetStage())->ToEventCamera();
 	}
 
 	//TO
@@ -455,7 +480,7 @@ namespace basecross {
 		//終了
 		auto CEye = _EndEyePos;
 		auto CAt = _EndAtPos;
-		auto Camera = dynamic_pointer_cast<TestStage>(GameManager::GetManager()->GetTargetStage())->GetMyCamera();
+		auto Camera = dynamic_pointer_cast<MainGameStage>(GameManager::GetManager()->GetTargetStage())->GetMyCamera();
 		//開始
 		_EndEyePos = Camera->GetEye();
 		_EndAtPos = Camera->GetAt();

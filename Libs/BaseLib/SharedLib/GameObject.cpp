@@ -1951,8 +1951,11 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ステージのセルマップ（派生クラスを作るかインスタンスを作成する）
 	//--------------------------------------------------------------------------------------
+	StageCellMap::StageCellMap(const shared_ptr<Stage>& StagePtr)
+		:GameObject(StagePtr), pImpl(new Impl())
+	{
 
-
+	}
 
 	StageCellMap::StageCellMap(const shared_ptr<Stage>& StagePtr, const bsm::Vec3& MiniPos,
 		float PieceSize, UINT PieceCountX, UINT PieceCountZ, int DefaultCost):
@@ -2051,7 +2054,11 @@ namespace basecross {
 		pImpl->Create(GetComponent<MultiStringSprite>(), GetStage());
 	}
 
-
+	void StageCellMap::CreateCellMap(const bsm::Vec3& MiniPos,
+		float PieceSize, UINT PieceCountX, UINT PieceCountZ, int DefaultCost)
+	{
+		pImpl->Init(MiniPos, PieceSize, PieceCountX, PieceCountZ, DefaultCost);
+	}
 
 	void  StageCellMap::OnUpdate() {
 		if (pImpl->m_IsCellStringActive) {
