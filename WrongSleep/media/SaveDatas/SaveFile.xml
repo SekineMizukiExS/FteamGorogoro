@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-	<SaveData1 MapDataFile="Stage01" LoadBlockData="PlayerStart" AllTime="0.000"/>
+	<SaveData1 MapDataFile="Stage03" LoadBlockData="PlayerStart" AllTime="331.333"/>
 	<SaveData2 MapDataFile="Stage01" LoadBlockData="PlayerStart" AllTime="0.000"/>
 	<SaveData3 MapDataFile="Stage02" LoadBlockData="PlayerStart" AllTime="80.130"/>
 </root>

@@ -737,11 +737,12 @@ namespace basecross {
 
 			if (FAILED(pEventHeader->hrEvent))
 			{
-				throw BaseException(
-					L"ムービーのコールバック関数のイベント取得に失敗しました",
-					L"if (FAILED(pEventHeader->hrEvent))",
-					L" MediaPlayerCallback::OnMediaPlayerEvent()"
-				);
+				//throw BaseException(
+				//	L"ムービーのコールバック関数のイベント取得に失敗しました",
+				//	L"if (FAILED(pEventHeader->hrEvent))",
+				//	L" MediaPlayerCallback::OnMediaPlayerEvent()"
+				//);
+				return;
 			}
 
 			switch (pEventHeader->eEventType)
@@ -807,6 +808,7 @@ namespace basecross {
 						L"if (g_PlayerCB == nullptr)",
 						L"App::PlayMovie()"
 					);
+
 				}
 
 				hr = MFPCreateMediaPlayer(

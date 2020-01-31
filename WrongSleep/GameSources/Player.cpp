@@ -173,8 +173,8 @@ namespace basecross{
 			return;
 
 		auto ptrGra = GetComponent<basecross::Gravity>();
-		ptrGra->SetGravity(Vec3(0,-1.0f,0));
-		ptrGra->SetGravityVerocity(Vec3(0, -1.0f, 0));
+		ptrGra->SetGravity(Vec3(0,-2.0f,0));
+		ptrGra->SetGravityVerocity(Vec3(0, -2.0f, 0));
 
 		//GetMoveVector();
 		//MovePlayer();
@@ -636,7 +636,9 @@ namespace basecross{
 
 		m_isGround = RayCast(tempPositions[i], tempPositions[i]-Vec3(0,-0.1f,0));
 		m_isGroundLower = RayCast(nowPositions[i], tempPositions[i]);
-
+			if (m_isGround || m_isGroundLower) {
+				break;
+			}
 		}
 		float length = 0.1f;
 
