@@ -104,6 +104,7 @@ namespace basecross{
 		//重力処理
 		void Gravity();
 		bool RayCast(Vec3 pos, Vec3 target);
+		bool GetMoveActive() { return !m_isRotate; };
 
 		//プレイヤーの最初の底面を取得する関数
 		
