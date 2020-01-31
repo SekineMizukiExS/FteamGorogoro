@@ -400,7 +400,7 @@ namespace basecross
 
 	void ToyGuards::OnUpdate()
 	{
-		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera)
+		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera || GetTypeStage<StageBase>()->GetCameraSelects == SelectCamera::pOpeningCamera)
 			return;
 
 		m_SteteMachine->Update();

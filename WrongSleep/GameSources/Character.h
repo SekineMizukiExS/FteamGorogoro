@@ -102,7 +102,7 @@ namespace basecross{
 
 		void OnCreate()override;
 
-		void OnUpdate()override;
+		virtual void OnUpdate()override;
 
 		void OnEvent(const shared_ptr<Event>&event)override;
 
@@ -112,9 +112,9 @@ namespace basecross{
 		{
 			return _EndFlag;
 		}
-
-	private:
 		bool TestMove(const float TotalTime);
+
+	protected:
 
 		enum MovingType
 		{
@@ -135,11 +135,27 @@ namespace basecross{
 		//経過時間
 		float _CurrntTime;
 		//スタート
-		Vec3 _Start, _End;
+		Vec3 _Start, _End,_BeStart,_BeEnd;
 		//
 		bool _OnEventFlag;
 		bool _EndFlag = false;
 
+	};
+
+	class ActiveMovingObject :public MovingObject
+	{
+	public:
+		ActiveMovingObject(const shared_ptr<Stage>&StagePtr, IXMLDOMNodePtr pNode)
+			:MovingObject(StagePtr,pNode)
+		{}
+
+		void OnUpdate()
+		{
+			if (TestMove(15.0f))
+			{
+				Swap<Vec3>(_Start, _End);
+			}
+		}
 	};
 
 	//--------------------------------------------------------------------------------------

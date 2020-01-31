@@ -335,11 +335,11 @@ namespace basecross {
 	OpeningCamera::~OpeningCamera() {}
 
 	void OpeningCamera::OnUpdate() {
-		//auto ptrOpeningCameraman = dynamic_pointer_cast<OpeningCameraman>(GetCameraObject());
-		//if (ptrOpeningCameraman) {
-		//	auto pos = ptrOpeningCameraman->GetAtPos();
-		//	SetAt(pos);
-		//}
+		auto ptrOpeningCameraman = dynamic_pointer_cast<OpeningCameraMan>(GetCameraObject());
+		if (ptrOpeningCameraman) {
+			auto pos = ptrOpeningCameraman->GetAt();
+			SetAt(pos);
+		}
 		Camera::OnUpdate();
 	}
 

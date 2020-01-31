@@ -291,7 +291,8 @@ namespace basecross{
 		auto RotStr = XmlDocReader::GetAttribute(pNode, L"Rot");
 		auto LinkStr = XmlDocReader::GetAttribute(pNode, L"LINKCODE");
 		auto MovingTypeStr = XmlDocReader::GetAttribute(pNode, L"MovingType");
-
+		auto StartVecStr = XmlDocReader::GetAttribute(pNode, L"MoveStartVec");
+		auto EndVecStr = XmlDocReader::GetAttribute(pNode, L"MoveEndVec");
 		//ループするかどうか・
 
 		//モーションType
@@ -331,26 +332,44 @@ namespace basecross{
 		_Rotate.y = (Tokens[1] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[1].c_str());
 		_Rotate.z = (Tokens[2] == L"XM_PIDIV2") ? XM_PIDIV2 : (float)_wtof(Tokens[2].c_str());
 
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, StartVecStr, L',');
+		//各トークン（カラム）をスケール、回転、位置に読み込む
+		_Start = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+
+		Tokens.clear();
+		Util::WStrToTokenVector(Tokens, EndVecStr, L',');
+		//各トークン（カラム）をスケール、回転、位置に読み込む
+		_End = Vec3(
+			(float)_wtof(Tokens[0].c_str()),
+			(float)_wtof(Tokens[1].c_str()),
+			(float)_wtof(Tokens[2].c_str())
+		);
+
 		//オブジェクトパラメータ
 		//パラメータノード
 		//auto ParamNode = XmlDocReader::GetSelectSingleNode(pNode, L"ObjParam");
+		_BeEnd = _End;
+		_BeStart = _Start;
 	}
 
 	void MovingObject::OnCreate()
 	{
 		//形状作成
 		auto DrawComp = AddComponent<PCTStaticDraw>();
-		DrawComp->SetMeshResource(L"DEFAULT_CUBE");
+		DrawComp->SetMeshResource(_MeshKey);
+		DrawComp->SetTextureResource(_TexKey);
 		DrawComp->SetDiffuse(Col4(1.0f, 0.0f, 0.0f, 1.0f));
 		DrawComp->SetEmissive(Col4(1, 1, 1, 1));
-
+		SetAlphaActive(true);
 		auto TransComp = AddComponent<Transform>();
 		TransComp->SetPosition(_Position);
 		TransComp->SetScale(_Scale);
 		TransComp->SetRotation(_Rotate);
-
-		_Start = GameManager::GetManager()->GetSettingPosData(L"MoveStart");
-		_End = GameManager::GetManager()->GetSettingPosData(L"MoveEnd");
 
 		auto Coll = AddComponent<CollisionObb>();
 		Coll->SetFixed(true);
@@ -410,6 +429,7 @@ namespace basecross{
 		if (_CurrntTime > TotalTime) 
 		{
 			_EndFlag = true;
+			_CurrntTime = 0.0f;
 			return true;
 		}
 		Easing<Vec3> easing;
@@ -865,9 +885,10 @@ namespace basecross{
 	{
 		auto CameraPtr = dynamic_pointer_cast<StageBase>(GetStage())->GetMyCamera();
 		m_StartEye = CameraPtr->GetEye();
-		m_StartAt = CameraPtr->GetAt();
+		m_StartAt = GetStage()->GetSharedGameObject<Player>(L"Player")->GetComponent<Transform>()->GetPosition();
 		m_EndAt = GetStage()->GetSharedGameObject<LoadBlock>(L"Goal")->GetComponent<Transform>()->GetPosition();
-		m_EndEye = m_EndAt + (m_StartEye - m_StartAt)*5.0f;
+		m_EndEye = m_EndAt + (m_StartEye - m_StartAt)*1.0f;
+		m_EndEye.y += 5.0f;
 		m_CurrntAt = m_StartAt;
 		m_TotalTime = 0.0f;
 	}
@@ -879,7 +900,7 @@ namespace basecross{
 		auto At = m_EndAt;
 		m_StartEye = m_EndEye;
 		m_StartAt = m_EndAt;
-		m_EndAt = CameraPtr->GetAt();
+		m_EndAt = GetStage()->GetSharedGameObject<Player>(L"Player")->GetComponent<Transform>()->GetPosition();
 		m_EndEye = CameraPtr->GetEye();
 		m_CurrntAt = m_StartAt;
 		m_TotalTime = 0.0f;
