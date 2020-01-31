@@ -169,7 +169,7 @@ namespace basecross{
 	}
 
 	void Player::OnUpdate() {
-		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera)
+		if (GetTypeStage<StageBase>()->GetCameraSelects() == SelectCamera::pEventCamera||GetTypeStage<StageBase>()->GetCameraSelects == SelectCamera::pOpeningCamera)
 			return;
 
 		auto ptrGra = GetComponent<basecross::Gravity>();

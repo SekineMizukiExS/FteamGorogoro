@@ -299,6 +299,7 @@ namespace basecross {
 		Builder.Register<StageObjects>(L"FixedObject");
 		Builder.Register<LoadBlock>(L"LoadObject");
 		Builder.Register<CommonBox>(L"CommonObject");
+		Builder.Register<ActiveMovingObject>(L"MoveObject");
 		Builder.Register<MovingObject>(L"PairObject");
 		Builder.Register<SwitchObject>(L"SwitchObject");
 		Builder.Register<EnemyCellMap>(L"EnemyCellMap");
@@ -367,7 +368,7 @@ namespace basecross {
 			//スカイボックス作成
 			AddGameObject<CMeshBox>(Vec3(10, 10, 10), Vec3(0, 0, 0), Vec3(0, 0, 0), L"skybox_TX", L"SkyBox_MD");
 			AddGameObject<EventCameraMan>();
-			//AddGameObject<OpeningCameraMan>();
+			AddGameObject<OpeningCameraMan>();
 			//AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
 			AddGameObject<DebugObj>();
 			//BGMの再生

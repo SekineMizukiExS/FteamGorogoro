@@ -2,5 +2,5 @@
 <root>
 	<SaveData1 MapDataFile="Stage01" LoadBlockData="PlayerStart" AllTime="0.000"/>
 	<SaveData2 MapDataFile="Stage01" LoadBlockData="PlayerStart" AllTime="0.000"/>
-	<SaveData3 MapDataFile="Stage01" LoadBlockData="PlayerStart" AllTime="0.000"/>
+	<SaveData3 MapDataFile="Stage02" LoadBlockData="PlayerStart" AllTime="80.130"/>
 </root>
