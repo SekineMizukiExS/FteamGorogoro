@@ -433,7 +433,7 @@ namespace basecross
 
 		m_SteteMachine.reset(new StateMachine<EnemyBase>(GetThis<CollectEnemy>()));
 
-		m_SteteMachine->ChangeState(CollectState::Instance());
+		m_SteteMachine->ChangeState(TrackingState::Instance());
 
 		//Œo˜H’Tõ
 		auto MapPtr = GetCellMap().lock();

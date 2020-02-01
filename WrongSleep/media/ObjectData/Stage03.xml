@@ -1,32 +1,31 @@
 <?xml version="1.0"?>
 <root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Stage KeyNum = "1" MoveLimit = "1000">
+  <Stage KeyNum = "5" MoveLimit = "100">
     <StageObjects>
-      <Object Type="FixedGround" Tag="StageObjects" Pos="0,0,0" Scale="50,3,50" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-7.1056,2.5,18.3" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-7.1056,2.5,6.3" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-0.4,2.5,12" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-13.6,2.5,14.2" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,17.9" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-13.6,2.5,-21.8" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,-18.1" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-7.1056,2.5,-17.7" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-0.3999996,2.5,-12" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-13.6,2.5,-9.8" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,-6.1" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-7.1056,2.5,-5.7" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-0.3999996,2.5,0" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-13.6,2.5,2.2" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,5.9" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="6.8209,2.5,-5.7" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="6.8209,2.5,-17.7" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="6.8209,2.5,6.3" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="6.8209,2.5,18.3" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="14.337,2.5,2.2" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="14.337,2.5,-9.8" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="14.337,2.5,-21.8" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="CommonObject" Tag="Apple" Pos="14.337,2.5,14.2" Scale="2,2,2" Rot="0,0,0" MeshKey="DEFAULT_CUBE" TexKey="clearmat_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
-      <Object Type="LoadObject" Tag="Goal" Pos="-27.49,1.61,-28.7" Scale="1,1,1" Rot="0,0,0" MeshKey="WarpPad_MD" TexKey="WarpPad_TX" LoadMapFile="Stage03" TargetPosKey="PlayerStart" />
+      <Object Type="FixedGround" Tag="StageObjects" Pos="0,0,0" Scale="50,3,50" Rot="0,0,0" MeshKey="TestCube" TexKey="LeafMat_TX" Load1MapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-7.1056,2.5,18.3" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-7.1056,2.5,6.3" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-0.4,2.5,12" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-13.6,2.5,14.2" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,17.9" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-13.6,2.5,-21.8" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,-18.1" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-7.1056,2.5,-17.7" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-0.3999996,2.5,-12" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-13.6,2.5,-9.8" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,-6.1" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-7.1056,2.5,-5.7" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-0.3999996,2.5,0" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="-13.6,2.5,2.2" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="-21.3,2.5,5.9" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="6.8209,2.5,-5.7" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="6.8209,2.5,-17.7" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="6.8209,2.5,6.3" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="6.8209,2.5,18.3" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="14.337,2.5,2.2" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Apple" Pos="14.337,2.5,-9.8" Scale="1,1,1" Rot="0,0,0" MeshKey="Apple_MD" TexKey="RedApple_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="CommonObject" Tag="Key" Pos="14.337,2.5,-21.8" Scale="1,1,1" Rot="0,0,0" MeshKey="Key_MD" TexKey="Key_TX" LoadMapFile="NULL" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
+      <Object Type="LoadObject" Tag="Goal" Pos="14.337,2.5,14.2" Scale="1,1,1" Rot="0,0,0" MeshKey="WarpPad_MD" TexKey="WarpPad_TX" LoadMapFile="Result" TargetPosKey="NULL" LINKCODE="NULL" MovingType="NULL" />
       <Object Type="EnemyCellMap" MapKey="TestMap" MiniPos="-25.0, 1.5, -25.0" PieceSize="2.5f" PieceCountX="20" PieceCountZ="20" DefaultCost ="1"/>
     </StageObjects>
     <EnemyDatas>

@@ -182,7 +182,7 @@ namespace basecross{
 		GetInFourEdge();
 		BoxExtending();
 		Gravity();
-		DebugLine();
+		//DebugLine();
 		//auto inPut = GetInputState();
 		auto InputDevice = App::GetApp()->GetInputDevice();
 		auto KeyState = InputDevice.GetKeyState();
@@ -262,6 +262,8 @@ namespace basecross{
 
 		auto obj2 = dynamic_pointer_cast<EnemyBase>(other);
 		if (obj2) {
+			PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
+			return;
 			auto ptrTransform = GetComponent<Transform>();
 			//bsm::Flt3 beforeWorldPosition = ptrTransform->GetBeforeWorldMatrix().transInMatrix();
 			Vec3 HitPoint;
@@ -569,6 +571,9 @@ namespace basecross{
 				if (teststg) {
 					teststg->Effectplay(L"SideSplash_EF",Vec3(nowPos.x,0.5,nowPos.z));
 					GameManager::GetManager()->MovedPlayer();
+					auto XAudio = App::GetApp()->GetXAudio2Manager();
+					XAudio->Start(L"PuttingSE_SD", 0, 0.7f);
+
 				}
 			}
 
@@ -686,7 +691,8 @@ namespace basecross{
 		for (auto& v : stage->GetGameObjectVec()) {
 
 			auto PlayerPtr = dynamic_pointer_cast<Player>(v);
-			if (!PlayerPtr) {
+			auto ComPtr = dynamic_pointer_cast<CommonBox>(v);
+			if (!PlayerPtr&&!ComPtr) {
 				auto PsPtr = dynamic_pointer_cast<GameObject>(v);
 				if (PsPtr) {
 					auto ColObb = PsPtr->GetComponent<CollisionObb>(false);

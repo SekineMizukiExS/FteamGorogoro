@@ -63,7 +63,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
-	class GameStage : public Stage {
+	class ResultStage : public Stage {
 		//ビューの作成
 		void CreateViewLight();
 		//プレイヤーの作成
@@ -71,10 +71,12 @@ namespace basecross {
 
 	public:
 		//構築と破棄
-		GameStage() :Stage() {}
-		virtual ~GameStage() {}
+		ResultStage() :Stage() {}
+		virtual ~ResultStage() {}
 		//初期化
 		virtual void OnCreate()override;
+
+		void OnUpdate()override;
 	};
 
 	//--------------------------------------------------------------------------------------
@@ -84,6 +86,10 @@ namespace basecross {
 	{
 		//ビューの作成
 		void CreateViewLight();
+		float time = 0;
+
+		bool IsSelect = false;
+
 	public:
 		//構築と破棄
 		TitleStage():Stage(){}

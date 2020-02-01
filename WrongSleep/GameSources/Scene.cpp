@@ -153,6 +153,11 @@ namespace basecross{
 			ResetActiveStage<MyMovieStage>();
 			return;
 		}
+		else if (event->m_MsgStr == L"ToResultStage")
+		{
+			ResetActiveStage<ResultStage>();
+			return;
+		}
 
 		GameManager::GetManager()->SetTargetStage(GetActiveStage());
 	}

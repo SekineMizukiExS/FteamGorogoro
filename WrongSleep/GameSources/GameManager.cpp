@@ -164,6 +164,11 @@ namespace basecross
 			//ステージ移動イベント
 		case basecross::GameEventType::MoveStage:
 			LB = dynamic_pointer_cast<LoadBlock>(gameevent->m_Sender.lock());
+			if (gameevent->m_MsgStr == L"Result")
+			{
+				GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToResultStage");
+				return;
+			}
 			GameManager::GetManager()->SetXMLFilePath(gameevent->m_MsgStr);
 			GameManager::GetManager()->SetLoadPosKey(LB->GetTargetPosStr());
 			GameManager::GetManager()->PostEvent(0.0f, nullptr, App::GetApp()->GetScene<Scene>(), L"ToMainGameStage");
@@ -290,6 +295,9 @@ namespace basecross
 		App::GetApp()->RegisterTexture(L"clearmat_TX", TexturePath + L"clearmat.png");
 		App::GetApp()->RegisterTexture(L"skybox_TX", TexturePath + L"skybox_tx.png");
 		App::GetApp()->RegisterTexture(L"Title_TX", TexturePath + L"Title-Logo.png");
+		App::GetApp()->RegisterTexture(L"Clear_TX", TexturePath + L"Clear.png");
+
+		App::GetApp()->RegisterTexture(L"Start_TX", TexturePath + L"Start01.png");
 
 		App::GetApp()->RegisterTexture(L"Bridge_TX", TexturePath + L"Tx_Bridge.png");
 		App::GetApp()->RegisterTexture(L"Fence_TX", TexturePath + L"Tx_Fence.png");
@@ -338,6 +346,8 @@ namespace basecross
 
 		//音素材
 		App::GetApp()->RegisterWav(L"MainBGM_SD", BGMPath + L"MainMusicT.wav");
+		App::GetApp()->RegisterWav(L"PuttingSE_SD", SEPath + L"putting_a_box.wav");
+		App::GetApp()->RegisterWav(L"SelectSE_SD", SEPath + L"Select.wav");
 
 		_mutex.lock();
 		_LoadEnd = true;

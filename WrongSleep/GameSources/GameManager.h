@@ -392,7 +392,7 @@ namespace basecross {
 		const Vec3 GetSettingPosData(const wstring& PosKey) { return _SettingPosData[PosKey]; }
 
 		//鍵数
-		const bool CheckKeyVol() { return MaxKeyNums == m_CurrntKeyNums; }
+		const bool CheckKeyVol() { return MaxKeyNums <= m_CurrntKeyNums; }
 
 		//リソースの読込が終わったらTrue	
 		bool GetLoadEnd()const

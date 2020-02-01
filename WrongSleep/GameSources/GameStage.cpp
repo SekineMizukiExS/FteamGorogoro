@@ -50,8 +50,8 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
-	void GameStage::CreateViewLight() {
-		const Vec3 eye(0.0f, 5.0f, 5.0f);
+	void ResultStage::CreateViewLight() {
+		const Vec3 eye(50.0f, 0.0f, 0.0f);
 		const Vec3 at(0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
@@ -62,11 +62,11 @@ namespace basecross {
 		//マルチライトの作成
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		//デフォルトのライティングを指定
-		PtrMultiLight->SetDefaultLighting();
+		PtrMultiLight->SetDefaultLighting2();
 	}
 
 	//プレイヤーの作成
-	void GameStage::CreatePlayer() {
+	void ResultStage::CreatePlayer() {
 		//プレーヤーの作成
 		auto ptrPlayer = AddGameObject<Player>();
 		//シェア配列にプレイヤーを追加
@@ -75,14 +75,26 @@ namespace basecross {
 	}
 
 
-	void GameStage::OnCreate() {
+	void ResultStage::OnCreate() {
 		try {
 			//ビューとライトの作成
 			CreateViewLight();
-			CreatePlayer();
+
+			AddGameObject<TitleUI>(L"Clear_TX", true, Vec2(1, 1), Vec3(0, 0, 0), Vec2(1280, 800));
 		}
 		catch (...) {
 			throw;
+		}
+	}
+
+	void ResultStage::OnUpdate()
+	{
+		auto Dev = App::GetApp()->GetInputDevice();
+		auto KeyB = Dev.GetKeyState();
+		auto cont = Dev.GetControlerVec()[0];
+		if (KeyB.m_bLastKeyTbl['G'] || cont.wPressedButtons == XINPUT_GAMEPAD_START)
+		{
+			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 		}
 	}
 
@@ -111,6 +123,7 @@ namespace basecross {
 			CreateViewLight();
 
 			AddGameObject<TitleUI>(L"Title_TX",true,Vec2(1,1),Vec3(0,0,0),Vec2(1280,800));
+			AddGameObject<AnimationSprite>(L"Start_TX", true, Vec2(1, 1), Vec3(0, -270, 0.0f), Vec2(400, 200), 100.0f);
 		}
 		catch (...) {
 			throw;
@@ -124,6 +137,9 @@ namespace basecross {
 		auto cont = Dev.GetControlerVec()[0];
 		if (KeyB.m_bLastKeyTbl['G']||cont.wPressedButtons == XINPUT_GAMEPAD_START)
 		{
+			auto XAudio = App::GetApp()->GetXAudio2Manager();
+			XAudio->Start(L"SelectSE_SD", 0, 1.0f);
+			IsSelect = true;
 			PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToLoadStage");
 		}
 	}
@@ -308,8 +324,8 @@ namespace basecross {
 		Builder.Register<MovingObject>(L"PairObject");
 		Builder.Register<SwitchObject>(L"SwitchObject");
 		Builder.Register<EnemyCellMap>(L"EnemyCellMap");
-		Builder.Register<ToyGuards>(L"Enemy");
-		Builder.Register<CollectEnemy>(L"CollectEnemy");
+		//Builder.Register<ToyGuards>(L"Enemy");
+		Builder.Register<CollectEnemy>(L"Enemy");
 		wstring DataDir;
 		App::GetApp()->GetDataDirectory(DataDir);
 		//XMLからゲームオブジェクトの構築
@@ -376,7 +392,7 @@ namespace basecross {
 			AddGameObject<EventCameraMan>();
 			AddGameObject<OpeningCameraMan>();
 			AddGameObject<GameMaskSprite>(L"clearmat_TX",L"LeafMat_TX",true);
-			AddGameObject<DebugObj>();
+			//AddGameObject<DebugObj>();
 			//BGMの再生
 			auto AM = App::GetApp()->GetXAudio2Manager();
 			m_CurrntBGM = AM->Start(L"MainBGM_SD", XAUDIO2_LOOP_INFINITE, 0.25f);
@@ -480,7 +496,7 @@ namespace basecross {
 		App::GetApp()->GetDataDirectory(dataDir);
 		wstring strMovie = dataDir + L"/Movies/" + L"PV.mp4";
 		SetMovieFileName(strMovie);
-		MovieStage::SetAutoRepeat(false);
+		MovieStage::SetAutoRepeat(true);
 		//再生
 		Play();
 		GameManager::GetManager()->LoadStart();
