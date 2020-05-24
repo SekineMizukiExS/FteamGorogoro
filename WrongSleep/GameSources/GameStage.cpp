@@ -494,7 +494,7 @@ namespace basecross {
 		wstring dataDir;
 		//サンプルのためアセットディレクトリを取得
 		App::GetApp()->GetDataDirectory(dataDir);
-		wstring strMovie = dataDir + L"/Movies/" + L"PV.mp4";
+		wstring strMovie = dataDir + L"/Movies/" + L"PV.wmv";
 		SetMovieFileName(strMovie);
 		MovieStage::SetAutoRepeat(true);
 		//再生
